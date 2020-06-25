@@ -1,0 +1,4 @@
+recursive: true
+file:
+  - './test/setup'
+timeout: 10000

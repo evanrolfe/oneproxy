@@ -1,0 +1,12 @@
+**/__pycache__
+*.pyc
+*.pyo
+
+build/*
+
+src/backend/build
+src/backend/node_modules
+
+oneproxy.db
+tmp/*
+*.log
