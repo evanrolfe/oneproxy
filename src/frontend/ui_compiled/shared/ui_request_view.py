@@ -49,7 +49,7 @@ class Ui_RequestView(object):
         self.headerTabs.addTab(self.requestTab, "")
         self.requestModifiedTab = QWidget()
         self.requestModifiedTab.setObjectName(u"requestModifiedTab")
-        self.requestModifiedTab.setEnabled(False)
+        self.requestModifiedTab.setEnabled(True)
         self.verticalLayout_3 = QVBoxLayout(self.requestModifiedTab)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
@@ -73,7 +73,7 @@ class Ui_RequestView(object):
         self.headerTabs.addTab(self.responseTab, "")
         self.responseModifiedTab = QWidget()
         self.responseModifiedTab.setObjectName(u"responseModifiedTab")
-        self.responseModifiedTab.setEnabled(False)
+        self.responseModifiedTab.setEnabled(True)
         self.verticalLayout_5 = QVBoxLayout(self.responseModifiedTab)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
@@ -94,6 +94,12 @@ class Ui_RequestView(object):
         self.responseBodyText = QPlainTextEdit()
         self.responseBodyText.setObjectName(u"responseBodyText")
         self.bodyTabs.addTab(self.responseBodyText, "")
+        self.tab_2 = QWidget()
+        self.tab_2.setObjectName(u"tab_2")
+        self.bodyTabs.addTab(self.tab_2, "")
+        self.tab = QWidget()
+        self.tab.setObjectName(u"tab")
+        self.bodyTabs.addTab(self.tab, "")
         self.responseBodyWebview = QWebEngineView()
         self.responseBodyWebview.setObjectName(u"responseBodyWebview")
         self.bodyTabs.addTab(self.responseBodyWebview, "")
@@ -104,7 +110,7 @@ class Ui_RequestView(object):
 
         self.retranslateUi(RequestView)
 
-        self.headerTabs.setCurrentIndex(2)
+        self.headerTabs.setCurrentIndex(3)
         self.bodyTabs.setCurrentIndex(0)
 
 
@@ -118,6 +124,8 @@ class Ui_RequestView(object):
         self.headerTabs.setTabText(self.headerTabs.indexOf(self.responseTab), QCoreApplication.translate("RequestView", u"Response", None))
         self.headerTabs.setTabText(self.headerTabs.indexOf(self.responseModifiedTab), QCoreApplication.translate("RequestView", u"(Modified)", None))
         self.bodyTabs.setTabText(self.bodyTabs.indexOf(self.responseBodyText), QCoreApplication.translate("RequestView", u"Raw", None))
+        self.bodyTabs.setTabText(self.bodyTabs.indexOf(self.tab_2), QCoreApplication.translate("RequestView", u"(Modified)", None))
+        self.bodyTabs.setTabText(self.bodyTabs.indexOf(self.tab), QCoreApplication.translate("RequestView", u"Parsed", None))
         self.bodyTabs.setTabText(self.bodyTabs.indexOf(self.responseBodyWebview), QCoreApplication.translate("RequestView", u"Preview", None))
     # retranslateUi
 

@@ -1,8 +1,19 @@
 # OneProxy
 
-Frontend runs on python v3.6.9 and Backend runs on node v12.17.0.
+An HTTP (and websockets) proxy application for performing penetration tests against web applications, with advanced capabilities for handling single-page-applications.
+
+![](./screenshot.png)
+
+## Key Features
+
+- Detects which browsers you have installed and launches it pre-configured for OneProxy to intercept HTTPS requests
+- Open multiple instances of the same browser in isolated-environments so you can keep multiple sessions active at the same time
+- Uses the browser's API to grab the rendered HTML allowing you to view what you actually see in the browser
+- Crawl SPAs (i.e. React sites) as well as traditional web applications
+- Intercept and modify requests and responses
 
 ## Installation
+Frontend requires Python v3.6.9 and Backend requires Node v12.17.0.
 
 ```
 $ git clone git@github.com:evanrolfe/oneproxy-python.git
