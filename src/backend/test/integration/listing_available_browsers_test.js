@@ -10,13 +10,18 @@ describe('Listing the available browsers', () => {
 
     const result = await messageFromBackend('clientsAvailable');
 
+    console.log(`[TEST] The following browsers are`)
+    console.log(result)
+
     const availableClients = result.clients;
-    await sleep(5000);
-    expect(availableClients.length).to.eql(4);
-    console.log(availableClients)
+    await sleep(3000);
     const clientTypes = availableClients.map(c => c.name).sort();
     console.log(clientTypes);
-    expect(clientTypes).to.eql(['anything', 'chrome', 'chromium', 'firefox']);
+
+    // NOTE: This is specific to the circleCI node-browsers docker image
+    expect(clientTypes).to.include('firefox');
+    expect(clientTypes).to.include('chrome');
+    expect(clientTypes).to.include('anything');
   });
 });
 

@@ -49,8 +49,12 @@ const getNextPortsAvailable = async (portsAvailable) => {
 };
 
 const listAvailableBrowsers = async (portsAvailable) => {
+  console.log(`===========================> listAvailableBrowsers (1)`)
   launcher.detect(async (browsers) => {
+    console.log(`===========================> listAvailableBrowsers (2)`)
+    console.log(browsers)
     const ports = await getNextPortsAvailable(portsAvailable);
+    console.log(`===========================> listAvailableBrowsers (3)`)
 
     // Add ports to the response:
     browsers.forEach((browser) => {

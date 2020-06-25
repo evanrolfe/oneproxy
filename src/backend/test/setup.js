@@ -40,7 +40,7 @@ const spawnBackend = async () => {
 };
 
 before(async () => {
-  await checkServerIsRunning();
+  //await checkServerIsRunning();
 
   global.backendProc = await spawnBackend();
   console.log(`[TEST] Backend process spawned.`);
