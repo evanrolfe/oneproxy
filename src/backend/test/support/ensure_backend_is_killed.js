@@ -19,7 +19,11 @@ const ensureBackendIsKilled = (backendPId) => {
   process.on('exit', () => {
     console.log(`[Test] Closing backend PID: ${backendPId}`);
 
-    process.kill(-backendPId);
+    try {
+      process.kill(-backendPId);
+    } catch(err) {
+      console.log(`[Test] Backend already closed.`)
+    }
   });
 };
 

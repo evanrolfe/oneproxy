@@ -150,22 +150,29 @@ class Request {
       this.modified_path === undefined ? this.path : this.modified_path;
     const host =
       this.modified_host === undefined ? this.host : this.modified_host;
+    const port =
+      this.modified_port === undefined ? this.port : this.modified_port;
     const headers =
       this.modified_request_headers === undefined
         ? this.request_headers
         : this.modified_request_headers;
+
     const payload =
       this.modified_request_payload === undefined
         ? this.request_payload
         : this.modified_request_payload;
 
-    return {
+    const options = {
       method: method,
       path: path,
       host: host,
-      headers: headers,
-      payload: payload
+      port: port,
+      headers: headers
     };
+
+    if (payload !== undefined) options.payload = payload;
+
+    return options;
   }
 
   toHttpResponseOptions() {
@@ -231,6 +238,7 @@ class Request {
   // Overwrites the existing request based on whats contained in the raw request
   setRawRequest(rawRequest) {
     const originalRawRequest = this.toInterceptParams().rawRequest;
+
     // Do not bother setting modified_* fields if the request hasn't changed
     if (originalRawRequest === rawRequest) return;
 
@@ -265,8 +273,13 @@ class Request {
     this.modified_host = headers.host;
     this.modified_request_headers = headers;
 
+    const isSSL = this.port === 443;
+    // TODO: FIgure this out
+    // const hostPort = parseHost(headers.host, isSSL ? 443 : 80);
+    // this.modified_port = hostPort.port;
+
     // Rebuild the url from the host, path & protocol
-    const protocol = this.modified_port === 443 ? 'https' : 'http';
+    const protocol = isSSL ? 'https' : 'http';
     const requestUrl = new URL(
       this.modified_path,
       `${protocol}://${this.modified_host}`
@@ -323,7 +336,13 @@ class Request {
     // NOTE: clientToProxyRequest.path is undefined
     // NOTE: clientToProxyRequest.url = path in HTTP, but not in HTTPS
     const path = url.parse(incomingMessage.url).path;
-    const requestUrl = new URL(path, `${protocol}://${hostPort.host}`);
+    let urlStart = `${protocol}://${hostPort.host}`;
+
+    if (hostPort.port !== 80) {
+      urlStart += `:${hostPort.port}`;
+    }
+
+    let requestUrl = new URL(path, urlStart);
 
     // Parse the extension:
     const splitPath = path.split('.');

@@ -3,6 +3,30 @@ jobs:
   build:
     docker:
       - image: circleci/node:12.17-browsers
+    environment:
+      NODE_ENV: test
     steps:
       - checkout # check out the code in the project directory
-      - run: echo "hello world" # run the `echo` command
+      - run:
+          name: Install
+          command: npm install
+          working_directory: src/backend
+      - run:
+          name: Start mock server
+          command: npm run start-mock-server
+          working_directory: src/backend
+          background: true
+      - run:
+          name: Wait for mock server to be ready
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z localhost 3000 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for mock server on port 3000 && exit 1
+      - run:
+          name: Test
+          command: npm run test
+          working_directory: src/backend
