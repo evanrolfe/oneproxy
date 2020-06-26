@@ -3,6 +3,13 @@ jobs:
   build:
     docker:
       - image: circleci/node:12.17-browsers
+    environment:
+      NODE_ENV: test
     steps:
       - checkout # check out the code in the project directory
-      - run: echo "hello world" # run the `echo` command
+      - run:
+          command: npm install
+          working_directory: src/backend
+      - run:
+          command: npm test
+          working_directory: src/backend
