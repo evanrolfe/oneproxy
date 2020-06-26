@@ -31,7 +31,9 @@ const spawnBackend = async () => {
     // loading, so we just sleep and hope for the best. Adjust this as needed.
     // TODO: Find a better way, perhaps by checking stdout for the word "loaded",
     // or maybe have the backend send an IPC messsage "loaded"?
-    await sleep(1000);
+    // NOTE: This can cause intermittent failures if the backend doesn't finish
+    // loading within 2secs
+    await sleep(2000);
 
     // Ensure the backend is killed when the test exits:
     ensureBackendIsKilled(backendProc.pid);

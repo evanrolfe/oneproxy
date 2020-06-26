@@ -11,12 +11,12 @@ describe('Listing the available browsers', () => {
     const result = await messageFromBackend('clientsAvailable');
 
     const availableClients = result.clients;
-    await sleep(5000);
-    expect(availableClients.length).to.eql(3);
     console.log(availableClients)
+
     const clientTypes = availableClients.map(c => c.name).sort();
-    console.log(clientTypes);
-    //expect(clientTypes).to.eql(['anything', 'chrome', 'chromium', 'firefox']);
+    expect(clientTypes).to.include('chrome');
+    expect(clientTypes).to.include('firefox');
+    expect(clientTypes).to.include('anything');
   });
 });
 

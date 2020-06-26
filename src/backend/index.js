@@ -110,6 +110,8 @@ const handleLine = (cmd) => {
 
   await interceptClient.connect();
   rl.on('line', handleLine);
+
+  console.log(`[JSON] ${JSON.stringify({type: 'backendLoaded'})}`);
 })();
 
 const events = [
