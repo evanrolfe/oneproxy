@@ -1,4 +1,5 @@
 # OneProxy
+[![CircleCI](https://circleci.com/gh/evanrolfe/oneproxy.svg?style=shield)](https://app.circleci.com/pipelines/github/evanrolfe/oneproxy)
 
 An HTTP (and websockets) proxy application for performing penetration tests against web applications, with advanced capabilities for handling single-page-applications.
 
