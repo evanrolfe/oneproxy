@@ -20,30 +20,30 @@ const makeRequest = (url, proxyPort) => new Promise((resolve, reject) => {
 
 const RAW_RESPONSE = '';
 
-describe('Making a request through the proxy', () => {
-  let proxyPort;
+// describe('Making a request through the proxy', () => {
+//   let proxyPort;
 
-  before(async () => {
-    await clearDatabase();
+//   before(async () => {
+//     await clearDatabase();
 
-    // Open a client:
-    writeToBackend({"command": "createClient", "type": "anything"});
-    const result = await messageFromBackend('clientStarted');
-    proxyPort = result.clientInfo.proxyPort;
-    await sleep(2000);
-  });
+//     // Open a client:
+//     writeToBackend({"command": "createClient", "type": "anything"});
+//     const result = await messageFromBackend('clientStarted');
+//     proxyPort = result.clientInfo.proxyPort;
+//     await sleep(2000);
+//   });
 
-  after(async () => {
-    writeToBackend({"command": "closeAllClients"});
-    await sleep(200);
-  });
+//   after(async () => {
+//     writeToBackend({"command": "closeAllClients"});
+//     await sleep(200);
+//   });
 
-  it('works', async () => {
-    const url = 'http://localhost:3000/api/posts/1.json';
-    const curlRequestFinished = makeRequest(url, proxyPort);
+//   it('works', async () => {
+//     const url = 'http://localhost:3000/api/posts/1.json';
+//     const curlRequestFinished = makeRequest(url, proxyPort);
 
-    const response = await curlRequestFinished;
-    console.log(response);
-  });
-});
+//     const response = await curlRequestFinished;
+//     console.log(response);
+//   });
+// });
 
