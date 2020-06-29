@@ -36,14 +36,17 @@ const writeToBackend = (line) => {
 };
 
 const messageFromBackend = (messageType) => new Promise((resolve) => {
-  global.backendProc.stdout.on('data', (line) => {
-    if (line.substring(0,6) == '[JSON]') {
-      const message = JSON.parse(line.substring(6).trim());
+  global.backendProc.stdout.on('data', (data) => {
+    data.split('\n').forEach((line) => {
+      if (line.substring(0,6) == '[JSON]') {
+        let message;
+        message = JSON.parse(line.substring(6).trim());
 
-      if (message.type == messageType) {
-        resolve(message);
+        if (message.type == messageType) {
+          resolve(message);
+        }
       }
-    }
+    });
   });
 });
 

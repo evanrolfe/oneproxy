@@ -112,17 +112,20 @@ const startChromeChromium = async (browserType, proxyPort, debugPort, browserId,
           '--disable-site-isolation-trials',
           '-test-type',
           `--remote-debugging-port=${debugPort}`,
-          '--window-size=1280,1080'
+          '--window-size=1280,1080',
+          `--no-sandbox`,
+          `--disable-setuid-sandbox`,
         ],
       };
 
       if (process.env.NODE_ENV === 'test') {
         launchOptions.options.push('--headless');
+        launchOptions.options.push('--single-process');
       }
 
       launch('', launchOptions, async (err, browserInstance) => {
         if (err) {
-          console.error(err);
+          console.log(`[Backend] Error: ${err}`);
           return;
         }
 

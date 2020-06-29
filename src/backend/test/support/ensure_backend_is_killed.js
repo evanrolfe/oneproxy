@@ -3,7 +3,6 @@ const ensureBackendIsKilled = (backendPId) => {
     `SIGINT`,
     `SIGUSR1`,
     `SIGUSR2`,
-    `uncaughtException`,
     `SIGTERM`,
     `SIGHUP`
   ];
@@ -15,6 +14,13 @@ const ensureBackendIsKilled = (backendPId) => {
       process.exit(1);
     });
   }
+
+  process.on('uncaughtException', (err, origin) => {
+    console.log(`[Test] received event: uncaughtException`);
+    console.log(err);
+    console.log(origin);
+    process.exit(1);
+  });
 
   process.on('exit', () => {
     console.log(`[Test] Closing backend PID: ${backendPId}`);
