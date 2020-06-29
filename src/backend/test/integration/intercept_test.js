@@ -21,25 +21,25 @@ const makeRequest = (proxyPort) => new Promise((resolve, reject) => {
 const RAW_RESPONSE = '';
 
 describe('The Intercept', () => {
-  // let proxyPort;
+  let proxyPort;
 
-  // before(async () => {
-  //   await clearDatabase();
+  before(async () => {
+    await clearDatabase();
 
-  //   // Open a client:
-  //   writeToBackend({"command": "createClient", "type": "anything"});
-  //   const result = await messageFromBackend('clientStarted');
-  //   proxyPort = result.clientInfo.proxyPort;
-  //   await sleep(2000);
+    // Open a client:
+    writeToBackend({"command": "createClient", "type": "anything"});
+    const result = await messageFromBackend('clientStarted');
+    proxyPort = result.clientInfo.proxyPort;
+    await sleep(2000);
 
-  //   // Enable the intercept:
-  //   writeToBackend({"command": "changeSetting", "key": "interceptEnabled", "value": true});
-  // });
+    // Enable the intercept:
+    writeToBackend({"command": "changeSetting", "key": "interceptEnabled", "value": true});
+  });
 
-  // after(async () => {
-  //   writeToBackend({"command": "closeAllClients"});
-  //   await sleep(200);
-  // });
+  after(async () => {
+    writeToBackend({"command": "closeAllClients"});
+    await sleep(200);
+  });
 
   // describe('Intercepting a request and its response', () => {
   //   it('works', async () => {
@@ -91,28 +91,28 @@ describe('The Intercept', () => {
   //   });
   // });
 
-  // describe('Intercepting a request', () => {
-  //   it('works', async () => {
-  //     const curlRequestFinished = makeRequest(proxyPort);
-  //     const message = await messageFromBackend('requestIntercepted');
+  describe('Intercepting a request', () => {
+    it('works', async () => {
+      const curlRequestFinished = makeRequest(proxyPort);
+      const message = await messageFromBackend('requestIntercepted');
 
-  //     console.log(`[TEST] sending forward to backend...`)
-  //     writeToBackend({
-  //       "command": "forward",
-  //       "request": {
-  //         "id": message.request.id,
-  //         "rawRequest": 'GET /api/posts.json HTTP/1.1\nhost: localhost:3000\nuser-agent: curl/7.58.0\naccept: */*\n'
-  //       }
-  //     });
-  //     const response = await curlRequestFinished;
-  //     console.log(response);
+      console.log(`[TEST] sending forward to backend...`)
+      writeToBackend({
+        "command": "forward",
+        "request": {
+          "id": message.request.id,
+          "rawRequest": 'GET /api/posts.json HTTP/1.1\nhost: localhost:3000\nuser-agent: curl/7.58.0\naccept: */*\n'
+        }
+      });
+      const response = await curlRequestFinished;
+      console.log(response);
 
-  //     const result = await global.knex('requests').where({ id: message.request.id });
-  //     const request = result[0];
+      const result = await global.knex('requests').where({ id: message.request.id });
+      const request = result[0];
 
-  //     expect(request.url).to.eql('http://localhost:3000/')
-  //     expect(request.modified_url).to.eql('http://localhost:3000/api/posts.json')
-  //   });
-  // });
+      expect(request.url).to.eql('http://localhost:3000/')
+      expect(request.modified_url).to.eql('http://localhost:3000/api/posts.json')
+    });
+  });
 });
 

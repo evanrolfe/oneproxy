@@ -4,7 +4,7 @@ const http = require('http');
 const https = require('https');
 const zlib = require('zlib');
 
-const Request = require('../shared/models/request');
+const RequestResponsePair = require('../shared/models/request-response-pair');
 const Settings = require('../shared/models/settings');
 
 const interceptEnabled = async () => {
@@ -12,10 +12,10 @@ const interceptEnabled = async () => {
   return setting.value === '1';
 };
 
-const makeProxyToServerRequest = (parsedRequest) =>
+const makeProxyToServerRequest = (reqResPair) =>
   new Promise((resolve, reject) => {
-    const protocol = parsedRequest.port === 443 ? https : http;
-    const requestOptions = parsedRequest.toHttpRequestOptions();
+    const protocol = reqResPair.port === 443 ? https : http;
+    const requestOptions = reqResPair.toHttpRequestOptions();
 
     const proxyToServerRequest = protocol.request(requestOptions, (response) => {
       const chunks = [];
@@ -79,30 +79,30 @@ const proxyRequestListener = async (
     });
   });
 
-  const parsedRequest = Request.fromHttpIncomingMessage(clientToProxyRequest);
-  parsedRequest.client_id = browserId;
+  const reqResPair = RequestResponsePair.fromHttpIncomingMessage(clientToProxyRequest);
+  reqResPair.client_id = browserId;
 
   if (requestPayload.length > 0)
-    parsedRequest.setRequestPayload(requestPayload);
+    reqResPair.setRequestPayload(requestPayload);
 
-  if (parsedRequest === null) {
+  if (reqResPair === null) {
     clientToProxyRequest.resume();
     proxyToClientResponse.writeHeader(400, {
       'Content-Type': 'text/html; charset=utf-8'
     });
     proxyToClientResponse.end('Bad request: Host missing...', 'UTF-8');
   } else {
-    await parsedRequest.saveToDatabase();
+    await reqResPair.saveToDatabase();
 
     // Notify the frontend of the request:
-    if (parsedRequest.id !== undefined) {
+    if (reqResPair.id !== undefined) {
       const message = {
         type: 'newRequest',
         request: {
-          id: parsedRequest.id,
-          method: parsedRequest.method,
-          url: parsedRequest.url,
-          client_id: parsedRequest.client_id
+          id: reqResPair.id,
+          method: reqResPair.method,
+          url: reqResPair.url,
+          client_id: reqResPair.client_id
         }
       }
       console.log(`[JSON] ${JSON.stringify(message)}`)
@@ -110,14 +110,17 @@ const proxyRequestListener = async (
 
     // Intercept the request (if requried):
     const isInterceptEnabled = await interceptEnabled();
-    const shouldInterceptRequest = isInterceptEnabled && parsedRequest.id !== undefined;
+    const shouldInterceptRequest = isInterceptEnabled && reqResPair.id !== undefined;
     let shouldInterceptResponse = false;
 
     if (shouldInterceptRequest) {
-      const result = await interceptClient.decision(parsedRequest);
+      const result = await interceptClient.decision(reqResPair);
 
       if (['forward', 'forwardAndIntercept'].includes(result.decision) && result.request.rawRequest !== undefined) {
-        parsedRequest.setRawRequest(result.request.rawRequest);
+        console.log(`========================= Setting rawRequest:`)
+        console.log(result.request.rawRequest)
+        console.log(`=========================`)
+        reqResPair.setRawRequest(result.request.rawRequest);
       }
 
       shouldInterceptResponse = result.decision === 'forwardAndIntercept';
@@ -125,12 +128,12 @@ const proxyRequestListener = async (
 
     // Make the actual request and save the response to the database:
     try {
-      const serverToProxyResponse = await makeProxyToServerRequest(parsedRequest);
-      parsedRequest.addHttpServerResponse(serverToProxyResponse);
+      const serverToProxyResponse = await makeProxyToServerRequest(reqResPair);
+      reqResPair.addHttpServerResponse(serverToProxyResponse);
     } catch(error) {
       if (error.code !== 'ECONNREFUSED' && error.code !== 'ENOTFOUND') {
         // We dont log connection refused as an error
-        console.error(`[ERROR] ${parsedRequest.method} ${parsedRequest.url} ${error.code}`);
+        console.error(`[ERROR] ${reqResPair.method} ${reqResPair.url} ${error.code}`);
       }
 
       proxyToClientResponse.end(error.code, 'UTF-8');
@@ -139,27 +142,27 @@ const proxyRequestListener = async (
 
     // Intercept the response (if requried):
     if (shouldInterceptResponse) {
-      const result = await interceptClient.decision(parsedRequest);
-      parsedRequest.setRawResponse(
+      const result = await interceptClient.decision(reqResPair);
+      reqResPair.setRawResponse(
         result.request.rawResponse,
         result.request.rawResponseBody
       );
     }
 
     // Save the response to the database (if required):
-    if (parsedRequest.id !== undefined) {
-      await parsedRequest.saveToDatabase();
+    if (reqResPair.id !== undefined) {
+      await reqResPair.saveToDatabase();
       // TODO: Notify the frontend:
     }
 
     // Return the response from the proxy to the client
-    const responseOptions = parsedRequest.toHttpResponseOptions();
+    const responseOptions = reqResPair.toHttpResponseOptions();
 
     const responseHeaders = Object.assign({}, responseOptions.headers);
     responseHeaders['content-length'] = Buffer.byteLength(responseOptions.body);
 
-    if (parsedRequest.id !== undefined) {
-      responseHeaders['X-Oneproxy-Id'] = parsedRequest.id;
+    if (reqResPair.id !== undefined) {
+      responseHeaders['X-Oneproxy-Id'] = reqResPair.id;
     }
 
     proxyToClientResponse.writeHead(

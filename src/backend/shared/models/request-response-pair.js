@@ -37,7 +37,7 @@ const parseHostAndPort = (request, defaultPort) => {
   }
 };
 
-class Request {
+class RequestResponsePair {
   constructor(params) {
     const attrs = [
       'id',
@@ -356,7 +356,7 @@ class Request {
       if (!/^proxy\-/i.test(h)) headers[h] = incomingMessage.headers[h];
     }
 
-    const request = new Request({
+    const request = new RequestResponsePair({
       method: incomingMessage.method,
       url: requestUrl.toString(),
       path: path,
@@ -397,4 +397,4 @@ class Request {
   }
 }
 
-module.exports = Request;
+module.exports = RequestResponsePair;

@@ -11,8 +11,6 @@ const POSTS = [
   {id:4, title:"Hey", body:"Hey Bob,  how are you?", user_id:3, created_at:"2020-02-05T10:02:49.648Z", updated_at:"2020-02-05T10:02:49.648Z", url:"http://localhost/api/posts/4.json"}
 ];
 
-
-
 // server.post('/', (req, res) => {
 //   console.log(`Recieved a post request!`);
 //   console.log(req.body);
@@ -20,14 +18,16 @@ const POSTS = [
 // });
 
 server.use('/', express.static(path.join(__dirname, 'frontend')))
+server.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 
 server.get('/api/posts.json',  (req, res) => {
-  console.log(`Recieved request.`)
   res.json(POSTS)
 });
 
 server.get('/api/posts/:postId.json',  (req, res) => {
-  console.log(`Recieved request.`)
   const { postId } = req.params;
   const post = POSTS.find(p => p.id === parseInt(postId));
   res.json(post)

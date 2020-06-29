@@ -120,6 +120,9 @@ const startChromeChromium = async (browserType, proxyPort, debugPort, browserId,
 
       if (process.env.NODE_ENV === 'test') {
         launchOptions.options.push('--headless');
+        // To fix intermittend failures on circleCI:
+        // https://discuss.circleci.com/t/navigation-failed-because-browser-has-disconnected/29087
+        // https://github.com/puppeteer/puppeteer/issues/4911
         launchOptions.options.push('--single-process');
       }
 
