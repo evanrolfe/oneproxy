@@ -25,12 +25,14 @@ class Request:
     self.response_headers = attributes.get('response_headers')
     self.response_status = attributes.get('response_status')
     self.response_status_message = attributes.get('response_status_message')
+    self.response_http_version = attributes.get('response_http_version')
     self.response_body = attributes.get('response_body')
     self.response_body_rendered = attributes.get('response_body_rendered')
 
     self.response_modified = (attributes.get('response_modified') == 1)
     self.modified_response_status = attributes.get('modified_response_status')
     self.modified_response_status_message = attributes.get('modified_response_status_message')
+    self.modified_response_http_version = attributes.get('modified_response_http_version')
     self.modified_response_headers = attributes.get('modified_response_headers')
     self.modified_response_body = attributes.get('modified_response_body')
     self.modified_response_body_length = attributes.get('modified_response_body_length')
@@ -54,13 +56,13 @@ class Request:
     return http_message
 
   def response_headers_parsed(self):
-    http_response = f'HTTP/{self.http_version} {self.response_status} {self.response_status_message}\n'
+    http_response = f'HTTP/{self.response_http_version} {self.response_status} {self.response_status_message}\n'
     http_response += self.__parse_headers_json(self.response_headers)
 
     return http_response
 
   def response_headers_modified_parsed(self):
-    http_response = f'HTTP/{self.modified_http_version} {self.modified_response_status} {self.modified_response_status_message}\n'
+    http_response = f'HTTP/{self.modified_response_http_version} {self.modified_response_status} {self.modified_response_status_message}\n'
     http_response += self.__parse_headers_json(self.modified_response_headers)
 
     return http_response

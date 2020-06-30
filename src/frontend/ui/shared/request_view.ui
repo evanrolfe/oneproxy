@@ -143,31 +143,108 @@
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
-        <verstretch>2</verstretch>
+        <verstretch>0</verstretch>
        </sizepolicy>
       </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QPlainTextEdit" name="responseBodyText">
+      <widget class="QWidget" name="responseBodyRawTab">
        <attribute name="title">
         <string>Raw</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4_body">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QPlainTextEdit" name="responseBodyRawText"/>
+        </item>
+       </layout>
       </widget>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="responseBodyModifiedTab">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <attribute name="title">
         <string>(Modified)</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_3_body">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QPlainTextEdit" name="responseBodyModifiedText"/>
+        </item>
+       </layout>
       </widget>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="responseBodyParsedTab">
        <attribute name="title">
         <string>Parsed</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_body">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QPlainTextEdit" name="responseBodyParsedText"/>
+        </item>
+       </layout>
       </widget>
-      <widget class="QWebEngineView" name="responseBodyWebview">
+      <widget class="QWidget" name="responseBodyPreviewTab">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <attribute name="title">
         <string>Preview</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5_body">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QWebEngineView" name="responseBodyPreview"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </widget>
