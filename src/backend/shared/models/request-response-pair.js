@@ -86,7 +86,7 @@ class RequestResponsePair {
   }
 
   addModifiedResponse(rawResponse, rawResponseBody) {
-    if (rawResponse !== this.response.toRaw()) {
+    if (rawResponse !== this.response.toRaw() || rawResponseBody !== this.response.body.toString()) {
       this.modifiedResponse = Response.fromRaw(rawResponse, rawResponseBody)
     }
   }
