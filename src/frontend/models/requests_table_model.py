@@ -7,7 +7,7 @@ from models.backend import Backend
 class RequestsTableModel(QAbstractTableModel):
   def __init__(self,request_data, parent = None):
     QAbstractTableModel.__init__(self, parent)
-    self.headers = ['ID', 'Source', 'Method', 'URL']
+    self.headers = ['ID', 'Source', 'Method', 'URL', 'Status', 'Modified']
     self.request_data = request_data
 
     # Register callback with the backend:
@@ -48,14 +48,17 @@ class RequestsTableModel(QAbstractTableModel):
 
       request = self.request_data.requests[index.row()]
 
-      if (index.column() == 0):
-        return request.id
-      elif (index.column() == 1):
-        return request.client_id
-      elif (index.column() == 2):
-        return request.method
-      elif (index.column() == 3):
-        return request.url
+      row_values = [
+        request.id,
+        request.client_id,
+        request.method,
+        request.url,
+        request.response_status,
+        request.modified()
+      ]
+
+      return row_values[index.column()]
+
 
   @Slot(result="QVariantList")
   def roleNameArray(self):
@@ -80,5 +83,15 @@ class RequestsTableModel(QAbstractTableModel):
       self.request_data.requests = sorted(self.request_data.requests, key=lambda r: [r.method, r.id], reverse=reverse)
     elif (column == 3):
       self.request_data.requests = sorted(self.request_data.requests, key=lambda r: [r.url, r.id], reverse=reverse)
+    elif (column == 4):
+      self.request_data.requests = sorted(self.request_data.requests, key=self.response_status_sort_key, reverse=reverse)
 
     self.dataChanged.emit(QModelIndex(), QModelIndex())
+
+  def response_status_sort_key(self, request):
+    if (request.response_status == ''):
+      status = 0
+    else:
+      status = int(request.response_status)
+
+    return [status, request.id]

@@ -20,11 +20,6 @@ class NetworkRequestsTable(QWidget):
     horizontalHeader.setSortIndicator(0, Qt.DescendingOrder)
     self.ui.requestsTable.setSortingEnabled(True)
 
-    self.ui.requestsTable.setColumnWidth(0, 50)
-    self.ui.requestsTable.setColumnWidth(1, 80)
-    self.ui.requestsTable.setColumnWidth(2, 400)
-    self.ui.requestsTable.setColumnWidth(3, 60)
-
     verticalHeader = self.ui.requestsTable.verticalHeader()
     verticalHeader.setSectionResizeMode(QHeaderView.Fixed)
     verticalHeader.setDefaultSectionSize(20)
@@ -39,3 +34,9 @@ class NetworkRequestsTable(QWidget):
     # Request Selected Signal:
     self.ui.requestsTable.selectionModel().selectionChanged.connect(self.request_selected)
 
+    self.ui.requestsTable.setColumnWidth(0, 50)
+    self.ui.requestsTable.setColumnWidth(1, 60)
+    self.ui.requestsTable.setColumnWidth(2, 60)
+    self.ui.requestsTable.setColumnWidth(3, 300)
+    self.ui.requestsTable.setColumnWidth(4, 40)
+    self.ui.requestsTable.setColumnWidth(5, 50)
