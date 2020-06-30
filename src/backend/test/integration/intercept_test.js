@@ -50,11 +50,12 @@ describe('The Intercept', () => {
       const message = await messageFromBackend('requestIntercepted');
 
       console.log(`[TEST] sending forwardAndIntercept to backend (1)...`)
+
       writeToBackend({
         "command": "forwardAndIntercept",
         "request": {
           "id": message.request.id,
-          "rawRequest": 'GET / HTTP/1.1\nhost: localhost:3000\nuser-agent: curl/7.58.0\naccept: */*\n'
+          "rawRequest": message.request.rawRequest
         }
       });
 
