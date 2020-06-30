@@ -35,11 +35,9 @@ class RequestResponsePair {
 
     // Create the request:
     if (this.id === undefined) {
-      // const shouldRequestBeCaptured = await CaptureFilters.shouldRequestBeCaptured(
-      //   this
-      // );
+      const shouldRequestBeCaptured = await CaptureFilters.shouldRequestBeCaptured(this.request);
 
-      // if (shouldRequestBeCaptured === false) return;
+      if (shouldRequestBeCaptured === false) return;
 
       const dbResult = await global.knex('requests').insert(requestParams);
       this.id = dbResult[0];

@@ -39,7 +39,7 @@ describe('The Intercept', () => {
 
   after(async () => {
     writeToBackend({"command": "closeAllClients"});
-    await sleep(200);
+    await sleep(2000);
   });
 
   describe('Intercepting a request and its response', () => {
