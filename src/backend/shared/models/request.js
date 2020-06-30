@@ -120,7 +120,7 @@ class Request {
       path: this.path,
       ext: this.ext,
       request_headers: JSON.stringify(this.headers),
-      request_payload: this.requestPayload,
+      request_payload: this._payloadForDatabase(),
     };
   }
 
@@ -135,8 +135,14 @@ class Request {
       modified_path: this.path,
       modified_ext: this.ext,
       modified_request_headers: JSON.stringify(this.headers),
-      modified_request_payload: this.requestPayload,
+      modified_request_payload: this._payloadForDatabase(),
     };
+  }
+
+  _payloadForDatabase() {
+    if (this.requestPayload === undefined) return null;
+
+    return this.requestPayload.toString()
   }
 
   toRaw() {

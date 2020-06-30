@@ -100,8 +100,11 @@ class RequestResponsePair {
   }
 
   toHttpResponseOptions() {
-    // TODO: ALso return modified if necessary
-    return this.response.toHttpOptions();
+    if (this.responseModified()) {
+      return this.modifiedResponse.toHttpOptions();
+    } else {
+      return this.response.toHttpOptions();
+    }
   }
 
   requestModified() {

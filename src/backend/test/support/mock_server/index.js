@@ -11,20 +11,20 @@ const POSTS = [
   {id:4, title:"Hey", body:"Hey Bob,  how are you?", user_id:3, created_at:"2020-02-05T10:02:49.648Z", updated_at:"2020-02-05T10:02:49.648Z", url:"http://localhost/api/posts/4.json"}
 ];
 
-// server.post('/', (req, res) => {
-//   console.log(`Recieved a post request!`);
-//   console.log(req.body);
-//   res.send('{}');
-// });
-
 server.use('/', express.static(path.join(__dirname, 'frontend')))
 server.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
 });
+server.use(express.json());
 
 server.get('/api/posts.json',  (req, res) => {
   res.json(POSTS)
+});
+
+server.post('/api/posts.json', (req, res) => {
+  console.log(`Received POST request with payload: ${JSON.stringify(req.body)}`)
+  res.json({message: `Hello, you told us your name is: ${req.body.name}`})
 });
 
 server.get('/api/posts/:postId.json',  (req, res) => {
