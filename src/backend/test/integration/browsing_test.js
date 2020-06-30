@@ -48,18 +48,11 @@ describe('Browsing', () => {
       const pages = await browser.pages();
       const page = pages[0];
       await page.goto('http://localhost:3000');
-      console.log(`0000000000000000000000000000 Clicking #posts_link'`);
       await page.click('#posts_link');
-      console.log(`0000000000000000000000000000 #posts_link clicked.'`);
-      try {
-      await sleep(2000);
-      } catch(err) {
-        console.log(`SLEEP ERROR: ${err.message}`)
-      }
-      console.log(`0000000000000000000000000000 done sleeping'`);
-      const requests = await global.knex('requests');
-      console.log(`0000000000000000000000000000 found ${requests.length} requests'`);
 
+      await sleep(2000);
+
+      const requests = await global.knex('requests');
       const expectedUrls = [
       'http://localhost:3000/',
       'http://localhost:3000/posts',

@@ -26,6 +26,7 @@ module.exports = `CREATE TABLE IF NOT EXISTS requests(
   request_type TEXT,
   response_body_rendered TEXT,
   response_remote_address TEXT,
+  response_http_version TEXT,
 
   request_headers TEXT,
   request_payload TEXT,
@@ -40,7 +41,8 @@ module.exports = `CREATE TABLE IF NOT EXISTS requests(
   modified_response_status_message TEXT,
   modified_response_headers TEXT,
   modified_response_body TEXT,
-  modified_response_body_length INTEGER
+  modified_response_body_length INTEGER,
+  modified_response_http_version TEXT
 );
 
 CREATE TABLE IF NOT EXISTS websocket_messages(
