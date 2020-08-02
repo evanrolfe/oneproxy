@@ -34,8 +34,7 @@ accept: */*
 
       expect(reqResPair.requestModified()).to.eql(true);
       expect(reqResPair.modifiedRequest.url).to.eql('http://localhost:3000/api/posts.json');
-      expect(reqResPair.modifiedRequest.host).to.eql('localhost');
-      expect(reqResPair.modifiedRequest.port).to.eql(3000);
+      expect(reqResPair.modifiedRequest.host).to.eql('localhost:3000');
       expect(reqResPair.modifiedRequest.httpVersion).to.eql('1.2');
       expect(reqResPair.modifiedRequest.path).to.eql('/api/posts.json');
       expect(reqResPair.modifiedRequest.ext).to.eql('json');

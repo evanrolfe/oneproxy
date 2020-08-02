@@ -25,97 +25,97 @@ const RAW_RESPONSE = '';
 describe('The Intercept', () => {
   let proxyPort;
 
-  before(async () => {
-    await clearDatabase();
+  // before(async () => {
+  //   await clearDatabase();
 
-    // Open a client:
-    writeToBackend({"command": "createClient", "type": "anything"});
-    const result = await messageFromBackend('clientStarted');
-    proxyPort = result.clientInfo.proxyPort;
-    await sleep(2000);
+  //   // Open a client:
+  //   writeToBackend({"command": "createClient", "type": "anything"});
+  //   const result = await messageFromBackend('clientStarted');
+  //   proxyPort = result.clientInfo.proxyPort;
+  //   await sleep(2000);
 
-    // Enable the intercept:
-    writeToBackend({"command": "changeSetting", "key": "interceptEnabled", "value": true});
-    await messageFromBackend('settingChanged');
-  });
+  //   // Enable the intercept:
+  //   writeToBackend({"command": "changeSetting", "key": "interceptEnabled", "value": true});
+  //   await messageFromBackend('settingChanged');
+  // });
 
-  after(async () => {
-    writeToBackend({"command": "closeAllClients"});
-    await sleep(2000);
-  });
+  // after(async () => {
+  //   writeToBackend({"command": "closeAllClients"});
+  //   await sleep(2000);
+  // });
 
-  describe('Intercepting a request and its response', () => {
-    it('works', async () => {
-      const curlRequestFinished = makeRequest(proxyPort);
-      const message = await messageFromBackend('requestIntercepted');
+  // describe('Intercepting a request and its response', () => {
+  //   it('works', async () => {
+  //     const curlRequestFinished = makeRequest(proxyPort);
+  //     const message = await messageFromBackend('requestIntercepted');
 
-      console.log(`[TEST] sending forwardAndIntercept to backend (1)...`)
+  //     console.log(`[TEST] sending forwardAndIntercept to backend (1)...`)
 
-      writeToBackend({
-        "command": "forwardAndIntercept",
-        "request": {
-          "id": message.request.id,
-          "rawRequest": message.request.rawRequest
-        }
-      });
+  //     writeToBackend({
+  //       "command": "forwardAndIntercept",
+  //       "request": {
+  //         "id": message.request.id,
+  //         "rawRequest": message.request.rawRequest
+  //       }
+  //     });
 
-      const message2 = await messageFromBackend('responseIntercepted');
+  //     const message2 = await messageFromBackend('responseIntercepted');
 
-      writeToBackend({
-        "command": "forward",
-        "request": {
-          "id": message2.request.id,
-          "rawResponse": message2.request.rawResponse,
-          "rawResponseBody": '{"hello": "OK"}'
-        }
-      });
+  //     writeToBackend({
+  //       "command": "forward",
+  //       "request": {
+  //         "id": message2.request.id,
+  //         "rawResponse": message2.request.rawResponse,
+  //         "rawResponseBody": '{"hello": "OK"}'
+  //       }
+  //     });
 
-      const response = await curlRequestFinished;
+  //     const response = await curlRequestFinished;
 
-      const result = await global.knex('requests').where({ id: message2.request.id });
-      const request = result[0];
+  //     const result = await global.knex('requests').where({ id: message2.request.id });
+  //     const request = result[0];
 
-      // Original Request:
-      expect(request.url).to.eql('http://localhost:3000/');
-      expect(request.method).to.eql('GET');
-      expect(request.host).to.eql('localhost');
-      expect(request.port).to.eql(3000);
-      expect(request.http_version).to.eql('1.1');
-      expect(request.path).to.eql('/');
-      expect(request.ext).to.eql(null);
-      expect(request.request_headers).to.include('curl');
+  //     // Original Request:
+  //     expect(request.url).to.eql('http://localhost:3000/');
+  //     expect(request.method).to.eql('GET');
+  //     expect(request.host).to.eql('localhost');
+  //     expect(request.port).to.eql(3000);
+  //     expect(request.http_version).to.eql('1.1');
+  //     expect(request.path).to.eql('/');
+  //     expect(request.ext).to.eql(null);
+  //     expect(request.request_headers).to.include('curl');
 
-      // Modified Request:
-      expect(request.modified_url).to.eql(null);
-      expect(request.modified_method).to.eql(null);
-      expect(request.modified_host).to.eql(null);
-      expect(request.modified_port).to.eql(null);
-      expect(request.modified_http_version).to.eql(null);
-      expect(request.modified_path).to.eql(null);
-      expect(request.modified_ext).to.eql(null);
-      expect(request.modified_request_headers).to.eql(null);
+  //     // Modified Request:
+  //     expect(request.modified_url).to.eql(null);
+  //     expect(request.modified_method).to.eql(null);
+  //     expect(request.modified_host).to.eql(null);
+  //     expect(request.modified_port).to.eql(null);
+  //     expect(request.modified_http_version).to.eql(null);
+  //     expect(request.modified_path).to.eql(null);
+  //     expect(request.modified_ext).to.eql(null);
+  //     expect(request.modified_request_headers).to.eql(null);
 
-      // Response:
-      expect(request.response_status).to.eql(200);
-      expect(request.response_status_message).to.eql('OK');
-      expect(request.response_http_version).to.eql('1.1');
-      expect(request.response_headers).to.include('text/html');
-      expect(request.response_body).to.include('<html');
+  //     // Response:
+  //     expect(request.response_status).to.eql(200);
+  //     expect(request.response_status_message).to.eql('OK');
+  //     expect(request.response_http_version).to.eql('1.1');
+  //     expect(request.response_headers).to.include('text/html');
+  //     expect(request.response_body).to.include('<html');
 
-      // Modified response:
-      expect(request.modified_response_status).to.eql(200);
-      expect(request.modified_response_status_message).to.eql('OK');
-      expect(request.modified_response_http_version).to.eql('1.1');
-      expect(request.modified_response_body).to.eql('{"hello": "OK"}');
+  //     // Modified response:
+  //     expect(request.modified_response_status).to.eql(200);
+  //     expect(request.modified_response_status_message).to.eql('OK');
+  //     expect(request.modified_response_http_version).to.eql('1.1');
+  //     expect(request.modified_response_body).to.eql('{"hello": "OK"}');
 
-      // General:
-      expect(request.client_id).to.eql(1);
-      expect(request.request_modified).to.eql(0);
-      expect(request.response_modified).to.eql(1);
+  //     // General:
+  //     expect(request.client_id).to.eql(1);
+  //     expect(request.request_modified).to.eql(0);
+  //     expect(request.response_modified).to.eql(1);
 
-      expect(response).to.eql('{"hello": "OK"}')
-    });
-  });
+  //     expect(response).to.eql('{"hello": "OK"}')
+  //   });
+  // });
 
 //   describe('Intercepting a GET request', () => {
 //     it('works', async () => {

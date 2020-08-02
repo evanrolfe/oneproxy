@@ -15,7 +15,7 @@ const interceptEnabled = async () => {
 
 const makeProxyToServerRequest = (reqResPair) =>
   new Promise((resolve, reject) => {
-    const protocol = reqResPair.port === 443 ? https : http;
+    const protocol = reqResPair.encrypted ? https : http;
     const requestOptions = reqResPair.toHttpRequestOptions();
 
     const proxyToServerRequest = protocol.request(requestOptions, (response) => {
@@ -39,7 +39,6 @@ const makeProxyToServerRequest = (reqResPair) =>
         }
 
         const remoteAddress = `${response.socket.remoteAddress}:${response.socket.remotePort}`;
-
         resolve({
           body: body,
           headers: response.headers,
@@ -122,7 +121,6 @@ const proxyRequestListener = async (
       reqResPair.addHttpServerResponse(serverToProxyResponse);
     } catch(error) {
       if (error.code !== 'ECONNREFUSED' && error.code !== 'ENOTFOUND') {
-        // We dont log connection refused as an error
         console.error(`[ERROR] ${reqResPair.request.method} ${reqResPair.request.url} ${error.code}`);
       }
 
@@ -142,7 +140,7 @@ const proxyRequestListener = async (
     // Save the response to the database (if required):
     if (reqResPair.id !== undefined) {
       await reqResPair.saveToDatabase();
-      // TODO: Notify the frontend:
+      //frontend.notifyUpdatedRequest(reqResPair);
     }
 
     // Return the response from the proxy to the client

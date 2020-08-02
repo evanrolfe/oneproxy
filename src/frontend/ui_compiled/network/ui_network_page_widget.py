@@ -20,13 +20,13 @@ from widgets.shared.request_view import RequestView
 
 
 class Ui_NetworkPageWidget(object):
-    def setupUi(self, NetworkWidget):
-        if not NetworkWidget.objectName():
-            NetworkWidget.setObjectName(u"NetworkWidget")
-        NetworkWidget.resize(897, 581)
-        self.horizontalLayout = QHBoxLayout(NetworkWidget)
+    def setupUi(self, NetworkPageWidget):
+        if not NetworkPageWidget.objectName():
+            NetworkPageWidget.setObjectName(u"NetworkPageWidget")
+        NetworkPageWidget.resize(1200, 800)
+        self.horizontalLayout = QHBoxLayout(NetworkPageWidget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.splitter = QSplitter(NetworkWidget)
+        self.splitter = QSplitter(NetworkPageWidget)
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Horizontal)
         self.requestsTableWidget = NetworkRequestsTable(self.splitter)
@@ -36,6 +36,7 @@ class Ui_NetworkPageWidget(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.requestsTableWidget.sizePolicy().hasHeightForWidth())
         self.requestsTableWidget.setSizePolicy(sizePolicy)
+        self.requestsTableWidget.setMinimumSize(QSize(740, 0))
         self.splitter.addWidget(self.requestsTableWidget)
         self.requestViewWidget = RequestView(self.splitter)
         self.requestViewWidget.setObjectName(u"requestViewWidget")
@@ -46,12 +47,12 @@ class Ui_NetworkPageWidget(object):
         self.horizontalLayout.addWidget(self.splitter)
 
 
-        self.retranslateUi(NetworkWidget)
+        self.retranslateUi(NetworkPageWidget)
 
-        QMetaObject.connectSlotsByName(NetworkWidget)
+        QMetaObject.connectSlotsByName(NetworkPageWidget)
     # setupUi
 
-    def retranslateUi(self, NetworkWidget):
-        NetworkWidget.setWindowTitle(QCoreApplication.translate("NetworkPageWidget", u"Form", None))
+    def retranslateUi(self, NetworkPageWidget):
+        NetworkPageWidget.setWindowTitle(QCoreApplication.translate("NetworkPageWidget", u"Form", None))
     # retranslateUi
 

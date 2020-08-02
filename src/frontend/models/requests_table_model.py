@@ -7,7 +7,7 @@ from models.backend import Backend
 class RequestsTableModel(QAbstractTableModel):
   def __init__(self,request_data, parent = None):
     QAbstractTableModel.__init__(self, parent)
-    self.headers = ['ID', 'Source', 'Method', 'URL', 'Status', 'Modified']
+    self.headers = ['ID', 'Source', 'Method', 'Host', 'Path', 'Status', 'Modified']
     self.request_data = request_data
 
     # Register callback with the backend:
@@ -52,7 +52,8 @@ class RequestsTableModel(QAbstractTableModel):
         request.id,
         request.client_id,
         request.method,
-        request.url,
+        request.host,
+        request.path,
         request.response_status,
         request.modified()
       ]
@@ -82,8 +83,10 @@ class RequestsTableModel(QAbstractTableModel):
     elif (column == 2):
       self.request_data.requests = sorted(self.request_data.requests, key=lambda r: [r.method, r.id], reverse=reverse)
     elif (column == 3):
-      self.request_data.requests = sorted(self.request_data.requests, key=lambda r: [r.url, r.id], reverse=reverse)
+      self.request_data.requests = sorted(self.request_data.requests, key=lambda r: [r.host, r.id], reverse=reverse)
     elif (column == 4):
+      self.request_data.requests = sorted(self.request_data.requests, key=lambda r: [r.path, r.id], reverse=reverse)
+    elif (column == 5):
       self.request_data.requests = sorted(self.request_data.requests, key=self.response_status_sort_key, reverse=reverse)
 
     self.dataChanged.emit(QModelIndex(), QModelIndex())

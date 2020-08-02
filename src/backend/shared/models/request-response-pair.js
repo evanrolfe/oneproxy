@@ -19,7 +19,7 @@ class RequestResponsePair {
     const reqResPair = new RequestResponsePair();
     reqResPair.request = request;
     reqResPair.clientId = clientId;
-    reqResPair.isEncrypted = incomingMessage.socket.encrypted;
+    reqResPair.encrypted = (incomingMessage.socket.encrypted === true);
 
     return reqResPair;
   }
@@ -74,6 +74,7 @@ class RequestResponsePair {
     dbParams.client_id = this.clientId;
     dbParams.request_modified = this.requestModified();
     dbParams.response_modified = this.responseModified();
+    dbParams.encrypted = this.encrypted;
 
     return dbParams;
   }
@@ -81,7 +82,7 @@ class RequestResponsePair {
   // Called when a (potentially) modified request value is received from the intercept:
   addModifiedRequest(rawRequest) {
     if (rawRequest !== this.request.toRaw()) {
-      this.modifiedRequest = Request.fromRaw(rawRequest, this.isEncrypted);
+      this.modifiedRequest = Request.fromRaw(rawRequest, this.encrypted);
     }
   }
 

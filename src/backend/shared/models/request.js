@@ -1,13 +1,33 @@
 const url = require('url');
+const  _ = require('lodash')
 
 const { parseHost, parseHostAndPort } = require('../utils');
 
+const parseHost2 = (host, isEncrypted) => {
+  const defaultPort = isEncrypted ? 443 : undefined;
+
+  const matches = host.match(/^(http|https):\/\/(.*)/);
+
+  if (matches) {
+    return {
+      host: matches[2],
+      // TODO:
+      port: splitHost[1]
+    }
+  } else {
+    return {
+      host: host,
+      port: defaultPort
+    }
+  }
+};
+
 class Request {
-  constructor({method, url, host, port, httpVersion, path, ext, headers, requestPayload}) {
+  constructor({method, url, host, encrypted, httpVersion, path, ext, headers, requestPayload}) {
     this.method = method;
     this.url = url;
     this.host = host;
-    this.port = port;
+    this.encrypted = encrypted;
     this.httpVersion = httpVersion;
     this.path = path;
     this.ext = ext;
@@ -16,21 +36,8 @@ class Request {
   }
 
   static createFromIncomingMessage(incomingMessage, requestPayload) {
-    const isEncrypted = incomingMessage.socket.encrypted;
-    const defaultPort = isEncrypted ? 443 : 80;
-    const {host, port} = parseHostAndPort(incomingMessage, defaultPort);
-    const protocol = isEncrypted ? 'https' : 'http';
-
-    // NOTE: clientToProxyRequest.path is undefined
-    // NOTE: clientToProxyRequest.url = path in HTTP, but not in HTTPS
+    // NOTE: incomingMessage.path is undefined
     const path = url.parse(incomingMessage.url).path;
-    let urlStart = `${protocol}://${host}`;
-
-    if (port !== 80) {
-      urlStart += `:${port}`;
-    }
-
-    let requestUrl = new URL(path, urlStart);
 
     // Parse the extension:
     const splitPath = path.split('.');
@@ -46,10 +53,9 @@ class Request {
 
     const request = new Request({
       method: incomingMessage.method,
-      url: requestUrl.toString(),
       path: path,
-      host: host,
-      port: port,
+      host: incomingMessage.headers.host,
+      encrypted: incomingMessage.socket.encrypted,
       httpVersion: incomingMessage.httpVersion,
       ext: ext,
       headers: headers
@@ -92,7 +98,7 @@ class Request {
     }
 
     const defaultPort = isEncrypted ? 443 : 80;
-    const {host, port} = parseHost(headers.host, defaultPort);
+    const {host, port} = parseHost2(headers.host, defaultPort);
 
     // Rebuild the url from the host, path & protocol
     const protocol = isEncrypted ? 'https' : 'http';
@@ -115,7 +121,7 @@ class Request {
       method: this.method,
       url: this.url,
       host: this.host,
-      port: this.port,
+      encrypted: this.encrypted,
       http_version: this.httpVersion,
       path: this.path,
       ext: this.ext,
@@ -163,13 +169,21 @@ class Request {
   }
 
   toHttpOptions() {
+    // NOTE: The nodejs http.request function requires the port to be defined seperately from the host
+    const hostArr = this.host.split(':');
+    const host = hostArr[0];
+
     const options = {
       method: this.method,
       path: this.path,
-      host: this.host,
-      port: this.port,
-      headers: this.headers
+      host: host,
+      headers: _.omit(this.headers, ['host'])
     };
+
+    // Only set the port if its been explicitely set in the host with a semi-colon
+    if (hostArr.length === 2) {
+      options.port = parseInt(hostArr[1]);
+    }
 
     if (this.requestPayload !== undefined) {
       options.payload = this.requestPayload;

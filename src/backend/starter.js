@@ -66,7 +66,7 @@ const startProxyAndBrowser = async (client, paths) => {
 
   const proxyProc = startProxy(client, paths);
   global.childrenPIds.push(proxyProc.pid);
-  let browserPid = 'asdf';
+  let browserPid;
 
   if (client['type'] !== 'anything') {
     browserPid = await startBrowser(client, paths, proxyProc.pid);

@@ -150,7 +150,8 @@ const handleFramenavigated = async (page, frame, origURL) => {
       request: {
         id: requestId,
         method: '',
-        url: requestParams.url,
+        host: requestParams.host,
+        path: requestParams.path,
         client_id: requestParams.client_id
       }
   }

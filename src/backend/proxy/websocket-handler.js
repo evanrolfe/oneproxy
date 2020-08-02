@@ -145,7 +145,6 @@ const handleUpgrade = async (request, socket, head) => {
       method: request.method,
       url: realUrl,
       host: request.headers.host,
-      port: port,
       http_version: request.httpVersion,
       path: path,
       request_type: 'websocket',

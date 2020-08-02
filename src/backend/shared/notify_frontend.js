@@ -1,7 +1,3 @@
-const nodifyFrontend = () => {
-
-};
-
 const notifyNewRequest = (reqResPair) => {
   const message = {
     type: 'newRequest',
@@ -9,7 +5,9 @@ const notifyNewRequest = (reqResPair) => {
       id: reqResPair.id,
       client_id: reqResPair.clientId,
       method: reqResPair.request.method,
-      url: reqResPair.request.url
+      host: reqResPair.request.host,
+      path: reqResPair.request.path,
+      encrypted: reqResPair.request.encrypted,
     }
   }
   console.log(`[JSON] ${JSON.stringify(message)}`)
