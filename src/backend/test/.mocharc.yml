@@ -2,4 +2,3 @@ recursive: true
 file:
   - './test/setup'
 timeout: 3000
-spec: 'test/**/*_test.js'

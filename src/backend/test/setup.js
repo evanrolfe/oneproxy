@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const { spawn } = require('child_process');
 const { getPaths } = require('../shared/paths');
 const { setupDatabaseStore } = require('../shared/database');
-const { sleep, writeToBackend } = require('./utils');
+const { sleep, writeToBackend, messageFromBackend } = require('./utils');
 const { ensureBackendIsKilled } = require('./support/ensure_backend_is_killed');
 const { checkServerIsRunning } = require('./support/check_server_is_running');
 
@@ -27,13 +27,8 @@ const spawnBackend = async () => {
     backendProc.stdout.setEncoding('utf-8');
     backendProc.stdin.setEncoding('utf-8');
 
-    // HACK: Currently backendProc does not know when the backend has finished
-    // loading, so we just sleep and hope for the best. Adjust this as needed.
-    // TODO: Find a better way, perhaps by checking stdout for the word "loaded",
-    // or maybe have the backend send an IPC messsage "loaded"?
-    // NOTE: This can cause intermittent failures if the backend doesn't finish
-    // loading within 2secs
-    await sleep(2000);
+    global.backendProc = backendProc;
+    await messageFromBackend('backendLoaded')
 
     // Ensure the backend is killed when the test exits:
     ensureBackendIsKilled(backendProc.pid);
@@ -44,7 +39,7 @@ const spawnBackend = async () => {
 before(async () => {
   await checkServerIsRunning();
 
-  global.backendProc = await spawnBackend();
+  await spawnBackend();
   console.log(`[TEST] Backend process spawned.`);
 
   global.knex = await setupDatabaseStore(paths.dbFile);

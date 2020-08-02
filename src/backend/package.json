@@ -6,7 +6,8 @@
   "scripts": {
     "backend": "NODE_ENV=development node index.js",
     "backend-test": "NODE_ENV=test node index.js",
-    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha --config test/.mocharc.yml",
+    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha --config test/.mocharc.yml 'test/**/*_test.js'",
+    "test1": "NODE_ENV=test ./node_modules/mocha/bin/mocha --config test/.mocharc.yml",
     "start-mock-server": "node test/support/mock_server/index.js"
   },
   "author": "",
