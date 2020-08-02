@@ -85,7 +85,6 @@ const proxyRequestListener = async (
     requestPayload,
     browserId
   );
-
   if (reqResPair === null) {
     clientToProxyRequest.resume();
     proxyToClientResponse.writeHeader(400, {
@@ -140,7 +139,7 @@ const proxyRequestListener = async (
     // Save the response to the database (if required):
     if (reqResPair.id !== undefined) {
       await reqResPair.saveToDatabase();
-      //frontend.notifyUpdatedRequest(reqResPair);
+      frontend.notifyUpdatedRequest(reqResPair);
     }
 
     // Return the response from the proxy to the client

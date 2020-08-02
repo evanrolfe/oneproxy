@@ -13,4 +13,20 @@ const notifyNewRequest = (reqResPair) => {
   console.log(`[JSON] ${JSON.stringify(message)}`)
 };
 
-module.exports = { notifyNewRequest };
+const notifyUpdatedRequest = (reqResPair) => {
+  const message = {
+    type: 'updatedRequest',
+    request: {
+      id: reqResPair.id,
+      client_id: reqResPair.clientId,
+      method: reqResPair.request.method,
+      host: reqResPair.request.host,
+      path: reqResPair.request.path,
+      status: reqResPair.response.statusCode,
+      encrypted: reqResPair.request.encrypted,
+    }
+  }
+  console.log(`[JSON] ${JSON.stringify(message)}`)
+};
+
+module.exports = { notifyNewRequest, notifyUpdatedRequest };
