@@ -43,10 +43,9 @@ $ scripts/compile_backend.sh
 
 ## Test
 
-The integration tests require that you are running the [example app](https://github.com/evanrolfe/example_app), follow those instructions to download and run it using docker. Currently the tests need to be run individually (`npm run test` will not work). So you can run them like:
+The integration tests require that you are running the mock server:
 ```bash
-$ cd src/backend
-$ npm run test test/integration/browsing.js
+$ node src/backend/test/support/mock_server/index.js
 ```
 
 ## Notes

@@ -43,7 +43,7 @@ class InterceptPage(QWidget):
   def request_intercepted(self, request):
     self.intercepted_request = request
 
-    self.ui.interceptTitle.setText(f"Intercepted Request: {request['method']} {request['url']}")
+    self.ui.interceptTitle.setText(f"Intercepted Request: {request['method']} {request['path']}")
 
     self.ui.headersText.setPlainText(request['rawRequest'])
 
@@ -52,7 +52,7 @@ class InterceptPage(QWidget):
   def response_intercepted(self, request):
     self.intercepted_request = request
 
-    self.ui.interceptTitle.setText(f"Intercepted Response: {request['method']} {request['url']}")
+    self.ui.interceptTitle.setText(f"Intercepted Response: {request['method']} {request['path']}")
 
     self.ui.headersText.setPlainText(request['rawResponse'])
     self.ui.bodyText.setPlainText(request['responseBody'])

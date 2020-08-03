@@ -109,6 +109,8 @@ const proxyRequestListener = async (
 
       if (['forward', 'forwardAndIntercept'].includes(result.decision) && result.request.rawRequest !== undefined) {
         reqResPair.addModifiedRequest(result.request.rawRequest);
+
+        if (reqResPair.id !== undefined) await reqResPair.saveToDatabase();
       }
 
       shouldInterceptResponse = (result.decision === 'forwardAndIntercept');
@@ -118,6 +120,8 @@ const proxyRequestListener = async (
     try {
       const serverToProxyResponse = await makeProxyToServerRequest(reqResPair);
       reqResPair.addHttpServerResponse(serverToProxyResponse);
+      if (reqResPair.id !== undefined) await reqResPair.saveToDatabase();
+
     } catch(error) {
       if (error.code !== 'ECONNREFUSED' && error.code !== 'ENOTFOUND') {
         console.error(`[ERROR] ${reqResPair.request.method} ${reqResPair.request.url} ${error.code}`);

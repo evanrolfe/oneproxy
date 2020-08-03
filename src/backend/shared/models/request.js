@@ -23,13 +23,12 @@ const parseHost2 = (host, isEncrypted) => {
 };
 
 class Request {
-  constructor({method, url, host, encrypted, httpVersion, path, ext, headers, requestPayload}) {
+  constructor({method, host, path, encrypted, httpVersion, ext, headers, requestPayload}) {
     this.method = method;
-    this.url = url;
     this.host = host;
+    this.path = path;
     this.encrypted = encrypted;
     this.httpVersion = httpVersion;
-    this.path = path;
     this.ext = ext;
     this.headers = headers;
     this.requestPayload = requestPayload;
@@ -97,33 +96,23 @@ class Request {
       headers['content-length'] = requestPayload.length;
     }
 
-    const defaultPort = isEncrypted ? 443 : 80;
-    const {host, port} = parseHost2(headers.host, defaultPort);
-
-    // Rebuild the url from the host, path & protocol
-    const protocol = isEncrypted ? 'https' : 'http';
-    const requestUrl = new URL(
-      path,
-      `${protocol}://${headers.host}`
-    );
-    const url = requestUrl.toString();
-
     // Parse the extension:
     const splitPath = path.split('.');
     let ext;
     if (splitPath.length > 1) ext = splitPath[splitPath.length - 1];
 
-    return new Request({method, url, host, port, httpVersion, path, ext, headers, requestPayload});
+    const host = headers.host;
+
+    return new Request({method, host, path, httpVersion, path, ext, headers, requestPayload});
   }
 
   toDatabaseParams() {
     return {
       method: this.method,
-      url: this.url,
       host: this.host,
+      path: this.path,
       encrypted: this.encrypted,
       http_version: this.httpVersion,
-      path: this.path,
       ext: this.ext,
       request_headers: JSON.stringify(this.headers),
       request_payload: this._payloadForDatabase(),
@@ -134,11 +123,9 @@ class Request {
   toDatabaseParamsModified() {
     return {
       modified_method: this.method,
-      modified_url: this.url,
       modified_host: this.host,
-      modified_port: this.port,
-      modified_http_version: this.httpVersion,
       modified_path: this.path,
+      modified_http_version: this.httpVersion,
       modified_ext: this.ext,
       modified_request_headers: JSON.stringify(this.headers),
       modified_request_payload: this._payloadForDatabase(),
@@ -196,7 +183,8 @@ class Request {
     return {
       id: this.id,
       method: this.method,
-      url: this.url,
+      host: this.host,
+      path: this.path,
       rawRequest: this.toRaw()
     };
   }

@@ -9,7 +9,6 @@ describe('RequestResponsePair', () => {
     reqResPair.isEncrypted = false;
     reqResPair.request = new Request({
       method: 'GET',
-      url: 'http://localhost:3000/',
       host: 'localhost',
       port: 3000,
       httpVersion: '1.1',
@@ -33,7 +32,6 @@ accept: */*
       reqResPair.addModifiedRequest(rawRequest);
 
       expect(reqResPair.requestModified()).to.eql(true);
-      expect(reqResPair.modifiedRequest.url).to.eql('http://localhost:3000/api/posts.json');
       expect(reqResPair.modifiedRequest.host).to.eql('localhost:3000');
       expect(reqResPair.modifiedRequest.httpVersion).to.eql('1.2');
       expect(reqResPair.modifiedRequest.path).to.eql('/api/posts.json');
