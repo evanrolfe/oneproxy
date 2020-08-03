@@ -7,20 +7,16 @@ describe('Browsing', () => {
     await clearDatabase();
 
     // Open a browser:
-    writeToBackend({"command": "createClient", "type": "chrome"});
-    const result = await messageFromBackend('clientStarted');
-    const browserPort = result.clientInfo.browserPort;
+    const clientInfo = await global.clientGetter.get('chrome');
+    const browserPort = clientInfo.browserPort;
     await sleep(2000);
 
-    // NOTE: This test must be run first otherwise this port number might be different
-    // TODO: Get the port number from the backend stdout
-    browser = await connectToBrowser(9222);
+    browser = await connectToBrowser(browserPort);
     console.log(`[TEST] Connected to browser.`);
   });
 
   after(async () => {
     browser.disconnect()
-    writeToBackend({"command": "closeAllClients"});
     await sleep(2000);
   });
 

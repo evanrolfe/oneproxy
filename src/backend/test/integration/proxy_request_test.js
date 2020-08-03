@@ -13,33 +13,25 @@ const makeRequest = (proxyPort, curlCommand) => new Promise((resolve, reject) =>
   });
 });
 
-const RAW_RESPONSE = '';
-
 describe('HTTPS Request Test', () => {
   let proxyPort;
 
   before(async () => {
     await clearDatabase();
 
-  // Create default capture filters:
-  const filters = Object.assign({}, DEFAULT_FILTERS);
-  filters.hostList = ['localhost:3000', 'maxcdn.bootstrapcdn.com'];
-  filters.hostSetting = 'include';
+    // Create default capture filters:
+    const filters = Object.assign({}, DEFAULT_FILTERS);
+    filters.hostList = ['localhost:3000', 'maxcdn.bootstrapcdn.com'];
+    filters.hostSetting = 'include';
 
-  await global
-    .knex('capture_filters')
-    .where({id: 1})
-    .update({filters: JSON.stringify(filters) });
+    await global
+      .knex('capture_filters')
+      .where({id: 1})
+      .update({filters: JSON.stringify(filters) });
 
-    // Open a client:
-    writeToBackend({"command": "createClient", "type": "anything"});
-    const result = await messageFromBackend('clientStarted');
-    proxyPort = result.clientInfo.proxyPort;
-    await sleep(2000);
-  });
-
-  after(async () => {
-    writeToBackend({"command": "closeAllClients"});
+    // Get a client:
+    const clientInfo = await global.clientGetter.get('anything');
+    proxyPort = clientInfo.proxyPort;
     await sleep(2000);
   });
 

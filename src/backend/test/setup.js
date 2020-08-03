@@ -1,43 +1,55 @@
 const { expect } = require('chai');
+const fs = require('fs');
 const { spawn } = require('child_process');
 const { getPaths } = require('../shared/paths');
 const { setupDatabaseStore } = require('../shared/database');
 const { sleep, writeToBackend, messageFromBackend } = require('./utils');
 const { ensureBackendIsKilled } = require('./support/ensure_backend_is_killed');
 const { checkServerIsRunning } = require('./support/check_server_is_running');
+const { ClientGetter } = require('./support/clientGetter')
 
 global.expect = expect;
 
 const paths = getPaths();
 
 const spawnBackend = async () => {
-    console.log('[TEST] Spawning backend process...');
+  console.log('[TEST] Spawning backend process...');
 
-    const backendProc = spawn('npm', ['run', 'backend-test'], {
-        shell: true,
-        env: process.env,
-        detached: true
-    })
-        .on('close', code => process.exit(code))
-        .on('error', spawnError => console.error(spawnError));
+  const backendProc = spawn('npm', ['run', 'backend-test'], {
+      shell: true,
+      env: process.env,
+      detached: true
+  })
+      .on('close', code => process.exit(code))
+      .on('error', spawnError => console.error(spawnError));
 
-    backendProc.stdout.pipe(process.stdout);
-    backendProc.stderr.pipe(process.stderr);
+  backendProc.stdout.pipe(process.stdout);
+  backendProc.stderr.pipe(process.stderr);
 
-    backendProc.stdout.setEncoding('utf-8');
-    backendProc.stdin.setEncoding('utf-8');
+  backendProc.stdout.setEncoding('utf-8');
+  backendProc.stdin.setEncoding('utf-8');
 
-    global.backendProc = backendProc;
-    await messageFromBackend('backendLoaded')
+  global.backendProc = backendProc;
+  global.clientGetter = new ClientGetter();
+  await messageFromBackend('backendLoaded')
 
-    // Ensure the backend is killed when the test exits:
-    ensureBackendIsKilled(backendProc.pid);
+  // Ensure the backend is killed when the test exits:
+  ensureBackendIsKilled(backendProc.pid);
 
-    return backendProc;
+  return backendProc;
+};
+
+const deleteExistingDB = (dbPath) => {
+  if (fs.existsSync(dbPath)) {
+    console.log(`[TEST] Deleting existing test database at ${dbPath}`)
+    fs.unlinkSync(dbPath);
+  }
 };
 
 before(async () => {
   await checkServerIsRunning();
+
+  deleteExistingDB(paths.dbFile);
 
   await spawnBackend();
   console.log(`[TEST] Backend process spawned.`);
@@ -47,7 +59,7 @@ before(async () => {
 });
 
 after(() => {
-    // See this: https://azimi.me/2014/12/31/kill-child_process-node-js.html
-    process.kill(-global.backendProc.pid);
-    global.knex.destroy();
+  // See this: https://azimi.me/2014/12/31/kill-child_process-node-js.html
+  process.kill(-global.backendProc.pid);
+  global.knex.destroy();
 });
