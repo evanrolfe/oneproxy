@@ -14,18 +14,22 @@ const notifyNewRequest = (reqResPair) => {
 };
 
 const notifyUpdatedRequest = (reqResPair) => {
-  const message = {
-    type: 'updatedRequest',
-    request: {
-      id: reqResPair.id,
-      client_id: reqResPair.clientId,
-      method: reqResPair.request.method,
-      host: reqResPair.request.host,
-      path: reqResPair.request.path,
-      status: reqResPair.response.statusCode,
-      encrypted: reqResPair.request.encrypted,
-    }
+  const request = {
+    id: reqResPair.id,
+    client_id: reqResPair.clientId,
+    method: reqResPair.request.method,
+    host: reqResPair.request.host,
+    path: reqResPair.request.path
+  };
+
+  if (reqResPair.response !== undefined) {
+    request.response_status = reqResPair.response.statusCode;
+    request.encrypted = reqResPair.request.encrypted;
+    request.request_modified = reqResPair.requestModified() ? 1 : 0;
+    request.response_modified = reqResPair.responseModified() ? 1 : 0;
   }
+
+  const message = { type: 'updatedRequest', request: request };
   console.log(`[JSON] ${JSON.stringify(message)}`)
 };
 

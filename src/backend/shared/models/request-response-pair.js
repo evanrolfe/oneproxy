@@ -3,6 +3,7 @@ const https = require('https');
 const url = require('url');
 const  _ = require('lodash')
 
+const frontend = require('../../shared/notify_frontend');
 const CaptureFilters = require('./capture-filters');
 const Request = require('./request');
 const Response = require('./response');
@@ -24,10 +25,17 @@ class RequestResponsePair {
     return reqResPair;
   }
 
-  addHttpServerResponse(httpServerResponse) {
+  async addHttpServerResponse(httpServerResponse) {
     const response = new Response(httpServerResponse);
     response.id = this.id;
     this.response = response;
+    await this.saveToDatabaseIfAlreadySaved();
+  }
+
+  async saveToDatabaseIfAlreadySaved() {
+    if (this.id !== undefined) {
+      await this.saveToDatabase();
+    }
   }
 
   async saveToDatabase() {
@@ -43,12 +51,18 @@ class RequestResponsePair {
       this.id = dbResult[0];
       this.request.id = dbResult[0];
 
+      // Notify the frontend of the request:
+      frontend.notifyNewRequest(this);
+
       // Update the request:
     } else {
       await global
         .knex('requests')
         .where({ id: this.id })
         .update(requestParams);
+
+      // Notify the frontend of the request:
+      frontend.notifyUpdatedRequest(this);
     }
   }
 
@@ -80,15 +94,17 @@ class RequestResponsePair {
   }
 
   // Called when a (potentially) modified request value is received from the intercept:
-  addModifiedRequest(rawRequest) {
+  async addModifiedRequest(rawRequest) {
     if (rawRequest !== this.request.toRaw()) {
       this.modifiedRequest = Request.fromRaw(rawRequest, this.encrypted);
+      await this.saveToDatabaseIfAlreadySaved();
     }
   }
 
-  addModifiedResponse(rawResponse, rawResponseBody) {
+  async addModifiedResponse(rawResponse, rawResponseBody) {
     if (rawResponse !== this.response.toRaw() || rawResponseBody !== this.response.body.toString()) {
-      this.modifiedResponse = Response.fromRaw(rawResponse, rawResponseBody)
+      this.modifiedResponse = Response.fromRaw(rawResponse, rawResponseBody);
+      await this.saveToDatabaseIfAlreadySaved();
     }
   }
 

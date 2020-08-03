@@ -13,12 +13,21 @@ class RequestsTableModel(QAbstractTableModel):
     # Register callback with the backend:
     self.backend = Backend.get_instance()
     self.backend.register_callback('newRequest', self.add_request)
+    self.backend.register_callback('updatedRequest', self.update_request)
 
   def add_request(self, request):
     rowIndex = 0
     self.beginInsertRows(QModelIndex(), rowIndex, rowIndex)
     self.request_data.requests.insert(0, request)
     self.endInsertRows()
+
+  def update_request(self, request):
+    self.request_data.update_request(request)
+
+    rowIndex = self.request_data.get_index_of(request)
+    start_index = self.index(rowIndex, 0)
+    end_index = self.index(rowIndex, len(self.headers)-1)
+    self.dataChanged.emit(start_index, end_index)
 
   def roleNames(self):
     roles = {}

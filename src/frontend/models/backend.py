@@ -22,6 +22,7 @@ class Backend:
     self.app_path = app_path
     self.callbacks = {
       'newRequest': [],
+      'updatedRequest': [],
       'clientsAvailable': [],
       'clientsChanged': [],
       'requestIntercepted': [],
@@ -42,6 +43,9 @@ class Backend:
     self.backend.start(f'{self.app_path}/build/oneproxy-backend --basePath={self.app_path}/')
     self.backend.readyReadStandardOutput.connect(self.std_out_received)
     self.backend.readyReadStandardError.connect(self.std_err_received)
+    # REMOVE THIS!!!
+    # time.sleep(2)
+    # self.open_client(2)
 
   def kill(self):
     print("Stopping the backend...")
@@ -85,6 +89,12 @@ class Backend:
 
       if (obj['type'] == 'newRequest'):
         for callback in self.callbacks['newRequest']:
+          request = Request(obj['request'])
+          callback(request)
+
+      elif (obj['type'] == 'updatedRequest'):
+        print(obj)
+        for callback in self.callbacks['updatedRequest']:
           request = Request(obj['request'])
           callback(request)
 

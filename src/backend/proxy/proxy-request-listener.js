@@ -4,7 +4,6 @@ const http = require('http');
 const https = require('https');
 const zlib = require('zlib');
 
-const frontend = require('../shared/notify_frontend');
 const RequestResponsePair = require('../shared/models/request-response-pair');
 const Settings = require('../shared/models/settings');
 
@@ -85,6 +84,7 @@ const proxyRequestListener = async (
     requestPayload,
     browserId
   );
+
   if (reqResPair === null) {
     clientToProxyRequest.resume();
     proxyToClientResponse.writeHeader(400, {
@@ -93,11 +93,6 @@ const proxyRequestListener = async (
     proxyToClientResponse.end('Bad request: Host missing...', 'UTF-8');
   } else {
     await reqResPair.saveToDatabase();
-
-    // Notify the frontend of the request:
-    if (reqResPair.id !== undefined) {
-      frontend.notifyNewRequest(reqResPair);
-    }
 
     // Intercept the request (if requried):
     const isInterceptEnabled = await interceptEnabled();
@@ -108,9 +103,7 @@ const proxyRequestListener = async (
       const result = await interceptClient.decisionForRequest(reqResPair.request);
 
       if (['forward', 'forwardAndIntercept'].includes(result.decision) && result.request.rawRequest !== undefined) {
-        reqResPair.addModifiedRequest(result.request.rawRequest);
-
-        if (reqResPair.id !== undefined) await reqResPair.saveToDatabase();
+        await reqResPair.addModifiedRequest(result.request.rawRequest);
       }
 
       shouldInterceptResponse = (result.decision === 'forwardAndIntercept');
@@ -119,8 +112,7 @@ const proxyRequestListener = async (
     // Make the actual request and save the response to the database:
     try {
       const serverToProxyResponse = await makeProxyToServerRequest(reqResPair);
-      reqResPair.addHttpServerResponse(serverToProxyResponse);
-      if (reqResPair.id !== undefined) await reqResPair.saveToDatabase();
+      await reqResPair.addHttpServerResponse(serverToProxyResponse);
 
     } catch(error) {
       if (error.code !== 'ECONNREFUSED' && error.code !== 'ENOTFOUND') {
@@ -134,16 +126,7 @@ const proxyRequestListener = async (
     // Intercept the response (if requried):
     if (shouldInterceptResponse) {
       const result = await interceptClient.decisionForResponse(reqResPair);
-      reqResPair.addModifiedResponse(
-        result.request.rawResponse,
-        result.request.rawResponseBody
-      );
-    }
-
-    // Save the response to the database (if required):
-    if (reqResPair.id !== undefined) {
-      await reqResPair.saveToDatabase();
-      frontend.notifyUpdatedRequest(reqResPair);
+      await reqResPair.addModifiedResponse(result.request.rawResponse, result.request.rawResponseBody);
     }
 
     // Return the response from the proxy to the client

@@ -6,6 +6,16 @@ class RequestData:
     def __init__(self):
       self.requests = []
 
+    def update_request(self, new_request):
+      for i, request in enumerate(self.requests):
+        if request.id == new_request.id:
+          self.requests[i] = new_request
+
+    def get_index_of(self, request):
+      for i, r in enumerate(self.requests):
+        if r.id == request.id:
+          return i
+
     def load_requests(self):
       query = QSqlQuery("SELECT * FROM requests ORDER BY id DESC")
 
