@@ -22,6 +22,7 @@ class NetworkPageWidget(QWidget):
 
     self.ui.requestsTableWidget.setTableModel(self.requests_table_model)
     self.ui.requestsTableWidget.request_selected.connect(self.select_request)
+    self.ui.requestsTableWidget.delete_requests.connect(self.delete_requests)
 
     #self.ui.splitter.layout().setContentsMargins(0, 0, 0, 0)
     #self.ui.layout().setContentsMargins(0, 0, 0, 0)
@@ -31,8 +32,14 @@ class NetworkPageWidget(QWidget):
 
   @Slot()
   def select_request(self, selected, deselected):
-    selected_id = selected.indexes()[0].data()
-    request = self.request_data.load_request(selected_id)
+    if (len(selected.indexes()) > 0):
+      selected_id_cols = list(filter(lambda i: i.column() == 0, selected.indexes()))
+      selected_id = selected_id_cols[0].data()
+      #print(f"SELECTING ID: {selected_id}")
+      request = self.request_data.load_request(selected_id)
+      self.ui.requestViewWidget.set_request(request)
 
-    self.ui.requestViewWidget.set_request(request)
+  @Slot()
+  def delete_requests(self, request_ids):
+    self.requests_table_model.delete_requests(request_ids)
 

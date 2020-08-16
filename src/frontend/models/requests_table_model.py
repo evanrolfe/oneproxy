@@ -24,10 +24,18 @@ class RequestsTableModel(QAbstractTableModel):
   def update_request(self, request):
     self.request_data.update_request(request)
 
-    rowIndex = self.request_data.get_index_of(request)
+    rowIndex = self.request_data.get_index_of(request.id)
     start_index = self.index(rowIndex, 0)
     end_index = self.index(rowIndex, len(self.headers)-1)
     self.dataChanged.emit(start_index, end_index)
+
+  def delete_requests(self, request_ids):
+    row_index = self.request_data.get_index_of(request_ids[0])
+    row_index2 = self.request_data.get_index_of(request_ids[-1])
+
+    self.beginRemoveRows(QModelIndex(), row_index, row_index2)
+    self.request_data.delete_requests(request_ids)
+    self.endRemoveRows()
 
   def roleNames(self):
     roles = {}
