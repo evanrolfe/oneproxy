@@ -5,6 +5,8 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2.QtSql import QSqlDatabase, QSqlQuery
 
 from ui_compiled.network.ui_network_requests_table import Ui_NetworkRequestsTable
+from widgets.network.network_display_filters import NetworkDisplayFilters
+from widgets.network.network_capture_filters import NetworkCaptureFilters
 
 class NetworkRequestsTable(QWidget):
   request_selected = Signal(QItemSelection, QItemSelection)
@@ -25,6 +27,12 @@ class NetworkRequestsTable(QWidget):
     verticalHeader.setSectionResizeMode(QHeaderView.Fixed)
     verticalHeader.setDefaultSectionSize(20)
     verticalHeader.setVisible(False)
+
+    # Display & Capture Filters:
+    self.network_display_filters = NetworkDisplayFilters(self)
+    self.network_capture_filters = NetworkCaptureFilters(self)
+    self.ui.displayFiltersButton.clicked.connect(lambda: self.network_display_filters.show())
+    self.ui.captureFiltersButton.clicked.connect(lambda: self.network_capture_filters.show())
 
     # Set row selection behaviour:
     self.ui.requestsTable.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -74,3 +82,6 @@ class NetworkRequestsTable(QWidget):
 
     menu.exec_(self.mapToGlobal(position))
 
+  @Slot()
+  def display_filters_clicked(self):
+    print("You clicked me!")
