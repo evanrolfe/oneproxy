@@ -79,6 +79,12 @@ class Request:
 
     return http_response
 
+  def response_body_for_preview(self):
+    if not self.response_body_rendered:
+      return self.response_body
+    else:
+      return self.response_body_rendered
+
   def __parse_headers_json(self, headers_json):
     try:
       output = ''
