@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>New Client</string>
+   <string>Edit Capture Filters</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -56,6 +56,11 @@
          <height>0</height>
         </size>
        </property>
+       <item>
+        <property name="text">
+         <string>Disabled</string>
+        </property>
+       </item>
        <item>
         <property name="text">
          <string>Only include hosts:</string>
@@ -154,6 +159,11 @@
        </property>
        <item>
         <property name="text">
+         <string>Disabled</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Only include paths containing:</string>
         </property>
        </item>
@@ -232,7 +242,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="cancelButton">
        <property name="text">
         <string>Cancel</string>
        </property>
@@ -242,9 +252,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="saveButton">
        <property name="text">
-        <string>Save Filters</string>
+        <string>Save</string>
        </property>
       </widget>
      </item>

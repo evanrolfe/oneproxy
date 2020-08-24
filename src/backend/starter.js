@@ -3,10 +3,13 @@ const { fork } = require('child_process');
 const { startProxyServer } = require('./proxy/proxy-server');
 const { startBrowser, createBrowserDb, listAvailableBrowsers, getNextPortsAvailable } = require('./browser/index');
 const { setupDatabaseStore } = require('./shared/database');
+const CaptureFilters = require('./shared/models/capture-filters');
 const { generateCertsIfNotExists } = require('./shared/cert-utils');
 
 const loadDatabase = async (paths) => {
   global.knex = await setupDatabaseStore(paths.dbFile);
+  // Ensure the default capture filters are created if they dont exist:
+  await CaptureFilters.getFilters();
 };
 
 const startIntercept = () => {
