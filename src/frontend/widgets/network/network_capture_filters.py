@@ -42,15 +42,21 @@ class NetworkCaptureFilters(QDialog):
   @Slot()
   def save(self):
     #self.backend.send_command(self.launch_command)
-    hosts_list = self.ui.hostsText.toPlainText()
-    hosts_setting_index = self.ui.hostSettingDropdown.currentIndex()
-    hosts_setting = 'include' if (hosts_setting_index == 0) else 'exclude'
+    host_setting_index = self.ui.hostSettingDropdown.currentIndex()
+    host_setting =  self.index_to_setting(host_setting_index)
+    host_list = self.ui.hostsText.toPlainText().split("\n")
 
-    paths_list = self.ui.pathsText.toPlainText()
-    paths_setting_index = self.ui.pathSettingDropdown.currentIndex()
-    paths_setting = 'include' if (paths_setting_index == 0) else 'exclude'
+    path_setting_index = self.ui.pathSettingDropdown.currentIndex()
+    path_setting =  self.index_to_setting(path_setting_index)
+    path_list = self.ui.pathsText.toPlainText().split("\n")
 
-    # TODO: Save to the database
+    self.capture_filters.host_list = list(filter(None, host_list))
+    self.capture_filters.host_setting = host_setting
+
+    self.capture_filters.path_list = list(filter(None, path_list))
+    self.capture_filters.path_setting = path_setting
+
+    CaptureFiltersData.save(self.capture_filters)
 
     self.close()
 
@@ -69,3 +75,11 @@ class NetworkCaptureFilters(QDialog):
       return 1
     elif setting == 'exclude':
       return 2
+
+  def index_to_setting(self, index):
+    if index == 0:
+      return ''
+    elif index == 1:
+      return 'include'
+    elif index == 2:
+      return 'exclude'
