@@ -5,7 +5,7 @@ from operator import itemgetter, attrgetter
 class ClientsTableModel(QAbstractTableModel):
   def __init__(self,client_data, parent = None):
     QAbstractTableModel.__init__(self, parent)
-    self.headers = ['ID', 'Type', 'Name', 'Open?']
+    self.headers = ['ID', 'Type', 'Name', 'Status']
     self.client_data = client_data
 
   # def add_request(self, request):
@@ -14,6 +14,7 @@ class ClientsTableModel(QAbstractTableModel):
   #   self.client_data.clients.insert(0, request)
   #   self.endInsertRows()
   def reload_data(self):
+    print("ClientsTableModel - reloading!")
     self.client_data.load_clients()
     self.dataChanged.emit(QModelIndex(), QModelIndex())
     self.layoutChanged.emit()
@@ -53,7 +54,7 @@ class ClientsTableModel(QAbstractTableModel):
       elif (index.column() == 2):
         return client.title
       elif (index.column() == 3):
-        return client.open
+        return client.open_text()
 
   @Slot(result="QVariantList")
   def roleNameArray(self):

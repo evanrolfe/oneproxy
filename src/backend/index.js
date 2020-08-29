@@ -108,6 +108,9 @@ const handleLine = (cmd) => {
   await loadDatabase(paths);
   Settings.createDefaultIfNotExists();
 
+  // Reset clients database table:
+  await global.knex('clients').update({ open: false });
+
   await interceptClient.connect();
   rl.on('line', handleLine);
 
@@ -131,7 +134,7 @@ for (let i = 0; i < events.length; i++) {
   });
 }
 
-process.on('exit', () => {
+process.on('exit', async () => {
   // NOTE: loggging here doesn't work well see:
   // https://github.com/winstonjs/winston/issues/1629
   logger.info(`[Backend] Closing with client PIDS: ${JSON.stringify(global.childrenPIds)}`);

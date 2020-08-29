@@ -1,4 +1,5 @@
 import sys
+
 from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstractItemView
 from PySide2.QtCore import QFile, Slot
 from PySide2.QtUiTools import QUiLoader
@@ -34,4 +35,4 @@ class ClientsPage(QWidget):
   def select_client(self, selected, deselected):
     selected_id = selected.indexes()[0].data()
     client = self.client_data.load_client(selected_id)
-    #self.ui.clientView.setClient(client)
+    self.ui.clientView.set_client(client)

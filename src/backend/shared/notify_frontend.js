@@ -33,4 +33,9 @@ const notifyUpdatedRequest = (reqResPair) => {
   console.log(`[JSON] ${JSON.stringify(message)}`)
 };
 
-module.exports = { notifyNewRequest, notifyUpdatedRequest };
+const notifyClientsChanged = () => {
+  const message = { type: 'clientsChanged' }
+  console.log(`[JSON] ${JSON.stringify(message)}`)
+};
+
+module.exports = { notifyNewRequest, notifyUpdatedRequest, notifyClientsChanged };

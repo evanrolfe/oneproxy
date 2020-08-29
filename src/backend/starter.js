@@ -5,6 +5,9 @@ const { startBrowser, createBrowserDb, listAvailableBrowsers, getNextPortsAvaila
 const { setupDatabaseStore } = require('./shared/database');
 const CaptureFilters = require('./shared/models/capture-filters');
 const { generateCertsIfNotExists } = require('./shared/cert-utils');
+const frontend = require('./shared/notify_frontend');
+
+// TODO: Use classes to organise this mess of functions in here and in browser/index.js
 
 const loadDatabase = async (paths) => {
   global.knex = await setupDatabaseStore(paths.dbFile);
@@ -76,16 +79,8 @@ const startProxyAndBrowser = async (client, paths) => {
     global.childrenPIds.push(browserPid);
   }
 
-  const message = {
-    type: 'clientStarted',
-    clientInfo: {
-      browserPid: browserPid,
-      proxyPid: proxyProc.pid,
-      browserPort: client['browser_port'],
-      proxyPort: client['proxy_port']
-    }
-  };
-  console.log(`[JSON] ${JSON.stringify(message)}`);
+  await global.knex('clients').where({ id: client.id }).update({ open: true });
+  frontend.notifyClientsChanged();
 };
 
 module.exports = { loadDatabase, createClient, openClient, startIntercept };

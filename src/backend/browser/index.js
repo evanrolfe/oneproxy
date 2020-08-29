@@ -4,6 +4,7 @@ const { instrumentBrowser } = require('./browser_utils');
 const { COPYFILE_EXCL } = fs.constants;
 
 const { getSPKIFingerprint } = require('../shared/cert-utils');
+const frontend = require('../shared/notify_frontend');
 
 const createBrowserDb = async (type, browserPort, proxyPort) => {
     const result = await global
@@ -23,6 +24,11 @@ const createBrowserDb = async (type, browserPort, proxyPort) => {
         .update({ title: `Browser #${browserId}` });
 
     return browserId;
+};
+
+const closeClientDb = async (clientId) => {
+  await global.knex('clients').where({ id: clientId }).update({ open: false });
+  frontend.notifyClientsChanged();
 };
 
 const getUsedPorts = async () => {
@@ -143,6 +149,8 @@ const startChromeChromium = async (browserType, proxyPort, debugPort, browserId,
           } catch(err) {
             // This will occur if we have already closed the proxy process i.e. on exit
             console.log(err.message)
+          } finally {
+            closeClientDb(browserId);
           }
         });
 
@@ -210,6 +218,7 @@ const startFirefox = async (proxyPort, browserId, paths, proxyPid) => {
         console.log('Instance started with PID:', instance.pid);
 
         instance.on('stop', function(code) {
+          // TODO: Make this remove the PIDS from the global var just like startChromeChromium() does
           console.log('Instance stopped with exit code:', code);
         });
       });

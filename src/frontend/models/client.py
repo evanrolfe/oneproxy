@@ -12,3 +12,9 @@ class Client:
     self.open = attributes['open']
     self.created_at = attributes['created_at']
     self.launched_at = attributes['launched_at']
+
+  def open_text(self):
+    if (self.open == 1):
+      return 'Open'
+    else:
+      return 'Closed'
