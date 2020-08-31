@@ -9,12 +9,12 @@ class Client:
     self.type = attributes['type']
     self.proxy_port = attributes['proxy_port']
     self.browser_port = attributes['browser_port']
-    self.open = attributes['open']
+    self.open = (attributes['open'] == 1)
     self.created_at = attributes['created_at']
     self.launched_at = attributes['launched_at']
 
   def open_text(self):
-    if (self.open == 1):
+    if (self.open):
       return 'Open'
     else:
       return 'Closed'

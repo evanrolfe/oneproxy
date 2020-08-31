@@ -53,9 +53,14 @@ class ClientsTable(QWidget):
     client = self.table_model.client_data.clients[index.row()]
 
     menu = QMenu()
-    action = QAction("Open Browser")
-    menu.addAction(action)
-    action.triggered.connect(lambda: self.open_browser_clicked(client))
+
+    if (client.open == True):
+      action = QAction("Close Client (TODO)")
+      menu.addAction(action)
+    else:
+      action = QAction("Open Client")
+      menu.addAction(action)
+      action.triggered.connect(lambda: self.open_browser_clicked(client))
 
     menu.exec_(self.mapToGlobal(position))
 

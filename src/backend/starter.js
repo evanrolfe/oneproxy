@@ -40,17 +40,12 @@ const getClientDb = async (clientId) => {
   return browser;
 };
 
-const logClientsChanged = () => {
-  const message = {type: 'clientsChanged'};
-  console.log(`[JSON] ${JSON.stringify(message)}`);
-};
-
 const createClient = async (paths, portsAvailable, browserType) => {
   const ports = await getNextPortsAvailable(portsAvailable);
   const clientId = await createBrowserDb(browserType, ports.browser, ports.proxy);
   const client = await getClientDb(clientId);
 
-  logClientsChanged();
+  frontend.notifyClientsChanged();
   startProxyAndBrowser(client, paths);
 };
 
@@ -63,7 +58,7 @@ const openClient = async (paths, clientId) => {
     return;
   }
 
-  logClientsChanged();
+  frontend.notifyClientsChanged();
   startProxyAndBrowser(client, paths);
 };
 
