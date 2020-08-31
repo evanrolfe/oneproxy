@@ -12,6 +12,9 @@ pyside2-uic src/frontend/ui/network/network_capture_filters.ui > src/frontend/ui
 # Intercept Page:
 pyside2-uic src/frontend/ui/intercept/intercept_page.ui > src/frontend/ui_compiled/intercept/ui_intercept_page.py
 
+# Requests Page:
+pyside2-uic src/frontend/ui/requests/requests_page.ui > src/frontend/ui_compiled/requests/ui_requests_page.py
+
 # Shared:
 pyside2-uic src/frontend/ui/shared/request_view.ui > src/frontend/ui_compiled/shared/ui_request_view.py
 

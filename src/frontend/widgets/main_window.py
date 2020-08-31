@@ -13,6 +13,7 @@ from models.requests_table_model import RequestsTableModel
 from widgets.network.network_page_widget import NetworkPageWidget
 from widgets.intercept.intercept_page import InterceptPage
 from widgets.clients.clients_page import ClientsPage
+from widgets.requests.requests_page import RequestsPage
 from widgets.new_client_modal import NewClientModal
 
 # pyside2-rcc assets/assets.qrc > assets_compiled/assets.py
@@ -43,22 +44,26 @@ class MainWindow(QMainWindow):
     self.network_page_widget = NetworkPageWidget()
     self.intercept_page = InterceptPage()
     self.clients_page = ClientsPage()
+    self.requests_page = RequestsPage()
 
     # Setup stacked widget:
     self.ui.stackedWidget.addWidget(self.network_page_widget)
     self.ui.stackedWidget.addWidget(self.intercept_page)
     self.ui.stackedWidget.addWidget(self.clients_page)
+    self.ui.stackedWidget.addWidget(self.requests_page)
     self.ui.stackedWidget.setCurrentWidget(self.network_page_widget)
 
     # Set padding on widgets:
     self.ui.centralWidget.layout().setContentsMargins(0, 0, 0, 0)
     self.network_page_widget.layout().setContentsMargins(0, 0, 0, 0)
     self.clients_page.layout().setContentsMargins(0, 0, 0, 0)
+    self.requests_page.layout().setContentsMargins(0, 0, 0, 0)
 
     # Add actions to sidebar:
     self.ui.sideBar.addItem(QListWidgetItem("Network"))
     self.ui.sideBar.addItem(QListWidgetItem("Intercept"))
     self.ui.sideBar.addItem(QListWidgetItem("Clients"))
+    self.ui.sideBar.addItem(QListWidgetItem("Requests"))
     self.ui.sideBar.itemClicked.connect(self.sidebar_item_clicked)
 
     # Shortcut for closing app:
@@ -125,9 +130,12 @@ class MainWindow(QMainWindow):
   @Slot()
   def sidebar_item_clicked(self, item):
     text = item.text().lower()
+
     if text == 'network':
       self.ui.stackedWidget.setCurrentWidget(self.network_page_widget)
     elif text == 'intercept':
       self.ui.stackedWidget.setCurrentWidget(self.intercept_page)
     elif text == 'clients':
       self.ui.stackedWidget.setCurrentWidget(self.clients_page)
+    elif text == 'requests':
+      self.ui.stackedWidget.setCurrentWidget(self.requests_page)
