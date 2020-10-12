@@ -80,7 +80,8 @@ class NetworkRequestsTable(QWidget):
       menu.addAction(action)
       action.triggered.connect(lambda: self.delete_requests.emit([request.id]))
 
-    menu.exec_(self.mapToGlobal(position))
+    global_position = self.sender().mapToGlobal(position)
+    menu.exec_(global_position)
 
   @Slot()
   def display_filters_clicked(self):
