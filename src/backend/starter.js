@@ -1,5 +1,7 @@
 const { fork } = require('child_process');
 
+const { Crawler } = require('./crawler/crawler');
+const { BaseConfig } = require('./crawler/config/base-config.js');
 const { startProxyServer } = require('./proxy/proxy-server');
 const { startBrowser, createBrowserDb, listAvailableBrowsers, getNextPortsAvailable } = require('./browser/index');
 const { setupDatabaseStore } = require('./shared/database');
@@ -17,7 +19,6 @@ const loadDatabase = async (paths) => {
 
 const startIntercept = () => {
   const interceptProc = fork(require.resolve('./intercept/index'));
-
 
   console.log(`[Backend] Intercept started with PID: ${interceptProc.pid}`)
   return interceptProc;
@@ -45,7 +46,6 @@ const createClient = async (paths, portsAvailable, browserType) => {
   const clientId = await createBrowserDb(browserType, ports.browser, ports.proxy);
   const client = await getClientDb(clientId);
 
-  frontend.notifyClientsChanged();
   startProxyAndBrowser(client, paths);
 };
 
@@ -58,7 +58,6 @@ const openClient = async (paths, clientId) => {
     return;
   }
 
-  frontend.notifyClientsChanged();
   startProxyAndBrowser(client, paths);
 };
 
@@ -75,7 +74,47 @@ const startProxyAndBrowser = async (client, paths) => {
   }
 
   await global.knex('clients').where({ id: client.id }).update({ open: true });
+
   frontend.notifyClientsChanged();
+  frontend.notifyClientStarted({browserPort: client.browser_port, proxyPort: client.proxy_port});
 };
 
-module.exports = { loadDatabase, createClient, openClient, startIntercept };
+const startCrawler = async () => {
+  const configArgs = {
+    "baseUrl": "http://localhost",
+    "clickButtons": false,
+    "buttonXPath": 'button',
+    "maxDepth": 3,
+    "xhrTimeout": 5,
+    "pageTimeout": 30,
+    "verboseOutput": true,
+    "headless": false,
+    "ignoreLink": function(url) {
+      if(url.includes('/users/sign_out')) {
+        return true;
+      }
+
+      return false;
+    },
+    "ignoreButton": function(outerHTML) {
+      if(outerHTML.includes('Logout') || outerHTML.includes('submit') || outerHTML.includes('Save')) {
+        return true;
+      }
+
+      return false;
+    }
+  };
+
+  const config = new BaseConfig(configArgs);
+  const crawler = await Crawler.init({config: config});
+
+  console.log(`======================> Crawling`)
+  // await crawler.startCrawling();
+  // console.log('Crawling...')
+  // await crawler.onIdle();
+  // console.log('Done crawling.')
+  //await crawler.close();
+  //return;
+};
+
+module.exports = { loadDatabase, createClient, openClient, startIntercept, startCrawler };

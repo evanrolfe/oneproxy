@@ -38,4 +38,9 @@ const notifyClientsChanged = () => {
   console.log(`[JSON] ${JSON.stringify(message)}`)
 };
 
-module.exports = { notifyNewRequest, notifyUpdatedRequest, notifyClientsChanged };
+const notifyClientStarted = (clientInfo) => {
+  const message = { type: 'clientStarted', clientInfo: clientInfo }
+  console.log(`[JSON] ${JSON.stringify(message)}`)
+};
+
+module.exports = { notifyNewRequest, notifyUpdatedRequest, notifyClientsChanged, notifyClientStarted };

@@ -5,7 +5,7 @@ const { combine, timestamp, label, printf } = winston.format;
 
 const { InterceptClient } = require('./intercept/intercept-client');
 const { listAvailableBrowsers, closeAllClients } = require('./browser/index');
-const { loadDatabase, createClient, openClient, startIntercept } = require('./starter');
+const { loadDatabase, createClient, openClient, startIntercept, startCrawler } = require('./starter');
 const { getPaths } = require('./shared/paths');
 const Settings = require('./shared/models/settings');
 
@@ -16,6 +16,7 @@ const Settings = require('./shared/models/settings');
 // {"command": "createClient", "type": "chromium"}
 // {"command": "openClient", "id": 1}
 // {"command": "listAvailableClientTypes"}
+// {"command": "startCrawler"}
 
 // Environment:
 if (process.env.NODE_ENV == undefined) {
@@ -29,7 +30,6 @@ const myFormat = printf(({ level, message, label, timestamp }) => {
 const logger = winston.createLogger({
   level: 'info',
   format: combine(
-    label({ label: 'right meow!' }),
     timestamp(),
     myFormat
   ),
@@ -91,6 +91,10 @@ const handleLine = (cmd) => {
       case 'forwardAndIntercept':
         interceptClient.forwardAndIntercept(parsedCmd.request);
         break;
+
+      case 'startCrawler':
+        startCrawler();
+      break;
 
       default:
         console.error(`[ERROR] command ${parsedCmd.command} not recognised`);

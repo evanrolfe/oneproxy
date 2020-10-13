@@ -16,8 +16,8 @@ describe('Browsing', () => {
   });
 
   after(async () => {
-    browser.disconnect()
-    await sleep(2000);
+    //browser.disconnect()
+    //await sleep(2000);
   });
 
   describe('navigating to http://localhost:3000/api/posts.json', () => {
