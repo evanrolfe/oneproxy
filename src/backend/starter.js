@@ -2,7 +2,6 @@ const { fork } = require('child_process');
 
 const { Crawler } = require('./crawler/crawler');
 const { BaseConfig } = require('./crawler/config/base-config.js');
-const { startProxyServer } = require('./proxy/proxy-server');
 const { startBrowser, createBrowserDb, listAvailableBrowsers, getNextPortsAvailable } = require('./client/index');
 const { setupDatabaseStore } = require('./shared/database');
 const CaptureFilters = require('./shared/models/capture-filters');
@@ -76,7 +75,7 @@ const startProxyAndBrowser = async (client, paths) => {
   await global.knex('clients').where({ id: client.id }).update({ open: true });
 
   frontend.notifyClientsChanged();
-  frontend.notifyClientStarted({browserPort: client.browser_port, proxyPort: client.proxy_port});
+  frontend.notifyClientStarted({browserPort: client.browser_port, proxyPort: client.proxy_port, id: client.id});
 };
 
 const startCrawler = async () => {

@@ -2,6 +2,11 @@ const puppeteer = require('puppeteer-core');
 
 const { DEFAULT_FILTERS } = require('../shared/constants');
 
+const clearDatabaseTable = async (tableName) => {
+  await global.knex.raw(`DELETE FROM ${tableName};`);
+  await global.knex.raw(`DELETE FROM SQLITE_SEQUENCE WHERE name="${tableName}";`);
+};
+
 const clearDatabase = async () => {
   // Clear capture_filters table:
   await global.knex.raw('DELETE FROM capture_filters;');
@@ -53,4 +58,4 @@ const connectToBrowser = async (debugPort) => {
   });
 };
 
-module.exports = { clearDatabase, sleep, messageFromBackend, writeToBackend, connectToBrowser };
+module.exports = { clearDatabase, sleep, messageFromBackend, writeToBackend, connectToBrowser, clearDatabaseTable };

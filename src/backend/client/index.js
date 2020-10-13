@@ -1,6 +1,6 @@
 const launcher = require('@httptoolkit/browser-launcher');
 const fs = require('fs');
-const { instrumentBrowser } = require('./browser_utils');
+const { instrumentBrowserWithPuppeteer } = require('./browser/instrument-with-puppeteer');
 const { COPYFILE_EXCL } = fs.constants;
 
 const { getSPKIFingerprint } = require('../shared/cert-utils');
@@ -138,7 +138,7 @@ const startChromeChromium = async (browserType, proxyPort, debugPort, browserId,
           return;
         }
 
-        instrumentBrowser(browserId, debugPort);
+        instrumentBrowserWithPuppeteer(browserId, debugPort);
 
         browserInstance.on('stop', function(code) {
           console.log('[Backend] Browser instance stopped with exit code:', code);

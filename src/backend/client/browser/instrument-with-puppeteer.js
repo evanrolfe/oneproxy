@@ -1,28 +1,10 @@
 const puppeteer = require('puppeteer-core');
-const { handleNewPage } = require('./browser_page_utils');
+const { handleNewPage } = require('./puppeteer-callbacks');
 
-// Wait until we are able to connect to the browser on the given port
-const remoteBrowserConnection = (debugPort) => {
-  return new Promise((resolve) => {
-    const interval = setInterval(async () => {
-      try {
-        const browser = await puppeteer.connect({
-          browserURL: `http://localhost:${debugPort}`,
-          defaultViewport: null
-        });
-        clearInterval(interval);
-        resolve(browser);
-      } catch(err) {
-        return;
-      }
-    }, 500);
-  });
-};
-
-const instrumentBrowser = async (browserId, debugPort) => {
+const instrumentBrowserWithPuppeteer = async (browserId, debugPort) => {
   console.log(`[BrowserUtils-${browserId}] Connecting to the browser on port ${debugPort}...`)
   const browser = await remoteBrowserConnection(debugPort);
-  console.log(`[BrowserUtils-${browserId}] Got a browser connection.!!!!!!!!!!!!!!!!!!`)
+  console.log(`[BrowserUtils-${browserId}] Got a browser connection.`)
   browser.id = browserId;
 
   console.log(`[BrowserUtils-${browserId}] instrumenting browser...`);
@@ -67,6 +49,25 @@ const instrumentBrowser = async (browserId, debugPort) => {
   }
 
   //browser.on('disconnected', () => handleBrowserClosed(browser));
+  return browser;
+};
+
+// Wait until we are able to connect to the browser on the given port
+const remoteBrowserConnection = (debugPort) => {
+  return new Promise((resolve) => {
+    const interval = setInterval(async () => {
+      try {
+        const browser = await puppeteer.connect({
+          browserURL: `http://localhost:${debugPort}`,
+          defaultViewport: null
+        });
+        clearInterval(interval);
+        resolve(browser);
+      } catch(err) {
+        return;
+      }
+    }, 500);
+  });
 };
 
 // {"command": "openClient", "id": 1}
@@ -92,4 +93,4 @@ const loadPagesForBrowser = async (browser, pageUrls) => {
   }
 };
 
-module.exports = { instrumentBrowser };
+module.exports = { instrumentBrowserWithPuppeteer };

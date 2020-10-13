@@ -6,9 +6,10 @@ const { combine, timestamp, label, printf } = winston.format;
 const { InterceptClient } = require('./intercept/intercept-client');
 const { listAvailableBrowsers, closeAllClients } = require('./client/index');
 const { loadDatabase, createClient, openClient, startIntercept, startCrawler } = require('./starter');
+const { Client } = require('./client/client');
 const { getPaths } = require('./shared/paths');
 const Settings = require('./shared/models/settings');
-
+const { PORTS_AVAILABLE } = require('./shared/constants');
 // To Test:
 // curl https://linuxmint.com --proxy http://127.0.0.1:8080 --cacert tmp/testCA.pem  --insecure
 //
@@ -43,26 +44,17 @@ global.childrenPIds = [];
 global.interceptPId;
 
 const paths = getPaths();
-const portsAvailable = {
-  proxy: [8080, 8081, 8082, 8083, 8084, 8085, 8086, 8087, 8088, 8089, 8090],
-  browser: [9222, 9223, 9224, 9225, 9226, 9227, 9228, 9229, 9230, 9231, 9232]
-};
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
 const interceptClient = new InterceptClient();
 
 // Handle std input from the frontend:
-const handleLine = (cmd) => {
+const handleLine = async (cmd) => {
   try {
     parsedCmd = JSON.parse(cmd);
 
     switch (parsedCmd.command) {
       case 'createClient':
-        createClient(paths, portsAvailable, parsedCmd.type);
+        const client = await Client.create(parsedCmd.type, paths);
+        await client.start();
         break;
 
       case 'openClient':
@@ -74,7 +66,7 @@ const handleLine = (cmd) => {
         break;
 
       case 'listAvailableClientTypes':
-        listAvailableBrowsers(portsAvailable);
+        listAvailableBrowsers(PORTS_AVAILABLE);
         break;
 
       case 'changeSetting':
@@ -105,6 +97,12 @@ const handleLine = (cmd) => {
   }
 };
 
+// Main event loop:
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
 (async () => {
   const interceptProc = startIntercept();
   global.interceptPId = interceptProc.pid;
@@ -121,6 +119,7 @@ const handleLine = (cmd) => {
   console.log(`[JSON] ${JSON.stringify({type: 'backendLoaded'})}`);
 })();
 
+// Kill all sub-processes gracefully on exit:
 const events = [
     `SIGINT`,
     `SIGUSR1`,
