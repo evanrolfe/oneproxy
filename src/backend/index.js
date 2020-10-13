@@ -4,7 +4,7 @@ const winston = require('winston');
 const { combine, timestamp, label, printf } = winston.format;
 
 const { InterceptClient } = require('./intercept/intercept-client');
-const { listAvailableBrowsers, closeAllClients } = require('./browser/index');
+const { listAvailableBrowsers, closeAllClients } = require('./client/index');
 const { loadDatabase, createClient, openClient, startIntercept, startCrawler } = require('./starter');
 const { getPaths } = require('./shared/paths');
 const Settings = require('./shared/models/settings');
