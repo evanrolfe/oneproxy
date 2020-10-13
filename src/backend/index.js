@@ -50,15 +50,17 @@ const interceptClient = new InterceptClient();
 const handleLine = async (cmd) => {
   try {
     parsedCmd = JSON.parse(cmd);
+    let client;
 
     switch (parsedCmd.command) {
       case 'createClient':
-        const client = await Client.create(parsedCmd.type, paths);
+        client = await Client.create(parsedCmd.type, paths);
         await client.start();
         break;
 
       case 'openClient':
-        openClient(paths, parsedCmd.id);
+        client = await Client.load(parsedCmd.id, paths);
+        await client.start();
         break;
 
       case 'closeAllClients':

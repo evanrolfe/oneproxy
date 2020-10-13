@@ -12,8 +12,14 @@ class Client {
   }
 
   static async create(type, paths) {
-    const ports = await getNextPortsAvailable(PORTS_AVAILABLE);
+    const ports = await _getNextPortsAvailable(PORTS_AVAILABLE);
     const clientData = await ClientData.create({type: type, browserPort: ports.browser, proxyPort: ports.proxy});
+
+    return new Client(clientData, paths)
+  }
+
+  static async load(id, paths) {
+    const clientData = await ClientData.load(id);
 
     return new Client(clientData, paths)
   }
@@ -49,7 +55,7 @@ class Client {
   }
 }
 
-const getUsedPorts = async () => {
+const _getUsedPorts = async () => {
   const result = await global.knex('clients');
   const proxyPorts = result.map(row => row.proxy_port);
   const browserPorts = result.map(row => row.browser_port);
@@ -57,8 +63,8 @@ const getUsedPorts = async () => {
   return { proxy: proxyPorts, browser: browserPorts };
 };
 
-const getNextPortsAvailable = async (portsAvailable) => {
-  const portsUsed = await getUsedPorts();
+const _getNextPortsAvailable = async (portsAvailable) => {
+  const portsUsed = await _getUsedPorts();
 
   const browserPort = portsAvailable.browser.find((availablePort) => {
     return !portsUsed.browser.includes(availablePort);

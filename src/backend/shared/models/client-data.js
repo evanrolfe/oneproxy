@@ -1,5 +1,5 @@
 //const frontend = require('../notify_frontend');
-const { objToSnakeCase } = require('../utils');
+const { objToSnakeCase, objToCamelCase } = require('../utils');
 
 class ClientData {
   constructor({id, title, cookies, pages, type, open, proxyPort, browserPort, createdAt, launchedAt}) {
@@ -23,6 +23,13 @@ class ClientData {
     params.id = result[0];
     params.title = `Browser #${params.id}`;
     await global.knex('clients').where({ id: params.id }).update({ title: params.title });
+
+    return new ClientData(params);
+  }
+
+  static async load(id) {
+    const result = await global.knex('clients').where({ id: id });
+    const params = objToCamelCase(result[0]);
 
     return new ClientData(params);
   }

@@ -1,4 +1,4 @@
-const { snakeCase } = require('lodash');
+const { snakeCase, camelCase } = require('lodash');
 
 const parseHost = (hostString, defaultPort) => {
   const m = hostString.match(/^http:\/\/(.*)/);
@@ -33,7 +33,6 @@ const parseHostAndPort = (request, defaultPort) => {
   }
 };
 
-
 const objToSnakeCase = (obj) => {
   const snakeCaseObj = {};
 
@@ -46,4 +45,16 @@ const objToSnakeCase = (obj) => {
   return snakeCaseObj;
 };
 
-module.exports = { parseHost, parseHostAndPort, objToSnakeCase };
+const objToCamelCase = (obj) => {
+  const camelCaseObj = {};
+
+  for (const key of Object.keys(obj)){
+    if (obj.hasOwnProperty(key)) {
+      camelCaseObj[camelCase(key)] = obj[key];
+    }
+  }
+
+  return camelCaseObj;
+};
+
+module.exports = { parseHost, parseHostAndPort, objToSnakeCase, objToCamelCase };
