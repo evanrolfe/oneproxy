@@ -45,7 +45,13 @@ $ scripts/compile_backend.sh
 
 The integration tests require that you are running the mock server:
 ```bash
-$ node src/backend/test/support/mock_server/index.js
+$ cd src/backend
+$ npm run start-mock-server
+```
+Then run the tests with:
+```bash
+$ cd src/backend
+$ npm run test
 ```
 
 ## Notes
