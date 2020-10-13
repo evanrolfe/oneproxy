@@ -44,8 +44,8 @@ class Backend:
     self.backend.readyReadStandardOutput.connect(self.std_out_received)
     self.backend.readyReadStandardError.connect(self.std_err_received)
     # REMOVE THIS!!!
-    # time.sleep(2)
-    # self.open_client(2)
+    # TODO: Make this wait for a "backendStarted" message
+    time.sleep(2)
 
   def kill(self):
     print("Stopping the backend...")

@@ -2,6 +2,7 @@ const launcher = require('@httptoolkit/browser-launcher');
 
 const { instrumentBrowserWithPuppeteer } = require('./browser/instrument-with-puppeteer');
 const { getSPKIFingerprint } = require('../shared/cert-utils');
+const frontend = require('../shared/notify_frontend');
 
 class Browser {
   constructor(clientData, paths, proxy) {
@@ -13,11 +14,11 @@ class Browser {
   async start() {
     switch (this.clientData.type) {
       case 'chromium':
-        await this.startChromium();
+        await this._startChromium();
         break;
 
       case 'chrome':
-        await this.startChrome();
+        await this._startChrome();
         break;
 
       case 'firefox':
@@ -30,15 +31,20 @@ class Browser {
   }
 
   // Private Methods:
-  async startChrome() {
-    return this.startChromeChromium('chrome');
+  async _closeClient() {
+    await this.clientData.update({open: false});
+    frontend.notifyClientsChanged();
+  }
+
+  async _startChrome() {
+    return this._startChromeChromium('chrome');
   };
 
-  async startChromium() {
-    return this.startChromeChromium('chromium');
+  async _startChromium() {
+    return this._startChromeChromium('chromium');
   };
 
-  async startChromeChromium(browserType) {
+  async _startChromeChromium(browserType) {
     const spki = getSPKIFingerprint(this.paths.keyPath, this.paths.certPath);
     const profilePath = `${this.paths.tmpPath}/${browserType}-profile${this.clientData.id}`;
 
@@ -91,19 +97,18 @@ class Browser {
       });
     });
 
-    browserInstance.on('stop', function(code) {
+    browserInstance.on('stop', async (code) => {
       console.log('[Backend] Browser instance stopped with exit code:', code);
       console.log(`[Backend] Killing proxy process PID: ${this.proxy.pid}`);
       try {
-        process.kill(proxyPid);
+        process.kill(this.proxy.pid);
         // TODO: Move this out of the class:
-        global.childrenPIds = global.childrenPIds.filter(pid => pid !== proxyPid);
+        global.childrenPIds = global.childrenPIds.filter(pid => pid !== this.proxy.pid);
       } catch(err) {
         // This will occur if we have already closed the proxy process i.e. on exit
         console.log(err.message)
       } finally {
-        // TODO: Update this.clientData with open=false
-        //closeClientDb();
+        this._closeClient();
       }
     });
 
