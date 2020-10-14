@@ -1,15 +1,14 @@
 const readline = require('readline');
-const { exec } = require('child_process');
+const { fork } = require('child_process');
 const winston = require('winston');
 const { combine, timestamp, label, printf } = winston.format;
 
 const { InterceptClient } = require('./intercept/intercept-client');
-const { listAvailableBrowsers, closeAllClients } = require('./client/index');
-const { loadDatabase, createClient, openClient, startIntercept, startCrawler } = require('./starter');
+const { loadDatabase, startIntercept, startCrawler } = require('./starter');
 const { Client } = require('./client/client');
 const { getPaths } = require('./shared/paths');
 const Settings = require('./shared/models/settings');
-const { PORTS_AVAILABLE } = require('./shared/constants');
+
 // To Test:
 // curl https://linuxmint.com --proxy http://127.0.0.1:8080 --cacert tmp/testCA.pem  --insecure
 //
@@ -42,6 +41,13 @@ const logger = winston.createLogger({
 // Contains the PIds of all proxy & browser processes:
 global.childrenPIds = [];
 global.interceptPId;
+const closeAllClients = () => {
+  global.childrenPIds.forEach((pid) => {
+    console.log(`[Backend] closing client with PID: ${pid}`)
+    process.kill(pid);
+    console.log(`[Backend] ${pid} closed`)
+  });
+};
 
 const paths = getPaths();
 const interceptClient = new InterceptClient();
@@ -68,7 +74,7 @@ const handleLine = async (cmd) => {
         break;
 
       case 'listAvailableClientTypes':
-        listAvailableBrowsers(PORTS_AVAILABLE);
+        await Client.listTypesAvailable();
         break;
 
       case 'changeSetting':
@@ -106,7 +112,8 @@ const rl = readline.createInterface({
 });
 
 (async () => {
-  const interceptProc = startIntercept();
+  const interceptProc = fork(require.resolve('./intercept/index'));
+  console.log(`[Backend] Intercept started with PID: ${interceptProc.pid}`)
   global.interceptPId = interceptProc.pid;
 
   await loadDatabase(paths);

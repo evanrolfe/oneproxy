@@ -1,3 +1,5 @@
+const launcher = require('@httptoolkit/browser-launcher');
+
 const { ClientData } = require('../shared/models/client-data');
 const { generateCertsIfNotExists } = require('../shared/cert-utils');
 const frontend = require('../shared/notify_frontend');
@@ -22,6 +24,33 @@ class Client {
     const clientData = await ClientData.load(id);
 
     return new Client(clientData, paths)
+  }
+
+  static async listTypesAvailable() {
+    launcher.detect(async (browsers) => {
+      const ports = await _getNextPortsAvailable(PORTS_AVAILABLE);
+
+      // Add ports to the response:
+      browsers.forEach((browser) => {
+        browser.proxyPort = ports.proxy;
+        browser.browserPort = ports.browser;
+      });
+
+      // Add "anything" browser
+      browsers.push({
+        name: 'anything',
+        type: 'anything',
+        proxyPort: ports.proxy,
+        browserPort: ports.browser
+      });
+
+      //browsers = browsers.filter(b => b.type != 'chromium')
+      const message = {
+        type: 'clientsAvailable',
+        clients: browsers
+      };
+      console.log(`[JSON] ${JSON.stringify(message)}`);
+    });
   }
 
   async start() {
