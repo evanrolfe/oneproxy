@@ -4,10 +4,12 @@ const winston = require('winston');
 const { combine, timestamp, label, printf } = winston.format;
 
 const { InterceptClient } = require('./intercept/intercept-client');
-const { loadDatabase, startIntercept, startCrawler } = require('./starter');
 const { Client } = require('./client/client');
+const { ClientStore } = require('./client/client-store');
 const { getPaths } = require('./shared/paths');
 const Settings = require('./shared/models/settings');
+const CaptureFilters= require('./shared/models/capture-filters');
+const { setupDatabaseStore } = require('./shared/database');
 
 // To Test:
 // curl https://linuxmint.com --proxy http://127.0.0.1:8080 --cacert tmp/testCA.pem  --insecure
@@ -51,6 +53,7 @@ const closeAllClients = () => {
 
 const paths = getPaths();
 const interceptClient = new InterceptClient();
+const clientStore = new ClientStore();
 
 // Handle std input from the frontend:
 const handleLine = async (cmd) => {
@@ -116,7 +119,9 @@ const rl = readline.createInterface({
   console.log(`[Backend] Intercept started with PID: ${interceptProc.pid}`)
   global.interceptPId = interceptProc.pid;
 
-  await loadDatabase(paths);
+  global.knex = await setupDatabaseStore(paths.dbFile);
+  // Ensure the default capture filters are created if they dont exist:
+  await CaptureFilters.getFilters();
   Settings.createDefaultIfNotExists();
 
   // Reset clients database table:
