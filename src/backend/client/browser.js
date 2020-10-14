@@ -30,6 +30,10 @@ class Browser {
     }
   }
 
+  onClosed(callbackFunc) {
+    this.onClosed = callbackFunc;
+  }
+
   // Private Methods:
   async _closeClient() {
     await this.clientData.update({open: false});
@@ -97,13 +101,11 @@ class Browser {
       });
     });
 
+
     browserInstance.on('stop', async (code) => {
       console.log('[Backend] Browser instance stopped with exit code:', code);
-      console.log(`[Backend] Killing proxy process PID: ${this.proxy.pid}`);
       try {
-        process.kill(this.proxy.pid);
-        // TODO: Move this out of the class:
-        global.childrenPIds = global.childrenPIds.filter(pid => pid !== this.proxy.pid);
+        if(this.onClosed) this.onClosed();
       } catch(err) {
         // This will occur if we have already closed the proxy process i.e. on exit
         console.log(err.message)

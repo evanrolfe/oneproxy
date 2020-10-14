@@ -57,4 +57,13 @@ const objToCamelCase = (obj) => {
   return camelCaseObj;
 };
 
-module.exports = { parseHost, parseHostAndPort, objToSnakeCase, objToCamelCase };
+const killProcGracefully = (pid) => {
+  try {
+    console.log(`[Backend] Killing process PID: ${pid}`)
+    process.kill(pid);
+  } catch(err) {
+    console.log(`[Backend] could not kill process ${pid} - ${err.message}`)
+  }
+};
+
+module.exports = { parseHost, parseHostAndPort, objToSnakeCase, objToCamelCase, killProcGracefully };

@@ -6,10 +6,12 @@ const { combine, timestamp, label, printf } = winston.format;
 const { InterceptClient } = require('./intercept/intercept-client');
 const { Client } = require('./client/client');
 const { ClientStore } = require('./client/client-store');
+//const { SubProcessStore } = require('./')
 const { getPaths } = require('./shared/paths');
 const Settings = require('./shared/models/settings');
 const CaptureFilters= require('./shared/models/capture-filters');
 const { setupDatabaseStore } = require('./shared/database');
+const { killProcGracefully } = require('./shared/utils');
 
 // To Test:
 // curl https://linuxmint.com --proxy http://127.0.0.1:8080 --cacert tmp/testCA.pem  --insecure
@@ -41,19 +43,12 @@ const logger = winston.createLogger({
 });
 
 // Contains the PIds of all proxy & browser processes:
-global.childrenPIds = [];
-global.interceptPId;
-const closeAllClients = () => {
-  global.childrenPIds.forEach((pid) => {
-    console.log(`[Backend] closing client with PID: ${pid}`)
-    process.kill(pid);
-    console.log(`[Backend] ${pid} closed`)
-  });
-};
+let interceptPId;
 
 const paths = getPaths();
 const interceptClient = new InterceptClient();
 const clientStore = new ClientStore();
+//const subProcessStore = new SubProcessStore();
 
 // Handle std input from the frontend:
 const handleLine = async (cmd) => {
@@ -63,17 +58,17 @@ const handleLine = async (cmd) => {
 
     switch (parsedCmd.command) {
       case 'createClient':
-        client = await Client.create(parsedCmd.type, paths);
+        client = await clientStore.createClient(parsedCmd.type, paths);
         await client.start();
         break;
 
       case 'openClient':
-        client = await Client.load(parsedCmd.id, paths);
+        client = await clientStore.loadClient(parsedCmd.id, paths);
         await client.start();
         break;
 
       case 'closeAllClients':
-        closeAllClients();
+        clientStore.closeAll();
         break;
 
       case 'listAvailableClientTypes':
@@ -117,7 +112,7 @@ const rl = readline.createInterface({
 (async () => {
   const interceptProc = fork(require.resolve('./intercept/index'));
   console.log(`[Backend] Intercept started with PID: ${interceptProc.pid}`)
-  global.interceptPId = interceptProc.pid;
+  interceptPId = interceptProc.pid;
 
   global.knex = await setupDatabaseStore(paths.dbFile);
   // Ensure the default capture filters are created if they dont exist:
@@ -133,16 +128,14 @@ const rl = readline.createInterface({
   console.log(`[JSON] ${JSON.stringify({type: 'backendLoaded'})}`);
 })();
 
-// Kill all sub-processes gracefully on exit:
+// Ensure that the process on exit callback is always ran when the backend proc is closed
 const events = [
     `SIGINT`,
     `SIGUSR1`,
     `SIGUSR2`,
-    `uncaughtException`,
     `SIGTERM`,
     `SIGHUP`
   ];
-
 for (let i = 0; i < events.length; i++) {
   const eventType = events[i];
   process.on(eventType, () => {
@@ -154,22 +147,10 @@ for (let i = 0; i < events.length; i++) {
 process.on('exit', async () => {
   // NOTE: loggging here doesn't work well see:
   // https://github.com/winstonjs/winston/issues/1629
-  logger.info(`[Backend] Closing with client PIDS: ${JSON.stringify(global.childrenPIds)}`);
+  logger.info(`[Backend] shutting down...`);
 
-  global.childrenPIds.forEach((pid) => {
-    try {
-      process.kill(pid);
-    } catch(err) {
-      console.log(`[Backend] could not kill child process ${pid} - ${err.message}`)
-    }
-  });
-
-  try {
-    process.kill(global.interceptPId);
-  } catch(err) {
-    console.log(`[Backend] could not kill intercept process ${pid} - ${err.message}`)
-  }
-
+  clientStore.closeAll();
+  killProcGracefully(interceptPId);
   global.knex.destroy();
 
   console.log(`[Backend] shutdown complete.`)

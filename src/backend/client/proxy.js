@@ -13,8 +13,6 @@ class Proxy {
       '--paths', JSON.stringify(this.paths)
     ]);
     this.pid = this.proxyProc.pid;
-
-    console.log(`[Backend] Proxy started with PID: ${this.pid}`)
   }
 }
 
