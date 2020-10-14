@@ -1,19 +1,21 @@
 const { fork } = require('child_process');
 
-class Proxy {
+class ProxyProc {
   constructor(clientData, paths) {
     this.clientData = clientData;
     this.paths = paths;
   }
 
   async start() {
-    this.proxyProc = fork(require.resolve('../proxy/index'), [
+    this.proc = fork(require.resolve('./index'), [
       '--port', this.clientData.proxyPort,
       '--clientId', this.clientData.id,
       '--paths', JSON.stringify(this.paths)
     ]);
-    this.pid = this.proxyProc.pid;
+    this.pid = this.proc.pid;
+
+    console.log(`[Backend] Proxy started with PID: ${this.pid}`)
   }
 }
 
-module.exports = { Proxy };
+module.exports = { ProxyProc };

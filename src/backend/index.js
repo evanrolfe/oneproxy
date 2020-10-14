@@ -1,17 +1,16 @@
 const readline = require('readline');
-const { fork } = require('child_process');
 const winston = require('winston');
 const { combine, timestamp, label, printf } = winston.format;
 
+const { InterceptProc } = require('./intercept/intercept-proc');
 const { InterceptClient } = require('./intercept/intercept-client');
 const { Client } = require('./client/client');
 const { ClientStore } = require('./client/client-store');
-//const { SubProcessStore } = require('./')
+const { ProcessStore } = require('./shared/process-store');
 const { getPaths } = require('./shared/paths');
 const Settings = require('./shared/models/settings');
 const CaptureFilters= require('./shared/models/capture-filters');
 const { setupDatabaseStore } = require('./shared/database');
-const { killProcGracefully } = require('./shared/utils');
 
 // To Test:
 // curl https://linuxmint.com --proxy http://127.0.0.1:8080 --cacert tmp/testCA.pem  --insecure
@@ -42,13 +41,12 @@ const logger = winston.createLogger({
   ]
 });
 
-// Contains the PIds of all proxy & browser processes:
-let interceptPId;
-
 const paths = getPaths();
 const interceptClient = new InterceptClient();
 const clientStore = new ClientStore();
-//const subProcessStore = new SubProcessStore();
+
+const processStore = new ProcessStore();
+processStore.addClientStore(clientStore);
 
 // Handle std input from the frontend:
 const handleLine = async (cmd) => {
@@ -110,9 +108,10 @@ const rl = readline.createInterface({
 });
 
 (async () => {
-  const interceptProc = fork(require.resolve('./intercept/index'));
-  console.log(`[Backend] Intercept started with PID: ${interceptProc.pid}`)
-  interceptPId = interceptProc.pid;
+  const interceptProc = new InterceptProc();
+  await interceptProc.start();
+
+  processStore.addProc(interceptProc);
 
   global.knex = await setupDatabaseStore(paths.dbFile);
   // Ensure the default capture filters are created if they dont exist:
@@ -149,8 +148,7 @@ process.on('exit', async () => {
   // https://github.com/winstonjs/winston/issues/1629
   logger.info(`[Backend] shutting down...`);
 
-  clientStore.closeAll();
-  killProcGracefully(interceptPId);
+  processStore.killAll();
   global.knex.destroy();
 
   console.log(`[Backend] shutdown complete.`)

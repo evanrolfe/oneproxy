@@ -4,7 +4,7 @@ const { instrumentBrowserWithPuppeteer } = require('./browser/instrument-with-pu
 const { getSPKIFingerprint } = require('../shared/cert-utils');
 const frontend = require('../shared/notify_frontend');
 
-class Browser {
+class BrowserProc {
   constructor(clientData, paths, proxy) {
     this.clientData = clientData;
     this.paths = paths;
@@ -186,4 +186,4 @@ class Browser {
 */
 }
 
-module.exports = { Browser };
+module.exports = { BrowserProc };

@@ -4,8 +4,8 @@ const { ClientData } = require('../shared/models/client-data');
 const { generateCertsIfNotExists } = require('../shared/cert-utils');
 const { killProcGracefully } = require('../shared/utils');
 const frontend = require('../shared/notify_frontend');
-const { Browser } = require('./browser');
-const { Proxy } = require('./proxy');
+const { BrowserProc } = require('./browser-proc');
+const { ProxyProc } = require('../proxy/proxy-proc');
 const { PORTS_AVAILABLE } = require('../shared/constants');
 
 class Client {
@@ -81,14 +81,12 @@ class Client {
 
   // Private Methods:
   async _startProxy() {
-    this.proxy = new Proxy(this.clientData, this.paths);
+    this.proxy = new ProxyProc(this.clientData, this.paths);
     await this.proxy.start();
-
-    console.log(`[Backend] Proxy started with PID: ${this.proxy.pid}`)
   }
 
   async _startBrowser() {
-    this.browser = new Browser(this.clientData, this.paths, this.proxy);
+    this.browser = new BrowserProc(this.clientData, this.paths, this.proxy);
 
     if(this.onBrowserClosed) this.browser.onClosed(this.onBrowserClosed);
 
