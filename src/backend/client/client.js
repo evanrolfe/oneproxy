@@ -86,7 +86,7 @@ class Client {
   }
 
   async _startBrowser() {
-    this.browser = new BrowserProc(this.clientData, this.paths, this.proxy);
+    this.browser = new BrowserProc(this.clientData, this.paths);
 
     if(this.onBrowserClosed) this.browser.onClosed(this.onBrowserClosed);
 

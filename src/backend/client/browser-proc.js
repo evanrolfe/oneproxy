@@ -5,10 +5,9 @@ const { getSPKIFingerprint } = require('../shared/cert-utils');
 const frontend = require('../shared/notify_frontend');
 
 class BrowserProc {
-  constructor(clientData, paths, proxy) {
+  constructor(clientData, paths,) {
     this.clientData = clientData;
     this.paths = paths;
-    this.proxy = proxy;
   }
 
   async start() {
