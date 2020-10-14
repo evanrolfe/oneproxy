@@ -11,6 +11,7 @@ const { getPaths } = require('./shared/paths');
 const Settings = require('./shared/models/settings');
 const CaptureFilters= require('./shared/models/capture-filters');
 const { setupDatabaseStore } = require('./shared/database');
+const frontend = require('./shared/notify_frontend');
 
 // To Test:
 // curl https://linuxmint.com --proxy http://127.0.0.1:8080 --cacert tmp/testCA.pem  --insecure
@@ -41,12 +42,19 @@ const logger = winston.createLogger({
   ]
 });
 
+// Start sub-processes:
 const paths = getPaths();
-const interceptClient = new InterceptClient();
 const clientStore = new ClientStore();
+const interceptProc = new InterceptProc();
+interceptProc.start();
 
+// Add them to the ProcessStore:
 const processStore = new ProcessStore();
 processStore.addClientStore(clientStore);
+processStore.addProc(interceptProc);
+processStore.ensureCleanupOnExit();
+
+const interceptClient = new InterceptClient();
 
 // Handle std input from the frontend:
 const handleLine = async (cmd) => {
@@ -102,54 +110,24 @@ const handleLine = async (cmd) => {
 };
 
 // Main event loop:
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
 (async () => {
-  const interceptProc = new InterceptProc();
-  await interceptProc.start();
-
-  processStore.addProc(interceptProc);
-
+  // Connect to database and ensure the default values exist:
   global.knex = await setupDatabaseStore(paths.dbFile);
-  // Ensure the default capture filters are created if they dont exist:
   await CaptureFilters.getFilters();
   Settings.createDefaultIfNotExists();
 
   // Reset clients database table:
   await global.knex('clients').update({ open: false });
 
+  // Connect to the intercept process:
   await interceptClient.connect();
+
+  // Handle input from stdin:
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
   rl.on('line', handleLine);
 
-  console.log(`[JSON] ${JSON.stringify({type: 'backendLoaded'})}`);
+  frontend.notifyBackendLoaded();
 })();
-
-// Ensure that the process on exit callback is always ran when the backend proc is closed
-const events = [
-    `SIGINT`,
-    `SIGUSR1`,
-    `SIGUSR2`,
-    `SIGTERM`,
-    `SIGHUP`
-  ];
-for (let i = 0; i < events.length; i++) {
-  const eventType = events[i];
-  process.on(eventType, () => {
-    console.log(`[Backend] received event: ${eventType}`);
-    process.exit(1);
-  });
-}
-
-process.on('exit', async () => {
-  // NOTE: loggging here doesn't work well see:
-  // https://github.com/winstonjs/winston/issues/1629
-  logger.info(`[Backend] shutting down...`);
-
-  processStore.killAll();
-  global.knex.destroy();
-
-  console.log(`[Backend] shutdown complete.`)
-});

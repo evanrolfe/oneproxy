@@ -48,10 +48,16 @@ const notifyClientsClosed = () => {
   console.log(`[JSON] ${JSON.stringify(message)}`)
 };
 
+const notifyBackendLoaded = () => {
+  const message = { type: 'backendLoaded' }
+  console.log(`[JSON] ${JSON.stringify(message)}`)
+};
+
 module.exports = {
   notifyNewRequest,
   notifyUpdatedRequest,
   notifyClientsChanged,
   notifyClientStarted,
-  notifyClientsClosed
+  notifyClientsClosed,
+  notifyBackendLoaded
 };

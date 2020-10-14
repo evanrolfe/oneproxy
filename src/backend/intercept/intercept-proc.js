@@ -1,7 +1,7 @@
 const { fork } = require('child_process');
 
 class InterceptProc {
-  async start() {
+  start() {
     this.proc = fork(require.resolve('./index'));
     this.pid = this.proc.pid;
 
