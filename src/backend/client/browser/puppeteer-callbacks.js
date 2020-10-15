@@ -171,14 +171,16 @@ const startDOMListener = async (page, requestId) => {
 
     // UGLY WORKAROUND: Prevent the race condition described at the top of page:
     // Check that the page url has not changed while this callback has been running
-    const result = await global
-      .knex('requests')
-      .select('url')
-      .where({ id: requestId });
-    if (result[0].url !== page.url()) {
-      clearInterval(domListenerId); // Stop this listener because it is out of date
-      return;
-    }
+    // const result = await global
+    //   .knex('requests')
+    //   .select('*')
+    //   .where({ id: requestId });
+
+    // if (result[0].url !== page.url()) {
+    //   console.log(`[BrowserUtils] ${result[0].url} !== ${page.url()} so stopping the domlistener for request ${requestId}`);
+    //   clearInterval(domListenerId); // Stop this listener because it is out of date
+    //   return;
+    // }
 
     // Fetch the page's current content
     let body;

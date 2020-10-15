@@ -3,7 +3,7 @@ const { BaseConfig } = require('./config/base-config.js');
 
 const startCrawler = async () => {
   const configArgs = {
-    "baseUrl": "http://localhost",
+    "baseUrl": "http://localhost:3000",
     "clickButtons": false,
     "buttonXPath": 'button',
     "maxDepth": 3,

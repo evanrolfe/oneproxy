@@ -53,11 +53,17 @@ const notifyBackendLoaded = () => {
   console.log(`[JSON] ${JSON.stringify(message)}`)
 };
 
+const notifyCrawlStarted = () => {
+  const message = { type: 'crawlStarted' }
+  console.log(`[JSON] ${JSON.stringify(message)}`)
+};
+
 module.exports = {
   notifyNewRequest,
   notifyUpdatedRequest,
   notifyClientsChanged,
   notifyClientStarted,
   notifyClientsClosed,
-  notifyBackendLoaded
+  notifyBackendLoaded,
+  notifyCrawlStarted
 };

@@ -13,6 +13,35 @@ const CaptureFilters= require('./shared/models/capture-filters');
 const { setupDatabaseStore } = require('./shared/database');
 const frontend = require('./shared/notify_frontend');
 
+const { Crawler } = require('./crawler/crawler');
+const { BaseConfig } = require('./crawler/config/base-config');
+const crawlConfig = {
+  "baseUrl": "http://localhost",
+  "clickButtons": false,
+  "buttonXPath": 'button',
+  "maxConcurrency": 1,
+  "maxDepth": 3,
+  "xhrTimeout": 5,
+  "pageTimeout": 30,
+  "waitOnEachPage": 3000,
+  "verboseOutput": false,
+  "headless": false,
+  "ignoreLink": function(url) {
+    if(url.includes('/users/sign_out')) {
+      return true;
+    }
+
+    return false;
+  },
+  "ignoreButton": function(outerHTML) {
+    if(outerHTML.includes('Logout') || outerHTML.includes('submit') || outerHTML.includes('Save')) {
+      return true;
+    }
+
+    return false;
+  }
+};
+
 // To Test:
 // curl https://linuxmint.com --proxy http://127.0.0.1:8080 --cacert tmp/testCA.pem  --insecure
 //
@@ -96,8 +125,16 @@ const handleLine = async (cmd) => {
         interceptClient.forwardAndIntercept(parsedCmd.request);
         break;
 
-      case 'startCrawler':
-        startCrawler();
+      case 'createCrawl':
+        client = await clientStore.loadClient(parsedCmd.clientId, paths);
+        await client.start();
+
+        crawlConfig.browserWSEndpoint = client.browser.puppeteerBrowser.wsEndpoint();
+
+        const config = new BaseConfig(crawlConfig);
+        const crawler = await Crawler.init({config: config});
+        await crawler.startCrawling();
+        frontend.notifyCrawlStarted();
       break;
 
       default:

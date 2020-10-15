@@ -20,6 +20,7 @@ describe('Opening and closing a browser', () => {
   it('kills the proxy too', async () => {
     await browser.close();
     console.log(`[TEST] the browser has been closed.`)
+    // TODO: Find a way to actually test that the proxy has been closed
     await sleep(2000);
   });
 });

@@ -26,14 +26,17 @@ class Crawler {
 
     if(this.processEvents === true) {
       this.events.on('url queued', (urlObj) => {
+
         if(this.browser.tabsAvailable()) {
           this.linkQueue.dequeue(urlObj.url);
           this.crawlPage(urlObj.url, urlObj.depth);
+
         } else {
           setTimeout(() => {
             this.events.emit('url queued', urlObj);
           }, 100);
         }
+
       });
     }
   }
@@ -121,7 +124,7 @@ class Crawler {
       await pageEvents.waitForRequestsToFinish(this.config.xhrTimeout);
 
       this._verboseLog(`${url} - Finished waiting for XHR requests or they have all completed.`);
-      await tab.waitFor(500);
+      await tab.waitFor(this.config.waitOnEachPage);
 
       // Gather & process links from the page
       this._verboseLog(`${url} - Launching PageExplorer...`);
@@ -152,6 +155,7 @@ class Crawler {
 
       // Check if the crawler is complete
       if(this.complete()) {
+        console.log(`[Backend] Crawler finished.`)
         this._resolveIdle();
       }
     }
