@@ -29,12 +29,12 @@ describe('createCrawl Command', () => {
         .where({id: 1})
         .update({filters: JSON.stringify(filters) });
 
-
       writeToBackend({ "command": "createCrawl", "clientId": clientId });
-      console.log(`[Test] ---------> waiting for crawlstarted`)
+
       result = await messageFromBackend('crawlStarted');
-      console.log(`[Test] ---------> RECEIVED crawlstarted!`)
-      await sleep(60*1000);
+      await messageFromBackend('crawlFinished');
+
+      console.log(`[Test] Crawl finished.`)
     });
 
     it('works', async () => {

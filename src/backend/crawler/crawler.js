@@ -10,6 +10,7 @@ const startsWith = require('lodash/startsWith');
 const includes = require('lodash/includes');
 const noop = require('lodash/noop');
 const uuid = require('uuid');
+const frontend = require('../shared/notify_frontend');
 
 class Crawler {
   constructor(browser, options) {
@@ -155,7 +156,7 @@ class Crawler {
 
       // Check if the crawler is complete
       if(this.complete()) {
-        console.log(`[Backend] Crawler finished.`)
+        frontend.notifyCrawlFinished();
         this._resolveIdle();
       }
     }

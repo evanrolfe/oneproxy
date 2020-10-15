@@ -58,6 +58,11 @@ const notifyCrawlStarted = () => {
   console.log(`[JSON] ${JSON.stringify(message)}`)
 };
 
+const notifyCrawlFinished = () => {
+  const message = { type: 'crawlFinished' }
+  console.log(`[JSON] ${JSON.stringify(message)}`)
+};
+
 module.exports = {
   notifyNewRequest,
   notifyUpdatedRequest,
@@ -65,5 +70,6 @@ module.exports = {
   notifyClientStarted,
   notifyClientsClosed,
   notifyBackendLoaded,
-  notifyCrawlStarted
+  notifyCrawlStarted,
+  notifyCrawlFinished
 };
