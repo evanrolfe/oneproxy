@@ -1,4 +1,4 @@
-//import CaptureFilters from '../../shared/models/capture-filters';
+const url = require('url');
 
 /*
  * NOTE: For each response intercepted
@@ -89,21 +89,20 @@ const handleResponse = async (page, response) => {
     )
       return;
 
-    console.log(`*--------------------------------------*`);
-    console.log(`* Response received on page: ${page.url()}`);
-    console.log(`* Response URL: ${response.url()}`);
-    console.log(`* x-oneproxy-id: ${headers['x-oneproxy-id']}`);
-    console.log(`* Is Navigation? ${response.request().isNavigationRequest()}`);
-    console.log(`* client_id: ${page.browser().id}`);
-    console.log(`*--------------------------------------*\n\n`);
+    // console.log(`*--------------------------------------*`);
+    // console.log(`* Response received on page: ${page.url()}`);
+    // console.log(`* Response URL: ${response.url()}`);
+    // console.log(`* x-oneproxy-id: ${headers['x-oneproxy-id']}`);
+    // console.log(`* Is Navigation? ${response.request().isNavigationRequest()}`);
+    // console.log(`* client_id: ${page.browser().id}`);
+    // console.log(`*--------------------------------------*\n\n`);
 
-    page.domListenerId = await startDOMListener(page, requestId);
+    page.domWatcherId = await startDOMWatcher(page, requestId);
 
     const origURL = ` ${response.url()}`.slice(1); // Clone the url string
     if (page.listenerCount('framenavigated') === 0) {
-      console.log(
-        `[BrowserUtils] starting framenavigated for request ${requestId}`
-      );
+      console.log(`[BrowserUtils] starting framenavigated for request ${requestId}`);
+
       page.on('framenavigated', frame =>
         handleFramenavigated(page, frame, origURL)
       );
@@ -123,13 +122,13 @@ const handleFramenavigated = async (page, frame, origURL) => {
   // request will not be record for the last change
   // if (frame.url() === origURL) return;
 
-  console.log(`[BrowserUtils] FrameNavigation:`);
-  console.log(`[BrowserUtils] page.url() ${page.url()}`);
-  console.log(`[BrowserUtils] frame.url() ${frame.url()}`);
-  console.log(`[BrowserUtils] origURL ${origURL}`);
+  // console.log(`[BrowserUtils] FrameNavigation:`);
+  // console.log(`[BrowserUtils] page.url() ${page.url()}`);
+  // console.log(`[BrowserUtils] frame.url() ${frame.url()}`);
+  // console.log(`[BrowserUtils] origURL ${origURL}`);
 
-  clearInterval(page.domListenerId);
-  console.log(`BrowserUtils: killed DomListener #${page.domListenerId}`);
+  clearInterval(page.domWatcherId);
+  console.log(`[BrowserUtils] killed DomListener #${page.domWatcherId}`);
 
   // Create a navigation request (not a real HTTP request - just a change in URL)
   const parsedUrl = new URL(page.url());
@@ -157,54 +156,46 @@ const handleFramenavigated = async (page, frame, origURL) => {
   }
   console.log(`[JSON] ${JSON.stringify(message)}`)
 
-  console.log(
-    `[BrowserUtils] frameNavigated to ${frame.url()}, origURL: ${origURL}`
-  );
-  console.log(`[BrowserUtils] created navigation request ${requestId}`);
-  page.domListenerId = await startDOMListener(page, requestId);
+  console.log(`[BrowserUtils] frameNavigated to ${frame.url()}, origURL: ${origURL}, created navigation request ${requestId}`);
+  page.domWatcherId = await startDOMWatcher(page, requestId);
 };
 
-const startDOMListener = async (page, requestId) => {
-  const domListenerId = await setInterval(async () => {
-    //console.log(`[BrowserUtils] DOMListener ${domListenerId} running...`);
+const startDOMWatcher = async (page, requestId) => {
+  const domWatcherId = await setInterval(async () => {
+    //console.log(`[BrowserUtils] DOMListener ${domWatcherId} running...`);
     console.log(`[BrowserUtils] DOMListener for requestId: ${requestId} on page: ${page.url()}`);
 
     // UGLY WORKAROUND: Prevent the race condition described at the top of page:
     // Check that the page url has not changed while this callback has been running
-    // const result = await global
-    //   .knex('requests')
-    //   .select('*')
-    //   .where({ id: requestId });
+    const result = await global
+      .knex('requests')
+      .where({ id: requestId });
 
-    // if (result[0].url !== page.url()) {
-    //   console.log(`[BrowserUtils] ${result[0].url} !== ${page.url()} so stopping the domlistener for request ${requestId}`);
-    //   clearInterval(domListenerId); // Stop this listener because it is out of date
-    //   return;
-    // }
+    const request = result[0];
+    const pageUrl = url.parse(page.url());
+    if (request === undefined) console.log(`[Error] No request with ID ${requestId}`)
+    if (pageUrl === undefined) console.log(`[Error] No url for page ${page.url()}`)
+
+    if (request === undefined || request.host !== pageUrl.host || request.path !== pageUrl.pathname) {
+      console.log(`[BrowserUtils] DOMWatcher appears to be out of date for request ${requestId}, stopping.`);
+      clearInterval(domWatcherId); // Stop this watcher because it is out of date
+      return;
+    }
 
     // Fetch the page's current content
     let body;
     try {
       body = await page.content();
     } catch (e) {
-      clearInterval(domListenerId); // This will run if you close the browser.
+      clearInterval(domWatcherId); // This will run if you close the browser.
       return;
     }
 
     // Update the request in the database
-    await global
-      .knex('requests')
-      .where({ id: requestId })
-      .update({ response_body_rendered: body });
-
-    // console.log(
-    //   `[BrowserUtils] saved content for page: ${page.url()} (length: ${
-    //     body.length
-    //   }) to request ${requestId}, (DOMListener ${domListenerId})`
-    // );
+    await global.knex('requests').where({ id: requestId }).update({ response_body_rendered: body });
   }, 1000);
 
-  return domListenerId;
+  return domWatcherId;
 };
 
 module.exports = { handleNewPage };

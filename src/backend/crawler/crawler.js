@@ -21,7 +21,6 @@ class Crawler {
     this._resolveIdle = noop;
     this.currentUser = 'Public';
 
-    //this.apiEndpointData = options.apiEndpointData;
     this.config = options.config;
     this.processEvents = (options.processEvents === undefined) ? true : options.processEvents;
 

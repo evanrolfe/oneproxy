@@ -79,4 +79,14 @@ CREATE TABLE IF NOT EXISTS settings(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   key TEXT NOT NULL UNIQUE,
   value TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS crawls(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  client_id INTEGER,
+  config TEXT,
+  status TEXT,
+  created_at INTEGER,
+  started_at INTEGER,
+  finished_at INTEGER
 );`;

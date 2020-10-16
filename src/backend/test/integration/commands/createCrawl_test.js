@@ -14,8 +14,8 @@ describe('createCrawl Command', () => {
       // Create a Client:
       const proxyPort = PORTS_AVAILABLE.proxy.pop();
       const browserPort = PORTS_AVAILABLE.browser.pop();
-      const dbParams = {title: 'Test Client', type: 'chrome', proxy_port: proxyPort, browser_port: browserPort, open: 0};
-      const dbResult = await global.knex('clients').insert(dbParams);
+      let dbParams = {title: 'Test Client', type: 'chrome', proxy_port: proxyPort, browser_port: browserPort, open: 0};
+      let dbResult = await global.knex('clients').insert(dbParams);
       clientId = dbResult[0];
 
       // Create default capture filters:
@@ -29,7 +29,26 @@ describe('createCrawl Command', () => {
         .where({id: 1})
         .update({filters: JSON.stringify(filters) });
 
-      writeToBackend({ "command": "createCrawl", "clientId": clientId });
+      // Create a crawl:
+      const crawlConfig = {
+        "baseUrl": "http://localhost:3000",
+        "clickButtons": false,
+        "buttonXPath": 'button',
+        "maxConcurrency": 10,
+        "maxDepth": 2,
+        "xhrTimeout": 5,
+        "pageTimeout": 30,
+        "waitOnEachPage": 3000,
+        "verboseOutput": false,
+        "headless": false,
+        "ignoreLinksIncluding": ["/users/sign_out"],
+        "ignoreButtonsIncluding": ['Logout', 'submit', 'Save'],
+      };
+      dbParams = { config: JSON.stringify(crawlConfig), status: 'created', client_id: clientId };
+      dbResult = await global.knex('crawls').insert(dbParams);
+      const crawlId = dbResult[0];
+
+      writeToBackend({ "command": "createCrawl", "crawlId": crawlId, "clientId": clientId });
 
       result = await messageFromBackend('crawlStarted');
       await messageFromBackend('crawlFinished');
