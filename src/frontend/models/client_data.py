@@ -15,6 +15,15 @@ class ClientData:
         client = self.client_from_query_result(query)
         self.clients.append(client)
 
+    def load_browsers(self):
+      self.clients = []
+      query = QSqlQuery("SELECT * FROM clients WHERE type <> 'anything' ORDER BY id DESC")
+      query.exec_()
+
+      while query.next():
+        client = self.client_from_query_result(query)
+        self.clients.append(client)
+
     def load_client(self, client_id):
       query = QSqlQuery()
       query.prepare("SELECT * FROM clients WHERE id=:id")

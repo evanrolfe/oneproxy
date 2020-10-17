@@ -3,6 +3,12 @@ pyside2-uic src/frontend/ui/clients/clients_page.ui > src/frontend/ui_compiled/c
 pyside2-uic src/frontend/ui/clients/clients_table.ui > src/frontend/ui_compiled/clients/ui_clients_table.py
 pyside2-uic src/frontend/ui/clients/client_view.ui > src/frontend/ui_compiled/clients/ui_client_view.py
 
+# Crawls Page:
+pyside2-uic src/frontend/ui/crawls/crawls_page.ui > src/frontend/ui_compiled/crawls/ui_crawls_page.py
+pyside2-uic src/frontend/ui/crawls/crawls_table.ui > src/frontend/ui_compiled/crawls/ui_crawls_table.py
+pyside2-uic src/frontend/ui/crawls/crawl_view.ui > src/frontend/ui_compiled/crawls/ui_crawl_view.py
+pyside2-uic src/frontend/ui/crawls/new_crawl.ui > src/frontend/ui_compiled/crawls/ui_new_crawl.py
+
 # Network Page:
 pyside2-uic src/frontend/ui/network/network_page_widget.ui > src/frontend/ui_compiled/network/ui_network_page_widget.py
 pyside2-uic src/frontend/ui/network/network_requests_table.ui > src/frontend/ui_compiled/network/ui_network_requests_table.py

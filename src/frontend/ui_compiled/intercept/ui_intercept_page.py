@@ -26,14 +26,16 @@ class Ui_InterceptPage(object):
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3 = QVBoxLayout()
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_3.setContentsMargins(-1, 0, -1, -1)
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalSpacer = QSpacerItem(20, 10, QSizePolicy.Minimum, QSizePolicy.Maximum)
-
-        self.verticalLayout_2.addItem(self.verticalSpacer)
-
+        self.verticalLayout_2.setContentsMargins(-1, 0, -1, -1)
         self.interceptTitle = QLabel(InterceptPage)
         self.interceptTitle.setObjectName(u"interceptTitle")
+        font = QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.interceptTitle.setFont(font)
 
         self.verticalLayout_2.addWidget(self.interceptTitle)
 

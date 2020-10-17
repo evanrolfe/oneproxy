@@ -37,7 +37,7 @@ describe('createCrawl Command', () => {
         "maxConcurrency": 10,
         "maxDepth": 2,
         "xhrTimeout": 5,
-        "pageTimeout": 30,
+        //"pageTimeout": 30,
         "waitOnEachPage": 3000,
         "verboseOutput": false,
         "headless": false,

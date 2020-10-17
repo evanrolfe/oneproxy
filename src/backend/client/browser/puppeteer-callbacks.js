@@ -173,8 +173,6 @@ const startDOMWatcher = async (page, requestId) => {
 
     const request = result[0];
     const pageUrl = url.parse(page.url());
-    if (request === undefined) console.log(`[Error] No request with ID ${requestId}`)
-    if (pageUrl === undefined) console.log(`[Error] No url for page ${page.url()}`)
 
     if (request === undefined || request.host !== pageUrl.host || request.path !== pageUrl.pathname) {
       console.log(`[BrowserUtils] DOMWatcher appears to be out of date for request ${requestId}, stopping.`);
