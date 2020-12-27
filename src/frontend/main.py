@@ -1,8 +1,20 @@
 import sys
+import traceback
 from PySide2.QtWidgets import QApplication, QLabel
 from PySide2.QtCore import QFile, QTextStream
 
+from models.backend import Backend
 from widgets.main_window import MainWindow
+
+def excepthook(type, value, tb):
+    backend = Backend.get_instance()
+    backend.kill()
+
+    print("----------------------------------------------------------")
+    traceback_details = '\n'.join(traceback.extract_tb(tb).format())
+    print(f"Type: {type}\nValue: {value}\nTraceback: {traceback_details}")
+
+sys.excepthook = excepthook
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
