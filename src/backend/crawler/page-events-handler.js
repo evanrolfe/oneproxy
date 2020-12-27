@@ -9,13 +9,13 @@ class PageEventsHandler {
     page.on('requestfinished', (request) => this._handleRequestfinished(request));
   }
 
-  async waitForRequestsToFinish(timeoutSeconds) {
+  async waitForRequestsToFinish(timeoutMilliSeconds) {
     return Promise.race([
       this.waitForAllXhrFinished(),
       new Promise(resolve => {
         setTimeout(() => {
           resolve();
-        }, timeoutSeconds * 1000);
+        }, timeoutMilliSeconds);
       }),
     ]);
   }

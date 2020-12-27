@@ -146,6 +146,7 @@ class Crawler {
     } catch(error) {
       console.log(`ERROR: ${url} - Could not process:`);
       console.log(error.message);
+      console.log(error.stack);
 
     } finally {
       this.browser.pendingRequests--;

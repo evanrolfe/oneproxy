@@ -33,22 +33,19 @@ describe('createCrawl Command', () => {
       const crawlConfig = {
         "baseUrl": "http://localhost:3000",
         "clickButtons": false,
-        "buttonXPath": 'button',
         "maxConcurrency": 10,
         "maxDepth": 2,
-        "xhrTimeout": 5,
-        //"pageTimeout": 30,
+        "xhrTimeout": 5000,
         "waitOnEachPage": 3000,
         "verboseOutput": false,
-        "headless": false,
-        "ignoreLinksIncluding": ["/users/sign_out"],
-        "ignoreButtonsIncluding": ['Logout', 'submit', 'Save'],
+        "headless": true,
+        "ignoreLinksIncluding": ["/signout"]
       };
       dbParams = { config: JSON.stringify(crawlConfig), status: 'created', client_id: clientId };
       dbResult = await global.knex('crawls').insert(dbParams);
       const crawlId = dbResult[0];
 
-      writeToBackend({ "command": "createCrawl", "crawlId": crawlId, "clientId": clientId });
+      writeToBackend({ "command": "createCrawl", "crawlId": crawlId });
 
       result = await messageFromBackend('crawlStarted');
       await messageFromBackend('crawlFinished');

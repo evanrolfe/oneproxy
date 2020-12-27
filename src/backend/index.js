@@ -24,7 +24,7 @@ const { BaseConfig } = require('./crawler/config/base-config');
 // {"command": "createClient", "type": "chromium"}
 // {"command": "openClient", "id": 1}
 // {"command": "listAvailableClientTypes"}
-// {"command": "startCrawler"}
+// {"command": "createCrawl", "crawlId": 8}
 
 // Environment:
 if (process.env.NODE_ENV == undefined) {
