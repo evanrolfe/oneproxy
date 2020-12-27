@@ -23,6 +23,7 @@ class NetworkPageWidget(QWidget):
     self.ui.requestsTableWidget.setTableModel(self.requests_table_model)
     self.ui.requestsTableWidget.request_selected.connect(self.select_request)
     self.ui.requestsTableWidget.delete_requests.connect(self.delete_requests)
+    self.ui.requestsTableWidget.search_text_changed.connect(self.search_requests)
 
     #self.ui.splitter.layout().setContentsMargins(0, 0, 0, 0)
     #self.ui.layout().setContentsMargins(0, 0, 0, 0)
@@ -42,4 +43,11 @@ class NetworkPageWidget(QWidget):
   @Slot()
   def delete_requests(self, request_ids):
     self.requests_table_model.delete_requests(request_ids)
+
+  @Slot()
+  def search_requests(self, search_text):
+    print(f'Searching requests! {search_text}')
+    self.request_data.set_filter_param('search', search_text)
+    self.request_data.load_requests()
+    self.requests_table_model.refresh()
 

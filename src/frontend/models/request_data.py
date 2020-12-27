@@ -3,8 +3,11 @@ from PySide2.QtSql import QSqlDatabase, QSqlQuery
 from models.request import Request
 
 class RequestData:
+  SEARCHABLE_COLUMNS = ['id', 'method', 'host', 'path']
+
   def __init__(self):
     self.requests = []
+    self.filter_params = {}
 
   def update_request(self, new_request):
     for i, request in enumerate(self.requests):
@@ -34,12 +37,28 @@ class RequestData:
       if r.id == request_id:
         return i
 
+  def set_filter_param(self, key, value):
+    self.filter_params[key] = value
+
   def load_requests(self):
-    query = QSqlQuery("SELECT * FROM requests ORDER BY id DESC")
+    self.requests = []
+
+    search_term = self.filter_params.get('search')
+    if search_term:
+      conditions_list = list(map(lambda x: f'{x} LIKE "%{search_term}%"', self.SEARCHABLE_COLUMNS))
+      conditions_str = ' OR '.join(conditions_list)
+
+      query_str = f'SELECT * FROM requests WHERE {conditions_str} ORDER BY id DESC'
+    else:
+      query_str = "SELECT * FROM requests ORDER BY id DESC"
+
+    query = QSqlQuery(query_str)
 
     while query.next():
       request = self.request_from_query_result(query)
       self.requests.append(request)
+
+    print(f'found {len(self.requests)} requests with query:\n{query_str}')
 
   def load_request(self, request_id):
     query = QSqlQuery()

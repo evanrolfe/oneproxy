@@ -44,10 +44,10 @@ class Ui_NetworkRequestsTable(object):
 
         self.verticalLayout_2.addWidget(self.label)
 
-        self.lineEdit = QLineEdit(NetworkRequestsTable)
-        self.lineEdit.setObjectName(u"lineEdit")
+        self.searchBox = QLineEdit(NetworkRequestsTable)
+        self.searchBox.setObjectName(u"searchBox")
 
-        self.verticalLayout_2.addWidget(self.lineEdit)
+        self.verticalLayout_2.addWidget(self.searchBox)
 
 
         self.horizontalLayout_2.addLayout(self.verticalLayout_2)

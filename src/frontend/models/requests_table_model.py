@@ -115,3 +115,6 @@ class RequestsTableModel(QAbstractTableModel):
       status = int(request.response_status)
 
     return [status, request.id]
+
+  def refresh(self):
+    self.layoutChanged.emit()

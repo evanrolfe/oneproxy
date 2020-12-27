@@ -11,6 +11,7 @@ from widgets.network.network_capture_filters import NetworkCaptureFilters
 class NetworkRequestsTable(QWidget):
   request_selected = Signal(QItemSelection, QItemSelection)
   delete_requests = Signal(list)
+  search_text_changed = Signal(str)
 
   def __init__(self, *args, **kwargs):
     super(NetworkRequestsTable, self).__init__(*args, **kwargs)
@@ -27,6 +28,9 @@ class NetworkRequestsTable(QWidget):
     verticalHeader.setSectionResizeMode(QHeaderView.Fixed)
     verticalHeader.setDefaultSectionSize(20)
     verticalHeader.setVisible(False)
+
+    # Search box:
+    self.ui.searchBox.textEdited.connect(self.search_text_edited)
 
     # Display & Capture Filters:
     self.network_display_filters = NetworkDisplayFilters(self)
@@ -86,3 +90,7 @@ class NetworkRequestsTable(QWidget):
   @Slot()
   def display_filters_clicked(self):
     print("You clicked me!")
+
+  @Slot()
+  def search_text_edited(self, new_text):
+    self.search_text_changed.emit(new_text)
