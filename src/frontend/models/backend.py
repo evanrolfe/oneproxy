@@ -124,6 +124,10 @@ class Backend:
   def get_available_clients(self):
     self.send_command(LIST_AVAILABLE_CLIENTS_COMMAND)
 
+  def start_crawler(self, crawl_id):
+    command = b'{"command": "createCrawl", "crawlId": ' + bytes(str(crawl_id), 'utf8') + b'}'
+    self.send_command(command)
+
   def open_client(self, client_id):
     command = b'{"command": "openClient", "id": ' + bytes(str(client_id), 'utf8') + b'}'
     self.send_command(command)

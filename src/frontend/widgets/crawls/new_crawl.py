@@ -1,20 +1,27 @@
 import sys
+import json
 from PySide2.QtWidgets import QLineEdit, QPushButton, QApplication, QVBoxLayout, QDialog
-from PySide2.QtCore import Slot
+from PySide2.QtCore import Slot, Signal
 from PySide2.QtGui import QIcon
 
 from ui_compiled.crawls.ui_new_crawl import Ui_NewCrawl
 
 from models.backend import Backend
 from models.client_data import ClientData
+from models.crawl_data import CrawlData
+from models.crawl import Crawl
 
 class NewCrawl(QDialog):
+  crawl_saved = Signal()
+
   def __init__(self, parent = None):
     super(NewCrawl, self).__init__(parent)
 
     self.ui = Ui_NewCrawl()
     self.ui.setupUi(self)
     self.setModal(True)
+
+    self.backend = Backend.get_instance()
 
     self.ui.cancelButton.clicked.connect(self.close)
     self.ui.saveButton.clicked.connect(self.start)
@@ -39,22 +46,36 @@ class NewCrawl(QDialog):
   def start(self):
     print("Saving")
     client_id = self.ui.clientsDropdown.itemData(self.ui.clientsDropdown.currentIndex())
-    browser_mode = (self.ui.browserModeDropdown.currentIndex() == 0)
+    headless = (self.ui.browserModeDropdown.currentIndex() == 0)
     base_url = self.ui.baseURLText.text()
     ignore_urls = self.ui.ignoreURLsText.toPlainText().split("\n")
+    ignore_urls = list(filter(lambda url: not url == '', ignore_urls))
 
     max_concurrency = int(self.ui.maxConcurrencyText.text())
     max_depth = int(self.ui.maxDepthText.text())
-    xhr_timeout = int(self.ui.xhrTimeoutText.text())
-    wait_for_page = int(self.ui.waitPageText.text())
+    xhr_timeout = int(self.ui.xhrTimeoutText.text()) * 1000
+    wait_for_page = int(self.ui.waitPageText.text()) * 1000
     verbose = (self.ui.logLevelDropdown.currentIndex() == 1)
 
-    print(client_id)
-    print(browser_mode)
-    print(base_url)
-    print(ignore_urls)
-    print(max_concurrency)
-    print(max_depth)
-    print(xhr_timeout)
-    print(wait_for_page)
-    print(verbose)
+    config = {
+        "baseUrl": base_url,
+        "clickButtons": False,
+        "maxConcurrency": max_concurrency,
+        "maxDepth": max_depth,
+        "xhrTimeout": xhr_timeout,
+        "waitOnEachPage": wait_for_page,
+        "verboseOutput": verbose,
+        "headless": headless,
+        "ignoreLinksIncluding": ignore_urls
+    }
+
+    crawl = Crawl({
+      "client_id": client_id,
+      "status": "created",
+      "config": json.dumps(config)
+    })
+
+    result = CrawlData.save(crawl)
+    self.crawl_saved.emit()
+    self.backend.start_crawler(crawl.id)
+    self.close()

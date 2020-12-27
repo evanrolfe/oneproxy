@@ -1,3 +1,5 @@
+import time
+
 from PySide2.QtSql import QSqlDatabase, QSqlQuery
 
 from models.crawl import Crawl
@@ -36,3 +38,25 @@ class CrawlData:
       }
 
       return Crawl(attrs)
+
+    @classmethod
+    def save(cls, crawl):
+      created_at = int(round(time.time() * 1000))
+
+      query = QSqlQuery()
+      query.prepare("INSERT INTO crawls (client_id, config, status, created_at) VALUES (:client_id, :config, :status, :created_at)")
+      query.bindValue(":client_id", crawl.client_id)
+      query.bindValue(":config", crawl.config)
+      query.bindValue(":status", crawl.status)
+      query.bindValue(":created_at", created_at)
+      result = query.exec_()
+      query.next()
+
+      if (result == False):
+        print("THERE WAS AN ERROR WITH THE SQL QUERY!")
+      else:
+        crawl.id = query.lastInsertId()
+        crawl.created_at = created_at
+        print(f"Crawl created with id: {crawl.id}")
+
+      return result
