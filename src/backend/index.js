@@ -23,6 +23,8 @@ const { BaseConfig } = require('./crawler/config/base-config');
 // Example commands:
 // {"command": "createClient", "type": "chromium"}
 // {"command": "openClient", "id": 1}
+// {"command": "closeClient", "id": 1}
+// {"command": "bringToFrontClient", "id": 1}
 // {"command": "listAvailableClientTypes"}
 // {"command": "createCrawl", "crawlId": 8}
 
@@ -75,6 +77,14 @@ const handleLine = async (cmd) => {
       case 'openClient':
         client = await clientStore.loadClient(parsedCmd.id, paths);
         await client.start();
+        break;
+
+      case 'closeClient':
+        clientStore.closeClient(parsedCmd.id)
+        break;
+
+      case 'bringToFrontClient':
+        await clientStore.bringToFrontClient(parsedCmd.id)
         break;
 
       case 'closeAllClients':

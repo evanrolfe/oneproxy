@@ -24,11 +24,20 @@ class ClientStore {
     return client;
   }
 
-  closeClient(client) {
-    console.log(`[Backend] ClientStore: closing client ${client.clientData.id}`)
+  closeClient(id) {
+    console.log(`[Backend] ClientStore: closing client ${id}`)
 
+    const client = this.clients.find(c => c.clientData.id === id);
     client.close();
+
     this.clients = this.clients.filter(c => c !== client);
+  }
+
+  bringToFrontClient(id) {
+    console.log(`[Backend] ClientStore: bringToFront client ${id}`)
+
+    const client = this.clients.find(c => c.clientData.id === id);
+    client.bringToFront();
   }
 
   closeAll() {

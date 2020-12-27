@@ -55,15 +55,29 @@ class ClientsTable(QWidget):
     menu = QMenu()
 
     if (client.open == True):
-      action = QAction("Close Client (TODO)")
-      menu.addAction(action)
+      bring_front_action = QAction("Bring to Front")
+      bring_front_action.triggered.connect(lambda: self.bring_to_front_client_clicked(client))
+
+      close_action = QAction("Close Client")
+      close_action.triggered.connect(lambda: self.close_client_clicked(client))
+
+      menu.addAction(bring_front_action)
+      menu.addAction(close_action)
     else:
       action = QAction("Open Client")
       menu.addAction(action)
-      action.triggered.connect(lambda: self.open_browser_clicked(client))
+      action.triggered.connect(lambda: self.open_client_clicked(client))
 
     menu.exec_(self.mapToGlobal(position))
 
   @Slot()
-  def open_browser_clicked(self, client):
+  def open_client_clicked(self, client):
     self.backend.open_client(client.id)
+
+  @Slot()
+  def close_client_clicked(self, client):
+    self.backend.close_client(client.id)
+
+  @Slot()
+  def bring_to_front_client_clicked(self, client):
+    self.backend.bring_to_front_client(client.id)

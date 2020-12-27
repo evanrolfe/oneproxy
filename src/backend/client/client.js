@@ -75,6 +75,16 @@ class Client {
     if (this.browser) killProcGracefully(this.browser.pid);
   }
 
+  async bringToFront() {
+    console.log(`[Backend] bringToFront client ${this.clientData.id}`)
+
+    if(this.browser.puppeteerBrowser) {
+      const pages = await this.browser.puppeteerBrowser.pages();
+      const page = pages[0];
+      await page.bringToFront();
+    }
+  }
+
   onBrowserClosed(callbackFunc) {
     this.onBrowserClosed = callbackFunc;
   }

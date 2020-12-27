@@ -132,6 +132,14 @@ class Backend:
     command = b'{"command": "openClient", "id": ' + bytes(str(client_id), 'utf8') + b'}'
     self.send_command(command)
 
+  def close_client(self, client_id):
+    command = b'{"command": "closeClient", "id": ' + bytes(str(client_id), 'utf8') + b'}'
+    self.send_command(command)
+
+  def bring_to_front_client(self, client_id):
+    command = b'{"command": "bringToFrontClient", "id": ' + bytes(str(client_id), 'utf8') + b'}'
+    self.send_command(command)
+
   def forward_request(self, request):
     request_json = json.dumps(request)
     command = b'{"command": "forward", "request": ' + bytes(request_json, 'utf8') + b'}'
