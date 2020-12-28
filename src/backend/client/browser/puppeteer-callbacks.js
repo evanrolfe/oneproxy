@@ -135,7 +135,7 @@ const handleFramenavigated = async (page, frame, origURL) => {
   const requestParams = {
     client_id: page.browser().id,
     url: page.url(),
-    host: parsedUrl.hostname,
+    host: parsedUrl.host,
     path: parsedUrl.pathname,
     request_type: 'navigation',
     created_at: Date.now()
@@ -162,8 +162,8 @@ const handleFramenavigated = async (page, frame, origURL) => {
 
 const startDOMWatcher = async (page, requestId) => {
   const domWatcherId = await setInterval(async () => {
-    //console.log(`[BrowserUtils] DOMListener ${domWatcherId} running...`);
-    console.log(`[BrowserUtils] DOMListener for requestId: ${requestId} on page: ${page.url()}`);
+    //console.log(`[BrowserUtils] DOMWatcher ${domWatcherId} running...`);
+    console.log(`[BrowserUtils] DOMWatcher for requestId: ${requestId} on page: ${page.url()}`);
 
     // UGLY WORKAROUND: Prevent the race condition described at the top of page:
     // Check that the page url has not changed while this callback has been running

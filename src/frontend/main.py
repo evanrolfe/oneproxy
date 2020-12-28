@@ -10,8 +10,8 @@ from models.database import Database
 from widgets.main_window import MainWindow
 
 def excepthook(type, value, tb):
-  backend = Backend.get_instance()
-  backend.kill()
+  #backend = Backend.get_instance()
+  #backend.kill()
 
   print("----------------------------------------------------------")
   traceback_details = '\n'.join(traceback.extract_tb(tb).format())
