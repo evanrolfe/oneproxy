@@ -10,7 +10,7 @@ class ClientStore {
     const client = await Client.create(type, paths);
 
     client.onBrowserClosed(() => {
-      this.closeClient(client);
+      this.closeClient(client.clientData.id);
     });
 
     this.clients.push(client);
@@ -19,6 +19,10 @@ class ClientStore {
 
   async loadClient(id, paths) {
     const client = await Client.load(id, paths);
+
+    client.onBrowserClosed(() => {
+      this.closeClient(client.clientData.id);
+    });
 
     this.clients.push(client);
     return client;

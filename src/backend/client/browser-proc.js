@@ -30,7 +30,7 @@ class BrowserProc {
   }
 
   onClosed(callbackFunc) {
-    this.onClosed = callbackFunc;
+    this.onClosedCallback = callbackFunc;
   }
 
   // Private Methods:
@@ -104,7 +104,7 @@ class BrowserProc {
     browserInstance.on('stop', async (code) => {
       console.log('[Backend] Browser instance stopped with exit code:', code);
       try {
-        if(this.onClosed) this.onClosed();
+        if(this.onClosedCallback) this.onClosedCallback();
       } catch(err) {
         // This will occur if we have already closed the proxy process i.e. on exit
         console.log(err.message)
