@@ -1,7 +1,8 @@
+import re
+
 from PySide2.QtSql import QSqlDatabase, QSqlQuery
 
-SCHEMA = """
-CREATE TABLE IF NOT EXISTS requests(
+SCHEMA_SQL = """CREATE TABLE IF NOT EXISTS requests(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   client_id INTEGER,
   method TEXT,
@@ -108,10 +109,28 @@ class Database:
       print(f'[Frontend] Loaded database from {self.db_path}')
     else:
       print(f'[Frontend] ERROR could not load database from {self.db_path}')
-      # TODO: create the database using the schema
 
-  def load_crawls(self):
-    self.crawls = []
-    query = QSqlQuery("")
+    db_tables = []
+    query = QSqlQuery("SELECT name FROM sqlite_master WHERE type='table'")
     query.exec_()
+    while query.next():
+      db_tables.append(query.value(0))
+
+    if (len(db_tables) != 8):
+      print(f'[Frontend] database not up-to-date, importing the schema...')
+      self.import_schema()
+
+  def import_schema(self):
+    query_sql = re.sub(r'\r\n|\n|\r', '', SCHEMA_SQL)
+    query_sql = re.sub(r'\s+', ' ', query_sql)
+    queries = query_sql.split(';')
+    queries = list(filter(None, queries)) # Remove empty strings
+
+    for query_str in queries:
+      query = QSqlQuery()
+      query.prepare(query_str)
+      result = query.exec_()
+
+      if (result == False):
+        print(query.lastError())
 
