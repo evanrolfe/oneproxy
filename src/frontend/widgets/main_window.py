@@ -2,8 +2,8 @@ import sys
 import pathlib
 import asyncio
 
-from PySide2.QtWidgets import QApplication, QMainWindow, QLabel, QHeaderView, QAbstractItemView, QStackedWidget, QToolButton, QAction, QMenu, QShortcut, QListWidgetItem
-from PySide2.QtCore import QFile, Qt, QTextStream, QResource, SIGNAL, Slot, QPoint
+from PySide2.QtWidgets import QApplication, QMainWindow, QLabel, QHeaderView, QAbstractItemView, QStackedWidget, QToolButton, QAction, QMenu, QShortcut, QListWidgetItem, QListView
+from PySide2.QtCore import QFile, Qt, QTextStream, QResource, SIGNAL, Slot, QPoint, QSize
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtSql import QSqlDatabase, QSqlQuery
 from PySide2.QtGui import QIcon, QKeySequence
@@ -24,6 +24,24 @@ import assets_compiled.assets
 import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
+sidebar_style = """
+QListWidget {
+  background: #E9E9E9;
+}
+
+QListWidget::item {
+  padding: 5px;
+}
+
+QListWidget::item::!selected {
+  border-left: 2px solid #E9E9E9;
+}
+
+QListWidget::item::selected {
+  border-left: 2px solid #82b9bc;
+}
+"""
+
 class MainWindow(QMainWindow):
   def __init__(self, *args, **kwargs):
     super(MainWindow, self).__init__(*args, **kwargs)
@@ -31,7 +49,10 @@ class MainWindow(QMainWindow):
     self.setWindowTitle('OneProxy')
     self.ui = Ui_MainWindow()
     self.ui.setupUi(self)
-    self.setup_toolbar()
+
+    # TOGGLE TOOLBAR HERE:
+    #self.setup_toolbar()
+    self.ui.toolBar.setVisible(False)
 
     # Setup pages:
     self.network_page_widget = NetworkPageWidget()
@@ -57,12 +78,7 @@ class MainWindow(QMainWindow):
     self.requests_page.layout().setContentsMargins(0, 0, 0, 0)
 
     # Add actions to sidebar:
-    self.ui.sideBar.addItem(QListWidgetItem("Network"))
-    self.ui.sideBar.addItem(QListWidgetItem("Intercept"))
-    self.ui.sideBar.addItem(QListWidgetItem("Clients"))
-    self.ui.sideBar.addItem(QListWidgetItem("Requests"))
-    self.ui.sideBar.addItem(QListWidgetItem("Crawler"))
-    self.ui.sideBar.itemClicked.connect(self.sidebar_item_clicked)
+    self.setup_sidebar()
 
     # Shortcut for closing app:
     self.connect(QShortcut(QKeySequence(Qt.CTRL + Qt.Key_C), self), SIGNAL('activated()'), self.exit)
@@ -113,21 +129,61 @@ class MainWindow(QMainWindow):
     self.ui.toolBar.addWidget(openProjectButton)
     self.ui.toolBar.addWidget(newClientButton)
 
+  def setup_sidebar(self):
+    self.ui.sideBar.currentItemChanged.connect(self.sidebar_item_clicked)
+
+    self.ui.sideBar.setViewMode(QListView.IconMode)
+    self.ui.sideBar.setFlow(QListView.TopToBottom)
+    self.ui.sideBar.setStyleSheet(sidebar_style)
+    self.ui.sideBar.setMovement(QListView.Static)
+    self.ui.sideBar.setUniformItemSizes(True)
+    #icon_size = QSize(52, 35)
+
+    # Network Item
+    network_item = QListWidgetItem(QIcon(":/icons/icons8-add-folder-80.png"), None)
+    network_item.setData(Qt.UserRole, 'network')
+    #network_item.setSizeHint(icon_size)
+    self.ui.sideBar.addItem(network_item)
+
+    # Intercept Item
+    intercept_item = QListWidgetItem(QIcon(":/icons/icons8-add-folder-80.png"), None)
+    intercept_item.setData(Qt.UserRole, 'intercept')
+    self.ui.sideBar.addItem(intercept_item)
+
+    # Clients Item
+    clients_item = QListWidgetItem(QIcon(":/icons/icons8-add-folder-80.png"), None)
+    clients_item.setData(Qt.UserRole, 'clients')
+    self.ui.sideBar.addItem(clients_item)
+
+    # Requests Item
+    requests_item = QListWidgetItem(QIcon(":/icons/icons8-add-folder-80.png"), None)
+    requests_item.setData(Qt.UserRole, 'requests')
+    self.ui.sideBar.addItem(QListWidgetItem(requests_item))
+
+    # Crawler Item
+    crawler_item = QListWidgetItem(QIcon(":/icons/icons8-add-folder-80.png"), None)
+    crawler_item.setData(Qt.UserRole, 'crawler')
+    self.ui.sideBar.addItem(crawler_item)
+
+
+
+
   @Slot()
   def new_client_click(self):
     self.new_client_modal.show()
 
   @Slot()
   def sidebar_item_clicked(self, item):
-    text = item.text().lower()
+    item_value = item.data(Qt.UserRole)
+    print(item_value)
 
-    if text == 'network':
+    if item_value == 'network':
       self.ui.stackedWidget.setCurrentWidget(self.network_page_widget)
-    elif text == 'intercept':
+    elif item_value == 'intercept':
       self.ui.stackedWidget.setCurrentWidget(self.intercept_page)
-    elif text == 'clients':
+    elif item_value == 'clients':
       self.ui.stackedWidget.setCurrentWidget(self.clients_page)
-    elif text == 'crawler':
+    elif item_value == 'crawler':
       self.ui.stackedWidget.setCurrentWidget(self.crawls_page)
-    elif text == 'requests':
+    elif item_value == 'requests':
       self.ui.stackedWidget.setCurrentWidget(self.requests_page)

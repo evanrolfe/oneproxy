@@ -34,8 +34,8 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.sideBar.sizePolicy().hasHeightForWidth())
         self.sideBar.setSizePolicy(sizePolicy)
-        self.sideBar.setMinimumSize(QSize(75, 0))
-        self.sideBar.setMaximumSize(QSize(75, 16777215))
+        self.sideBar.setMinimumSize(QSize(52, 0))
+        self.sideBar.setMaximumSize(QSize(52, 16777215))
 
         self.horizontalLayout.addWidget(self.sideBar)
 
