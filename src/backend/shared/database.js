@@ -9,7 +9,7 @@ const setupDatabaseStore = async (databaseFile) => {
   });
 
   console.log(`[Backend] Loaded database ${databaseFile}`);
-
+/*
   // Check if we need to import the database schema:
   const tables = await dbConn.raw("SELECT name FROM sqlite_master WHERE type='table'");
   const tableNames = tables.map(table => table.name);
@@ -37,7 +37,7 @@ const setupDatabaseStore = async (databaseFile) => {
   }
     console.log(`[Backend] schema imported.`);
   }
-
+*/
   return dbConn;
 };
 

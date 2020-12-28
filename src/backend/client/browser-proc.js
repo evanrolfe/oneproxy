@@ -49,7 +49,7 @@ class BrowserProc {
 
   async _startChromeChromium(browserType) {
     const spki = getSPKIFingerprint(this.paths.keyPath, this.paths.certPath);
-    const profilePath = `${this.paths.tmpPath}/${browserType}-profile${this.clientData.id}`;
+    const profilePath = `${this.paths.tmpPath}/${browserType}-profile`;
 
     const launchOptions = {
       browser: browserType,

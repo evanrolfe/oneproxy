@@ -1,5 +1,6 @@
 import sys
 import pathlib
+import asyncio
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QLabel, QHeaderView, QAbstractItemView, QStackedWidget, QToolButton, QAction, QMenu, QShortcut, QListWidgetItem
 from PySide2.QtCore import QFile, Qt, QTextStream, QResource, SIGNAL, Slot, QPoint
@@ -8,7 +9,6 @@ from PySide2.QtSql import QSqlDatabase, QSqlQuery
 from PySide2.QtGui import QIcon, QKeySequence
 
 from ui_compiled.ui_main_window import Ui_MainWindow
-from models.backend import Backend
 from models.requests_table_model import RequestsTableModel
 from widgets.network.network_page_widget import NetworkPageWidget
 from widgets.intercept.intercept_page import InterceptPage
@@ -28,18 +28,10 @@ class MainWindow(QMainWindow):
   def __init__(self, *args, **kwargs):
     super(MainWindow, self).__init__(*args, **kwargs)
 
-    self.app_path = pathlib.Path(__file__).parent.parent.parent.parent.absolute()
-    print(f'[Frontend] App path: {self.app_path}')
-
-    # Start the backend
-    Backend(self.app_path)
-    self.backend = Backend.get_instance()
-
     self.setWindowTitle('OneProxy')
     self.ui = Ui_MainWindow()
     self.ui.setupUi(self)
     self.setup_toolbar()
-    self.load_database()
 
     # Setup pages:
     self.network_page_widget = NetworkPageWidget()
@@ -77,6 +69,9 @@ class MainWindow(QMainWindow):
 
     # Create new client modal
     self.new_client_modal = NewClientModal(self)
+
+  def set_backend(self, backend):
+    self.backend = backend
 
   @Slot()
   def about_to_quit(self):
@@ -117,17 +112,6 @@ class MainWindow(QMainWindow):
     self.ui.toolBar.addWidget(newProjectButton)
     self.ui.toolBar.addWidget(openProjectButton)
     self.ui.toolBar.addWidget(newClientButton)
-
-  def load_database(self):
-    db_path = f'{self.app_path}/tmp/production.db'
-    db = QSqlDatabase.addDatabase('QSQLITE')
-    db.setDatabaseName(db_path)
-    db_result = db.open()
-
-    if db_result == True:
-      print(f'[Frontend] Loaded database from {db_path}')
-    else:
-      print(f'[Frontend] ERROR could not load database from {db_path}')
 
   @Slot()
   def new_client_click(self):

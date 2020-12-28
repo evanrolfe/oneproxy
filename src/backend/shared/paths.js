@@ -2,26 +2,30 @@ const { argv } = require('yargs');
 const path = require('path');
 
 const getPaths = () => {
-  let basePath;
+  let appPath, dbPath;
 
-  if(argv.basePath !== undefined) {
-    basePath = argv.basePath;
+  if(argv.appPath !== undefined) {
+    appPath = argv.appPath;
   } else {
-    basePath = path.join(__dirname, '../../../');
+    appPath = path.join(__dirname, '../../../');
   }
 
-  console.log(`[Backend] basePath: ${basePath}`);
+  if(argv.dbPath !== undefined) {
+    dbPath = argv.dbPath;
+  } else {
+    throw 'No dbPath option specified!';
+  }
+
+  console.log(`[Backend] appPath: ${appPath}`);
+  console.log(`[Backend] dbPath: ${dbPath}`);
+
   const paths = {
-    dbFile: `${basePath}tmp/${process.env.NODE_ENV}.db`,
-    keyPath: `${basePath}rootCA.key`,
-    certPath: `${basePath}rootCA.csr`,
-    cert9Path: `${basePath}cert9.db`,
-    tmpPath: `${basePath}tmp`,
+    dbFile: dbPath,
+    keyPath: `${appPath}rootCA.key`,
+    certPath: `${appPath}rootCA.csr`,
+    cert9Path: `${appPath}cert9.db`,
+    tmpPath: `${appPath}tmp`,
   };
-
-  if (argv.db !== undefined) {
-    paths.dbFile = argv.db;
-  }
 
   return paths;
 };

@@ -1,5 +1,6 @@
 import json
 import time
+import asyncio
 
 from PySide2.QtCore import QProcess, Slot, QByteArray
 from PySide2.QtWidgets import QMessageBox
@@ -18,17 +19,18 @@ class Backend:
         Backend()
     return Backend.__instance
 
-  def __init__(self, app_path):
+  def __init__(self, app_path, db_path):
     self.app_path = app_path
+    self.db_path = db_path
     self.callbacks = {
       'newRequest': [],
       'updatedRequest': [],
       'clientsAvailable': [],
       'clientsChanged': [],
       'requestIntercepted': [],
-      'responseIntercepted': []
+      'responseIntercepted': [],
+      'backendLoaded': []
     }
-    self.start()
 
     # Virtually private constructor.
     if Backend.__instance != None:
@@ -38,22 +40,26 @@ class Backend:
   # /Singleton method stuff
 
   def start(self):
-    print("Starting the proxy...")
-    self.backend = QProcess()
-    self.backend.start(f'{self.app_path}/build/oneproxy-backend --basePath={self.app_path}/')
-    self.backend.readyReadStandardOutput.connect(self.std_out_received)
-    self.backend.readyReadStandardError.connect(self.std_err_received)
-    # REMOVE THIS!!!
-    # TODO: Make this wait for a "backendStarted" message
-    time.sleep(2)
+    print("Starting the backend...")
+    #loop = asyncio.get_event_loop()
+    #future = loop.create_future()
+    #self.register_callback('backendLoaded', lambda: loop.call_soon(print('!!!!!!!!!!!!!!! done'), future, 'backendLoaded'))
+
+    self.backend_proc = QProcess()
+    self.backend_proc.start(f'{self.app_path}/build/oneproxy-backend --appPath={self.app_path} --dbPath={self.db_path}')
+    self.backend_proc.readyReadStandardOutput.connect(self.std_out_received)
+    self.backend_proc.readyReadStandardError.connect(self.std_err_received)
+
+    #result = await future
+    #print(f'----------> the result is: {result}')
 
   def kill(self):
     print("Stopping the backend...")
-    self.backend.terminate()
-    self.backend.waitForFinished(-1)
+    self.backend_proc.terminate()
+    self.backend_proc.waitForFinished(-1)
 
   def std_out_received(self):
-    output = self.backend.readAllStandardOutput()
+    output = self.backend_proc.readAllStandardOutput()
     lines = str(output, encoding='utf-8').split("\n")
 
     for line in lines:
@@ -65,10 +71,10 @@ class Backend:
   def send_command(self, command):
     print(command)
     command_bytes = QByteArray(command + b'\n')
-    self.backend.write(command_bytes)
+    self.backend_proc.write(command_bytes)
 
   def std_err_received(self):
-    line = self.backend.readAllStandardError()
+    line = self.backend_proc.readAllStandardError()
     line = str(line, encoding='utf-8')
     self._show_error_box(line)
 
@@ -113,6 +119,11 @@ class Backend:
       elif (obj['type'] == 'responseIntercepted'):
         for callback in self.callbacks['responseIntercepted']:
           callback(obj['request'])
+
+      elif (obj['type'] == 'backendLoaded'):
+        for callback in self.callbacks['backendLoaded']:
+          callback()
+
 
     except json.decoder.JSONDecodeError:
       print("[BackendHandler] could not parse json: ")

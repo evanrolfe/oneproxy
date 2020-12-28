@@ -1,33 +1,50 @@
 import sys
 import traceback
+import pathlib
+
 from PySide2.QtWidgets import QApplication, QLabel
 from PySide2.QtCore import QFile, QTextStream
 
 from models.backend import Backend
+from models.database import Database
 from widgets.main_window import MainWindow
 
 def excepthook(type, value, tb):
-    backend = Backend.get_instance()
-    backend.kill()
+  backend = Backend.get_instance()
+  backend.kill()
 
-    print("----------------------------------------------------------")
-    traceback_details = '\n'.join(traceback.extract_tb(tb).format())
-    print(f"Type: {type}\nValue: {value}\nTraceback: {traceback_details}")
+  print("----------------------------------------------------------")
+  traceback_details = '\n'.join(traceback.extract_tb(tb).format())
+  print(f"Type: {type}\nValue: {value}\nTraceback: {traceback_details}")
 
 sys.excepthook = excepthook
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+  app = QApplication(sys.argv)
 
-    # Setup stylesheet:
-    # file = QFile('/home/evan/Code/oneproxypy/assets/style/dark.qss')
-    # file.open(QFile.ReadOnly | QFile.Text)
-    # stream = QTextStream(file)
-    # app.setStyleSheet(stream.readAll())
+  # Setup stylesheet:
+  # file = QFile('/home/evan/Code/oneproxypy/assets/style/dark.qss')
+  # file.open(QFile.ReadOnly | QFile.Text)
+  # stream = QTextStream(file)
+  # app.setStyleSheet(stream.readAll())
 
-    main_window = MainWindow()
-    main_window.show()
+  app_path = pathlib.Path(__file__).parent.parent.parent.parent.absolute()
+  db_path = '/home/evan/Desktop/oneproxy.db'
 
-    app.aboutToQuit.connect(main_window.about_to_quit)
+  print(f'[Frontend] App path: {app_path}')
+  print(f'[Frontend] DB path: {db_path}')
 
-    sys.exit(app.exec_())
+  database = Database(db_path)
+  database.load_or_create()
+
+  backend = Backend(app_path, db_path)
+  backend.register_callback('backendLoaded', lambda: print('Backend Loaded!'))
+  backend.start()
+
+  main_window = MainWindow()
+  main_window.set_backend(backend)
+  main_window.show()
+
+  app.aboutToQuit.connect(main_window.about_to_quit)
+
+  sys.exit(app.exec_())
