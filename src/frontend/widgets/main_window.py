@@ -9,6 +9,8 @@ from PySide2.QtSql import QSqlDatabase, QSqlQuery
 from PySide2.QtGui import QIcon, QKeySequence
 
 from ui_compiled.ui_main_window import Ui_MainWindow
+
+from lib.app_settings import AppSettings
 from models.requests_table_model import RequestsTableModel
 from widgets.network.network_page_widget import NetworkPageWidget
 from widgets.intercept.intercept_page import InterceptPage
@@ -51,12 +53,6 @@ class MainWindow(QMainWindow):
     self.ui = Ui_MainWindow()
     self.ui.setupUi(self)
 
-    # Settings:
-    self.settings = QSettings('PnTest', 'PnTest')
-    geometry = self.settings.value('geometry', None)
-    if (geometry != None):
-      self.restoreGeometry(geometry)
-
     self.ui.toolBar.setVisible(False)
 
     # Setup pages:
@@ -91,14 +87,28 @@ class MainWindow(QMainWindow):
     # Create new client modal
     self.new_client_modal = NewClientModal(self)
 
+    self.restore_layout_state()
+
   def set_backend(self, backend):
     self.backend = backend
 
+  def restore_layout_state(self):
+    settings = AppSettings.get_instance()
+    geometry = settings.get('geometry', None)
+
+    if (geometry != None):
+      self.restoreGeometry(geometry)
+
+  def save_layout_state(self):
+    geometry = self.saveGeometry()
+
+    settings = AppSettings.get_instance()
+    settings.save('geometry', geometry)
+
   @Slot()
   def about_to_quit(self):
-    geometry = self.saveGeometry()
-    self.settings.setValue('geometry', geometry)
-
+    self.save_layout_state()
+    self.network_page_widget.save_layout_state()
     self.backend.kill()
 
   def exit(self):

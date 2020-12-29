@@ -1,11 +1,12 @@
 import sys
 from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstractItemView
-from PySide2.QtCore import QFile, Slot
+from PySide2.QtCore import QFile, Slot, QSettings
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtSql import QSqlDatabase, QSqlQuery
 
 from ui_compiled.network.ui_network_page_widget import Ui_NetworkPageWidget
 
+from lib.app_settings import AppSettings
 from models.requests_table_model import RequestsTableModel
 from models.request_data import RequestData
 
@@ -25,11 +26,28 @@ class NetworkPageWidget(QWidget):
     self.ui.requestsTableWidget.delete_requests.connect(self.delete_requests)
     self.ui.requestsTableWidget.search_text_changed.connect(self.search_requests)
 
-    #self.ui.splitter.layout().setContentsMargins(0, 0, 0, 0)
+    #self.ui.requestsTableAndViewSplitter.layout().setContentsMargins(0, 0, 0, 0)
     #self.ui.layout().setContentsMargins(0, 0, 0, 0)
-    #self.ui.splitter.layout().setContentsMargins(0, 0, 0, 0)
-    #self.ui.splitter.setStyleSheet("padding: 0px;")
-    #self.ui.splitter.setSpacing(0)
+    #self.ui.requestsTableAndViewSplitter.layout().setContentsMargins(0, 0, 0, 0)
+    #self.ui.requestsTableAndViewSplitter.setStyleSheet("padding: 0px;")
+    #self.ui.requestsTableAndViewSplitter.setSpacing(0)
+    self.restore_layout_state()
+
+  def restore_layout_state(self):
+    settings = AppSettings.get_instance()
+    splitterState = settings.get("NetworkPageWidget.requestsTableAndViewSplitterState", None)
+    splitterState2 = settings.get("NetworkPageWidget.requestsViewSplitterState", None)
+
+    self.ui.requestsTableAndViewSplitter.restoreState(splitterState)
+    self.ui.requestViewWidget.ui.splitter.restoreState(splitterState2)
+
+  def save_layout_state(self):
+    splitter_state = self.ui.requestsTableAndViewSplitter.saveState()
+    splitter_state2 = self.ui.requestViewWidget.ui.splitter.saveState()
+
+    settings = AppSettings.get_instance()
+    settings.save("NetworkPageWidget.requestsTableAndViewSplitterState", splitter_state)
+    settings.save("NetworkPageWidget.requestsViewSplitterState", splitter_state2)
 
   @Slot()
   def select_request(self, selected, deselected):

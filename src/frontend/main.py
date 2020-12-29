@@ -3,7 +3,7 @@ import traceback
 import pathlib
 
 from PySide2.QtWidgets import QApplication, QLabel, QStyleFactory
-from PySide2.QtCore import QFile, QTextStream, Qt
+from PySide2.QtCore import QFile, QTextStream, Qt, QCoreApplication, QSettings
 from PySide2.QtGui import QPalette, QColor
 
 from models.backend import Backend
@@ -39,7 +39,6 @@ if __name__ == "__main__":
   #stream = QTextStream(file)
   #app.setStyleSheet(stream.readAll())
 
-
   app_path = pathlib.Path(__file__).parent.parent.parent.parent.absolute()
   db_path = '/home/evan/Desktop/oneproxy.db'
 
@@ -58,6 +57,11 @@ if __name__ == "__main__":
   main_window.show()
 
   app.aboutToQuit.connect(main_window.about_to_quit)
+
+  # Settings:
+  QCoreApplication.setOrganizationName('PnTLimted')
+  QCoreApplication.setOrganizationDomain('getpntest.com')
+  QCoreApplication.setApplicationName('PnTest')
 
   # Style:
   app.setStyle('Fusion')
