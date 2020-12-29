@@ -1,11 +1,10 @@
-import database from '../shared/database';
-import { DATABASE_FILES } from '../shared/constants';
+const { setupDatabaseStore } = require('../shared/database');
 
 const populateDb = async () => {
   console.log(`Populating...`);
-  const dbFile = DATABASE_FILES[process.env.NODE_ENV];
+  const dbFile = '/home/evan/Desktop/oneproxy.db';
   console.log(`Loading database from ${dbFile}`);
-  const knex = await database.setupDatabaseStore(dbFile);
+  const knex = await setupDatabaseStore(dbFile);
   console.log(`Database loaded.`);
 
   const requestHeaders =
@@ -15,9 +14,7 @@ const populateDb = async () => {
   const requestParams = {
     client_id: 1,
     method: 'GET',
-    url: 'http://localhost/api/posts.json',
     host: 'localhost',
-    port: 80,
     http_version: '1.1',
     path: '/api/posts.json',
     ext: 'json',
@@ -37,11 +34,5 @@ const populateDb = async () => {
 
   console.log(`Done.`);
 };
-
-if (process.env.NODE_ENV === undefined) {
-  throw new Error(
-    `You must set the NODE_ENV var!\ni.e. NODE_ENV=development yarn populate-db`
-  );
-}
 
 populateDb();
