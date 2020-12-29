@@ -8,20 +8,12 @@ from ui_compiled.intercept.ui_intercept_page import Ui_InterceptPage
 from models.backend import Backend
 from models.setting_data import SettingData
 
-TABS_STYLE = """
-  QTabWidget::pane {
-    margin: 1px 1px 1px 1px;
-    padding: -1px;
-  }
-"""
-
 class InterceptPage(QWidget):
   def __init__(self, *args, **kwargs):
     super(InterceptPage, self).__init__(*args, **kwargs)
     self.ui = Ui_InterceptPage()
     self.ui.setupUi(self)
 
-    self.ui.interceptTabs.setStyleSheet(TABS_STYLE)
     self.__set_buttons_enabled(False)
 
     # Register callback with the backend:

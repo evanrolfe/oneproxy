@@ -2,12 +2,22 @@ import sys
 import traceback
 import pathlib
 
-from PySide2.QtWidgets import QApplication, QLabel
-from PySide2.QtCore import QFile, QTextStream
+from PySide2.QtWidgets import QApplication, QLabel, QStyleFactory
+from PySide2.QtCore import QFile, QTextStream, Qt
+from PySide2.QtGui import QPalette, QColor
 
 from models.backend import Backend
 from models.database import Database
 from widgets.main_window import MainWindow
+from lib.palettes import Palettes
+
+THEME = 'dark'
+LIGHT_STYLE = """
+QTabWidget::pane {
+  margin: 1px 1px 1px 1px;
+  padding: -1px;
+}
+"""
 
 def excepthook(type, value, tb):
   #backend = Backend.get_instance()
@@ -20,13 +30,15 @@ def excepthook(type, value, tb):
 sys.excepthook = excepthook
 
 if __name__ == "__main__":
+
   app = QApplication(sys.argv)
 
   # Setup stylesheet:
-  # file = QFile('/home/evan/Code/oneproxypy/assets/style/dark.qss')
-  # file.open(QFile.ReadOnly | QFile.Text)
-  # stream = QTextStream(file)
-  # app.setStyleSheet(stream.readAll())
+  #file = QFile('/home/evan/Code/oneproxypy/assets/style.qss')
+  #file.open(QFile.ReadOnly | QFile.Text)
+  #stream = QTextStream(file)
+  #app.setStyleSheet(stream.readAll())
+
 
   app_path = pathlib.Path(__file__).parent.parent.parent.parent.absolute()
   db_path = '/home/evan/Desktop/oneproxy.db'
@@ -46,5 +58,13 @@ if __name__ == "__main__":
   main_window.show()
 
   app.aboutToQuit.connect(main_window.about_to_quit)
+
+  # Style:
+  app.setStyle('Fusion')
+
+  if (THEME == 'light'):
+    app.setStyleSheet(LIGHT_STYLE)
+  elif (THEME == 'dark'):
+    app.setPalette(Palettes.dark())
 
   sys.exit(app.exec_())

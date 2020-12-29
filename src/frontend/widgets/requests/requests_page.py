@@ -8,23 +8,12 @@ from ui_compiled.requests.ui_requests_page import Ui_RequestsPage
 
 from models.backend import Backend
 
-# TODO: Remove the duplication of this between here and request_view.py
-TABS_STYLE = """
-  QTabWidget::pane {
-    margin: 1px 1px 1px 1px;
-    padding: -1px;
-  }
-"""
-
 class RequestsPage(QWidget):
   def __init__(self, *args, **kwargs):
     super(RequestsPage, self).__init__(*args, **kwargs)
 
     self.ui = Ui_RequestsPage()
     self.ui.setupUi(self)
-
-    self.ui.requestTabs.setStyleSheet(TABS_STYLE)
-    self.ui.responseTabs.setStyleSheet(TABS_STYLE)
 
     self.ui.toggleFuzzTableButton.clicked.connect(self.toggle_fuzz_table)
 

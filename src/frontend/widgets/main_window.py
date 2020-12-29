@@ -3,7 +3,7 @@ import pathlib
 import asyncio
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QLabel, QHeaderView, QAbstractItemView, QStackedWidget, QToolButton, QAction, QMenu, QShortcut, QListWidgetItem, QListView
-from PySide2.QtCore import QFile, Qt, QTextStream, QResource, SIGNAL, Slot, QPoint, QSize
+from PySide2.QtCore import QFile, Qt, QTextStream, QResource, SIGNAL, Slot, QPoint, QSize, QSettings
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtSql import QSqlDatabase, QSqlQuery
 from PySide2.QtGui import QIcon, QKeySequence
@@ -24,21 +24,22 @@ import assets_compiled.assets
 import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
+#   background: #E9E9E9;
 sidebar_style = """
-QListWidget {
-  background: #E9E9E9;
+QListWidget#sideBar {
+  background: #3F3F3F;
 }
 
-QListWidget::item {
+QListWidget::item#sideBar {
   padding: 5px;
 }
 
-QListWidget::item::!selected {
-  border-left: 2px solid #E9E9E9;
+QListWidget::item::!selected#sideBar {
+  border-left: 2px solid #3F3F3F;
 }
 
-QListWidget::item::selected {
-  border-left: 2px solid #82b9bc;
+QListWidget::item::selected#sideBar {
+  border-left: 2px solid #2A82DA;
 }
 """
 
@@ -50,8 +51,6 @@ class MainWindow(QMainWindow):
     self.ui = Ui_MainWindow()
     self.ui.setupUi(self)
 
-    # TOGGLE TOOLBAR HERE:
-    #self.setup_toolbar()
     self.ui.toolBar.setVisible(False)
 
     # Setup pages:
@@ -96,77 +95,46 @@ class MainWindow(QMainWindow):
   def exit(self):
     QApplication.quit()
 
-  def setup_toolbar(self):
-    openProjectButton = QToolButton()
-
-    # New project button:
-    newProjectButton = QToolButton()
-    newProjectButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-
-    newProjectaction = QAction()
-    newProjectaction.setIcon(QIcon(":/icons/icons8-add-folder-80.png"))
-    newProjectaction.setText("New Project")
-    newProjectButton.setDefaultAction(newProjectaction)
-
-    # Open project actions in toolbar:
-    openProjectButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-    openProjectaction = QAction()
-    openProjectaction.setIcon(QIcon("://icons/icons8-opened-folder-80.png"))
-    openProjectaction.setText("Open Project")
-    openProjectButton.setDefaultAction(openProjectaction)
-
-    # New client button in toolbar:
-    newClientButton = QToolButton()
-    newClientButton.setPopupMode(QToolButton.InstantPopup)
-    newClientButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-    newClientaction = QAction()
-    newClientaction.setIcon(QIcon("://icons/icons8-add-property-80.png"))
-    newClientaction.setText("New Client")
-    newClientButton.setDefaultAction(newClientaction)
-    newClientButton.triggered.connect(self.new_client_click)
-
-    self.ui.toolBar.addWidget(newProjectButton)
-    self.ui.toolBar.addWidget(openProjectButton)
-    self.ui.toolBar.addWidget(newClientButton)
-
   def setup_sidebar(self):
     self.ui.sideBar.currentItemChanged.connect(self.sidebar_item_clicked)
 
+    self.ui.sideBar.setObjectName('sideBar')
+    self.ui.sideBar.setStyleSheet(sidebar_style)
+
     self.ui.sideBar.setViewMode(QListView.IconMode)
     self.ui.sideBar.setFlow(QListView.TopToBottom)
-    self.ui.sideBar.setStyleSheet(sidebar_style)
     self.ui.sideBar.setMovement(QListView.Static)
     self.ui.sideBar.setUniformItemSizes(True)
     #icon_size = QSize(52, 35)
 
     # Network Item
-    network_item = QListWidgetItem(QIcon(":/icons/icons8-cloud-backup-restore-50.png"), None)
+    network_item = QListWidgetItem(QIcon(":/icons/dark/icons8-cloud-backup-restore-50.png"), None)
     network_item.setData(Qt.UserRole, 'network')
     #network_item.setSizeHint(icon_size)
     self.ui.sideBar.addItem(network_item)
 
     # Intercept Item
-    intercept_item = QListWidgetItem(QIcon(":/icons/icons8-rich-text-converter-50.png"), None)
+    intercept_item = QListWidgetItem(QIcon(":/icons/dark/icons8-rich-text-converter-50.png"), None)
     intercept_item.setData(Qt.UserRole, 'intercept')
     self.ui.sideBar.addItem(intercept_item)
 
     # Clients Item
-    clients_item = QListWidgetItem(QIcon(":/icons/icons8-browse-page-50.png"), None)
+    clients_item = QListWidgetItem(QIcon(":/icons/dark/icons8-browse-page-50.png"), None)
     clients_item.setData(Qt.UserRole, 'clients')
     self.ui.sideBar.addItem(clients_item)
 
     # Requests Item
-    requests_item = QListWidgetItem(QIcon(":/icons/icons8-compose-50.png"), None)
+    requests_item = QListWidgetItem(QIcon(":/icons/dark/icons8-compose-50.png"), None)
     requests_item.setData(Qt.UserRole, 'requests')
     self.ui.sideBar.addItem(QListWidgetItem(requests_item))
 
     # Crawler Item
-    crawler_item = QListWidgetItem(QIcon(":/icons/icons8-spiderweb-50.png"), None)
+    crawler_item = QListWidgetItem(QIcon(":/icons/dark/icons8-spiderweb-50.png"), None)
     crawler_item.setData(Qt.UserRole, 'crawler')
     self.ui.sideBar.addItem(crawler_item)
 
     # Extensions Item
-    extensions_item = QListWidgetItem(QIcon(":/icons/icons8-plus-math-50.png"), None)
+    extensions_item = QListWidgetItem(QIcon(":/icons/dark/icons8-plus-math-50.png"), None)
     extensions_item.setData(Qt.UserRole, 'extensions')
     self.ui.sideBar.addItem(extensions_item)
 
