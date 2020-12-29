@@ -51,6 +51,12 @@ class MainWindow(QMainWindow):
     self.ui = Ui_MainWindow()
     self.ui.setupUi(self)
 
+    # Settings:
+    self.settings = QSettings('PnTest', 'PnTest')
+    geometry = self.settings.value('geometry', None)
+    if (geometry != None):
+      self.restoreGeometry(geometry)
+
     self.ui.toolBar.setVisible(False)
 
     # Setup pages:
@@ -90,6 +96,9 @@ class MainWindow(QMainWindow):
 
   @Slot()
   def about_to_quit(self):
+    geometry = self.saveGeometry()
+    self.settings.setValue('geometry', geometry)
+
     self.backend.kill()
 
   def exit(self):
