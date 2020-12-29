@@ -19,4 +19,8 @@ class Palettes:
     palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
     palette.setColor(QPalette.HighlightedText, Qt.black)
 
+    # Disabled:
+    palette.setColor(QPalette.Disabled, QPalette.WindowText, QColor('#E9E9E9'))
+    palette.setColor(QPalette.Disabled, QPalette.Button, QColor('#464643'))
+
     return palette
