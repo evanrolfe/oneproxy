@@ -11,5 +11,15 @@
         <file>icons/icons8-firefox.svg</file>
         <file>icons/icons-terminal.svg</file>
         <file>icons/icons8-question-mark.png</file>
+        <file>icons/icons8-spider-web-48.png</file>
+        <file>icons/icons8-cloud-backup-restore-50.png</file>
+        <file>icons/icons8-data-transfer-50.png</file>
+        <file>icons/icons8-compose-50.png</file>
+        <file>icons/icons8-rich-text-converter-50.png</file>
+        <file>icons/icons8-browse-page-50.png</file>
+        <file>icons/icons8-spider-50.png</file>
+        <file>icons/icons8-spiderweb-50.png</file>
+        <file>icons/icons8-plus-math-50.png</file>
+        <file>icons/icons8-add-new-50.png</file>
     </qresource>
 </RCC>

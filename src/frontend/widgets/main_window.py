@@ -140,33 +140,37 @@ class MainWindow(QMainWindow):
     #icon_size = QSize(52, 35)
 
     # Network Item
-    network_item = QListWidgetItem(QIcon(":/icons/icons8-add-folder-80.png"), None)
+    network_item = QListWidgetItem(QIcon(":/icons/icons8-cloud-backup-restore-50.png"), None)
     network_item.setData(Qt.UserRole, 'network')
     #network_item.setSizeHint(icon_size)
     self.ui.sideBar.addItem(network_item)
 
     # Intercept Item
-    intercept_item = QListWidgetItem(QIcon(":/icons/icons8-add-folder-80.png"), None)
+    intercept_item = QListWidgetItem(QIcon(":/icons/icons8-rich-text-converter-50.png"), None)
     intercept_item.setData(Qt.UserRole, 'intercept')
     self.ui.sideBar.addItem(intercept_item)
 
     # Clients Item
-    clients_item = QListWidgetItem(QIcon(":/icons/icons8-add-folder-80.png"), None)
+    clients_item = QListWidgetItem(QIcon(":/icons/icons8-browse-page-50.png"), None)
     clients_item.setData(Qt.UserRole, 'clients')
     self.ui.sideBar.addItem(clients_item)
 
     # Requests Item
-    requests_item = QListWidgetItem(QIcon(":/icons/icons8-add-folder-80.png"), None)
+    requests_item = QListWidgetItem(QIcon(":/icons/icons8-compose-50.png"), None)
     requests_item.setData(Qt.UserRole, 'requests')
     self.ui.sideBar.addItem(QListWidgetItem(requests_item))
 
     # Crawler Item
-    crawler_item = QListWidgetItem(QIcon(":/icons/icons8-add-folder-80.png"), None)
+    crawler_item = QListWidgetItem(QIcon(":/icons/icons8-spiderweb-50.png"), None)
     crawler_item.setData(Qt.UserRole, 'crawler')
     self.ui.sideBar.addItem(crawler_item)
 
+    # Extensions Item
+    extensions_item = QListWidgetItem(QIcon(":/icons/icons8-plus-math-50.png"), None)
+    extensions_item.setData(Qt.UserRole, 'extensions')
+    self.ui.sideBar.addItem(extensions_item)
 
-
+    self.ui.sideBar.setCurrentRow(0)
 
   @Slot()
   def new_client_click(self):
@@ -175,7 +179,6 @@ class MainWindow(QMainWindow):
   @Slot()
   def sidebar_item_clicked(self, item):
     item_value = item.data(Qt.UserRole)
-    print(item_value)
 
     if item_value == 'network':
       self.ui.stackedWidget.setCurrentWidget(self.network_page_widget)
