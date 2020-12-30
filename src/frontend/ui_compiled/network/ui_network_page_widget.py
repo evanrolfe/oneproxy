@@ -23,28 +23,62 @@ class Ui_NetworkPageWidget(object):
     def setupUi(self, NetworkPageWidget):
         if not NetworkPageWidget.objectName():
             NetworkPageWidget.setObjectName(u"NetworkPageWidget")
-        NetworkPageWidget.resize(1200, 800)
-        self.horizontalLayout = QHBoxLayout(NetworkPageWidget)
+        NetworkPageWidget.resize(897, 581)
+        self.verticalLayout = QVBoxLayout(NetworkPageWidget)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.crawlerToolbar = QWidget(NetworkPageWidget)
+        self.crawlerToolbar.setObjectName(u"crawlerToolbar")
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.crawlerToolbar.sizePolicy().hasHeightForWidth())
+        self.crawlerToolbar.setSizePolicy(sizePolicy)
+        self.crawlerToolbar.setMaximumSize(QSize(16777215, 20))
+        self.horizontalLayout = QHBoxLayout(self.crawlerToolbar)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.label = QLabel(self.crawlerToolbar)
+        self.label.setObjectName(u"label")
+        font = QFont()
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
+        self.label.setFont(font)
+
+        self.horizontalLayout.addWidget(self.label)
+
+        self.horizontalSpacer = QSpacerItem(158, 20, QSizePolicy.Maximum, QSizePolicy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+        self.newClientButton = QPushButton(self.crawlerToolbar)
+        self.newClientButton.setObjectName(u"newClientButton")
+        self.newClientButton.setMaximumSize(QSize(100, 16777215))
+
+        self.horizontalLayout.addWidget(self.newClientButton)
+
+
+        self.verticalLayout.addWidget(self.crawlerToolbar)
+
         self.requestsTableAndViewSplitter = QSplitter(NetworkPageWidget)
         self.requestsTableAndViewSplitter.setObjectName(u"requestsTableAndViewSplitter")
         self.requestsTableAndViewSplitter.setOrientation(Qt.Horizontal)
         self.requestsTableWidget = NetworkRequestsTable(self.requestsTableAndViewSplitter)
         self.requestsTableWidget.setObjectName(u"requestsTableWidget")
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.requestsTableWidget.sizePolicy().hasHeightForWidth())
-        self.requestsTableWidget.setSizePolicy(sizePolicy)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.requestsTableWidget.sizePolicy().hasHeightForWidth())
+        self.requestsTableWidget.setSizePolicy(sizePolicy1)
         self.requestsTableWidget.setMinimumSize(QSize(740, 0))
         self.requestsTableAndViewSplitter.addWidget(self.requestsTableWidget)
         self.requestViewWidget = RequestView(self.requestsTableAndViewSplitter)
         self.requestViewWidget.setObjectName(u"requestViewWidget")
-        sizePolicy.setHeightForWidth(self.requestViewWidget.sizePolicy().hasHeightForWidth())
-        self.requestViewWidget.setSizePolicy(sizePolicy)
+        sizePolicy1.setHeightForWidth(self.requestViewWidget.sizePolicy().hasHeightForWidth())
+        self.requestViewWidget.setSizePolicy(sizePolicy1)
         self.requestsTableAndViewSplitter.addWidget(self.requestViewWidget)
 
-        self.horizontalLayout.addWidget(self.requestsTableAndViewSplitter)
+        self.verticalLayout.addWidget(self.requestsTableAndViewSplitter)
 
 
         self.retranslateUi(NetworkPageWidget)
@@ -54,5 +88,7 @@ class Ui_NetworkPageWidget(object):
 
     def retranslateUi(self, NetworkPageWidget):
         NetworkPageWidget.setWindowTitle(QCoreApplication.translate("NetworkPageWidget", u"Form", None))
+        self.label.setText(QCoreApplication.translate("NetworkPageWidget", u"NETWORK", None))
+        self.newClientButton.setText(QCoreApplication.translate("NetworkPageWidget", u"HTTP", None))
     # retranslateUi
 

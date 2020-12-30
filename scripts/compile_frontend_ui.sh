@@ -11,6 +11,7 @@ pyside2-uic src/frontend/ui/crawls/new_crawl.ui > src/frontend/ui_compiled/crawl
 
 # Network Page:
 pyside2-uic src/frontend/ui/network/network_page_widget.ui > src/frontend/ui_compiled/network/ui_network_page_widget.py
+pyside2-uic src/frontend/ui/network/network_requests_table_tabs.ui > src/frontend/ui_compiled/network/ui_network_requests_table_tabs.py
 pyside2-uic src/frontend/ui/network/network_requests_table.ui > src/frontend/ui_compiled/network/ui_network_requests_table.py
 pyside2-uic src/frontend/ui/network/network_display_filters.ui > src/frontend/ui_compiled/network/ui_network_display_filters.py
 pyside2-uic src/frontend/ui/network/network_capture_filters.ui > src/frontend/ui_compiled/network/ui_network_capture_filters.py

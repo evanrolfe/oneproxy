@@ -21,9 +21,17 @@ class Ui_InterceptPage(object):
         if not InterceptPage.objectName():
             InterceptPage.setObjectName(u"InterceptPage")
         InterceptPage.resize(741, 511)
-        self.horizontalLayout_2 = QHBoxLayout(InterceptPage)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_5 = QVBoxLayout(InterceptPage)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.label = QLabel(InterceptPage)
+        self.label.setObjectName(u"label")
+        self.label.setMaximumSize(QSize(16777215, 20))
+        font = QFont()
+        font.setPointSize(10)
+        self.label.setFont(font)
+
+        self.verticalLayout_5.addWidget(self.label)
+
         self.verticalLayout_3 = QVBoxLayout()
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.verticalLayout_3.setContentsMargins(-1, 0, -1, -1)
@@ -32,10 +40,10 @@ class Ui_InterceptPage(object):
         self.verticalLayout_2.setContentsMargins(-1, 0, -1, -1)
         self.interceptTitle = QLabel(InterceptPage)
         self.interceptTitle.setObjectName(u"interceptTitle")
-        font = QFont()
-        font.setBold(True)
-        font.setWeight(75)
-        self.interceptTitle.setFont(font)
+        font1 = QFont()
+        font1.setBold(False)
+        font1.setWeight(50)
+        self.interceptTitle.setFont(font1)
 
         self.verticalLayout_2.addWidget(self.interceptTitle)
 
@@ -105,7 +113,7 @@ class Ui_InterceptPage(object):
         self.verticalLayout_3.addWidget(self.interceptTabs)
 
 
-        self.horizontalLayout_2.addLayout(self.verticalLayout_3)
+        self.verticalLayout_5.addLayout(self.verticalLayout_3)
 
 
         self.retranslateUi(InterceptPage)
@@ -118,6 +126,7 @@ class Ui_InterceptPage(object):
 
     def retranslateUi(self, InterceptPage):
         InterceptPage.setWindowTitle(QCoreApplication.translate("InterceptPage", u"Form", None))
+        self.label.setText(QCoreApplication.translate("InterceptPage", u"INTERCEPTOR", None))
         self.interceptTitle.setText(QCoreApplication.translate("InterceptPage", u"Intercepted Request:", None))
         self.forwardButton.setText(QCoreApplication.translate("InterceptPage", u"Forward", None))
         self.forwardInterceptButton.setText(QCoreApplication.translate("InterceptPage", u"Forward + Intercept Response", None))

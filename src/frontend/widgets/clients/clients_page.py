@@ -9,6 +9,7 @@ from ui_compiled.clients.ui_clients_page import Ui_ClientsPage
 from models.backend import Backend
 from models.clients_table_model import ClientsTableModel
 from models.client_data import ClientData
+from widgets.new_client_modal import NewClientModal
 
 class ClientsPage(QWidget):
   def __init__(self, *args, **kwargs):
@@ -28,6 +29,10 @@ class ClientsPage(QWidget):
     self.backend = Backend.get_instance()
     self.backend.register_callback('clientsChanged', self.clients_table_model.reload_data)
 
+    # Create new client modal
+    self.new_client_modal = NewClientModal(self)
+    self.ui.newClientButton.clicked.connect(self.new_client_click)
+
   def showEvent(self, event):
     self.clients_table_model.reload_data()
 
@@ -36,3 +41,7 @@ class ClientsPage(QWidget):
     selected_id = selected.indexes()[0].data()
     client = self.client_data.load_client(selected_id)
     self.ui.clientView.set_client(client)
+
+  @Slot()
+  def new_client_click(self):
+    self.new_client_modal.show()

@@ -35,15 +35,6 @@ class Ui_NetworkRequestsTable(object):
         self.horizontalLayout_2.setContentsMargins(-1, 0, -1, -1)
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.label = QLabel(NetworkRequestsTable)
-        self.label.setObjectName(u"label")
-        font = QFont()
-        font.setBold(True)
-        font.setWeight(75)
-        self.label.setFont(font)
-
-        self.verticalLayout_2.addWidget(self.label)
-
         self.searchBox = QLineEdit(NetworkRequestsTable)
         self.searchBox.setObjectName(u"searchBox")
 
@@ -54,12 +45,6 @@ class Ui_NetworkRequestsTable(object):
 
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.label_2 = QLabel(NetworkRequestsTable)
-        self.label_2.setObjectName(u"label_2")
-        self.label_2.setFont(font)
-
-        self.verticalLayout.addWidget(self.label_2)
-
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.displayFiltersButton = QPushButton(NetworkRequestsTable)
@@ -94,8 +79,7 @@ class Ui_NetworkRequestsTable(object):
 
     def retranslateUi(self, NetworkRequestsTable):
         NetworkRequestsTable.setWindowTitle(QCoreApplication.translate("NetworkRequestsTable", u"Form", None))
-        self.label.setText(QCoreApplication.translate("NetworkRequestsTable", u"Search:", None))
-        self.label_2.setText(QCoreApplication.translate("NetworkRequestsTable", u"Filters:", None))
+        self.searchBox.setPlaceholderText(QCoreApplication.translate("NetworkRequestsTable", u"Search", None))
         self.displayFiltersButton.setText(QCoreApplication.translate("NetworkRequestsTable", u"Display", None))
         self.captureFiltersButton.setText(QCoreApplication.translate("NetworkRequestsTable", u"Capture", None))
     # retranslateUi

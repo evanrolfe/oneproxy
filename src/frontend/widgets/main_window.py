@@ -17,7 +17,6 @@ from widgets.intercept.intercept_page import InterceptPage
 from widgets.clients.clients_page import ClientsPage
 from widgets.crawls.crawls_page import CrawlsPage
 from widgets.requests.requests_page import RequestsPage
-from widgets.new_client_modal import NewClientModal
 
 # pyside2-rcc assets/assets.qrc > assets_compiled/assets.py
 import assets_compiled.assets
@@ -83,9 +82,6 @@ class MainWindow(QMainWindow):
 
     # Shortcut for closing app:
     self.connect(QShortcut(QKeySequence(Qt.CTRL + Qt.Key_C), self), SIGNAL('activated()'), self.exit)
-
-    # Create new client modal
-    self.new_client_modal = NewClientModal(self)
 
     self.restore_layout_state()
 
@@ -158,10 +154,6 @@ class MainWindow(QMainWindow):
     self.ui.sideBar.addItem(extensions_item)
 
     self.ui.sideBar.setCurrentRow(0)
-
-  @Slot()
-  def new_client_click(self):
-    self.new_client_modal.show()
 
   @Slot()
   def sidebar_item_clicked(self, item):

@@ -20,38 +20,78 @@ from widgets.clients.client_view import ClientView
 
 
 class Ui_ClientsPage(object):
-    def setupUi(self, NetworkWidget):
-        if not NetworkWidget.objectName():
-            NetworkWidget.setObjectName(u"NetworkWidget")
-        NetworkWidget.resize(897, 581)
-        self.horizontalLayout = QHBoxLayout(NetworkWidget)
+    def setupUi(self, ClientsPage):
+        if not ClientsPage.objectName():
+            ClientsPage.setObjectName(u"ClientsPage")
+        ClientsPage.resize(897, 581)
+        self.verticalLayout = QVBoxLayout(ClientsPage)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.crawlerToolbar = QWidget(ClientsPage)
+        self.crawlerToolbar.setObjectName(u"crawlerToolbar")
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.crawlerToolbar.sizePolicy().hasHeightForWidth())
+        self.crawlerToolbar.setSizePolicy(sizePolicy)
+        self.crawlerToolbar.setMaximumSize(QSize(16777215, 20))
+        self.horizontalLayout = QHBoxLayout(self.crawlerToolbar)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.splitter = QSplitter(NetworkWidget)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.label = QLabel(self.crawlerToolbar)
+        self.label.setObjectName(u"label")
+        font = QFont()
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
+        self.label.setFont(font)
+
+        self.horizontalLayout.addWidget(self.label)
+
+        self.horizontalSpacer = QSpacerItem(158, 20, QSizePolicy.Maximum, QSizePolicy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+        self.newClientButton = QPushButton(self.crawlerToolbar)
+        self.newClientButton.setObjectName(u"newClientButton")
+        self.newClientButton.setMaximumSize(QSize(100, 16777215))
+
+        self.horizontalLayout.addWidget(self.newClientButton)
+
+
+        self.verticalLayout.addWidget(self.crawlerToolbar)
+
+        self.splitter = QSplitter(ClientsPage)
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Horizontal)
         self.clientsTable = ClientsTable(self.splitter)
         self.clientsTable.setObjectName(u"clientsTable")
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.clientsTable.sizePolicy().hasHeightForWidth())
-        self.clientsTable.setSizePolicy(sizePolicy)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Preferred)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.clientsTable.sizePolicy().hasHeightForWidth())
+        self.clientsTable.setSizePolicy(sizePolicy1)
+        self.clientsTable.setMinimumSize(QSize(350, 0))
         self.splitter.addWidget(self.clientsTable)
         self.clientView = ClientView(self.splitter)
         self.clientView.setObjectName(u"clientView")
-        sizePolicy.setHeightForWidth(self.clientView.sizePolicy().hasHeightForWidth())
-        self.clientView.setSizePolicy(sizePolicy)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.clientView.sizePolicy().hasHeightForWidth())
+        self.clientView.setSizePolicy(sizePolicy2)
         self.splitter.addWidget(self.clientView)
 
-        self.horizontalLayout.addWidget(self.splitter)
+        self.verticalLayout.addWidget(self.splitter)
 
 
-        self.retranslateUi(NetworkWidget)
+        self.retranslateUi(ClientsPage)
 
-        QMetaObject.connectSlotsByName(NetworkWidget)
+        QMetaObject.connectSlotsByName(ClientsPage)
     # setupUi
 
-    def retranslateUi(self, NetworkWidget):
-        NetworkWidget.setWindowTitle(QCoreApplication.translate("ClientsPage", u"Form", None))
+    def retranslateUi(self, ClientsPage):
+        ClientsPage.setWindowTitle(QCoreApplication.translate("ClientsPage", u"Form", None))
+        self.label.setText(QCoreApplication.translate("ClientsPage", u"CLIENTS", None))
+        self.newClientButton.setText(QCoreApplication.translate("ClientsPage", u"New Client", None))
     # retranslateUi
 
