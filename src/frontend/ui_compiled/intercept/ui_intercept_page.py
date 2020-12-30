@@ -23,21 +23,38 @@ class Ui_InterceptPage(object):
         InterceptPage.resize(741, 511)
         self.verticalLayout_5 = QVBoxLayout(InterceptPage)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.label = QLabel(InterceptPage)
+        self.crawlerToolbar = QWidget(InterceptPage)
+        self.crawlerToolbar.setObjectName(u"crawlerToolbar")
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.crawlerToolbar.sizePolicy().hasHeightForWidth())
+        self.crawlerToolbar.setSizePolicy(sizePolicy)
+        self.crawlerToolbar.setMaximumSize(QSize(16777215, 20))
+        self.horizontalLayout = QHBoxLayout(self.crawlerToolbar)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.label = QLabel(self.crawlerToolbar)
         self.label.setObjectName(u"label")
-        self.label.setMaximumSize(QSize(16777215, 20))
         font = QFont()
         font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
         self.label.setFont(font)
 
-        self.verticalLayout_5.addWidget(self.label)
+        self.horizontalLayout.addWidget(self.label)
+
+        self.horizontalSpacer = QSpacerItem(158, 20, QSizePolicy.Maximum, QSizePolicy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+
+        self.verticalLayout_5.addWidget(self.crawlerToolbar)
 
         self.verticalLayout_3 = QVBoxLayout()
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.verticalLayout_3.setContentsMargins(-1, 0, -1, -1)
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(-1, 0, -1, -1)
         self.interceptTitle = QLabel(InterceptPage)
         self.interceptTitle.setObjectName(u"interceptTitle")
         font1 = QFont()
@@ -47,45 +64,45 @@ class Ui_InterceptPage(object):
 
         self.verticalLayout_2.addWidget(self.interceptTitle)
 
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout1 = QHBoxLayout()
+        self.horizontalLayout1.setObjectName(u"horizontalLayout1")
         self.forwardButton = QPushButton(InterceptPage)
         self.forwardButton.setObjectName(u"forwardButton")
 
-        self.horizontalLayout.addWidget(self.forwardButton)
+        self.horizontalLayout1.addWidget(self.forwardButton)
 
         self.forwardInterceptButton = QPushButton(InterceptPage)
         self.forwardInterceptButton.setObjectName(u"forwardInterceptButton")
 
-        self.horizontalLayout.addWidget(self.forwardInterceptButton)
+        self.horizontalLayout1.addWidget(self.forwardInterceptButton)
 
         self.dropButton = QPushButton(InterceptPage)
         self.dropButton.setObjectName(u"dropButton")
 
-        self.horizontalLayout.addWidget(self.dropButton)
+        self.horizontalLayout1.addWidget(self.dropButton)
 
         self.enabledButton = QPushButton(InterceptPage)
         self.enabledButton.setObjectName(u"enabledButton")
 
-        self.horizontalLayout.addWidget(self.enabledButton)
+        self.horizontalLayout1.addWidget(self.enabledButton)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer1 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.horizontalLayout.addItem(self.horizontalSpacer)
+        self.horizontalLayout1.addItem(self.horizontalSpacer1)
 
 
-        self.verticalLayout_2.addLayout(self.horizontalLayout)
+        self.verticalLayout_2.addLayout(self.horizontalLayout1)
 
 
         self.verticalLayout_3.addLayout(self.verticalLayout_2)
 
         self.interceptTabs = QTabWidget(InterceptPage)
         self.interceptTabs.setObjectName(u"interceptTabs")
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.interceptTabs.sizePolicy().hasHeightForWidth())
-        self.interceptTabs.setSizePolicy(sizePolicy)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.interceptTabs.sizePolicy().hasHeightForWidth())
+        self.interceptTabs.setSizePolicy(sizePolicy1)
         self.headersTab = QWidget()
         self.headersTab.setObjectName(u"headersTab")
         self.verticalLayout_4 = QVBoxLayout(self.headersTab)
@@ -126,7 +143,7 @@ class Ui_InterceptPage(object):
 
     def retranslateUi(self, InterceptPage):
         InterceptPage.setWindowTitle(QCoreApplication.translate("InterceptPage", u"Form", None))
-        self.label.setText(QCoreApplication.translate("InterceptPage", u"INTERCEPTOR", None))
+        self.label.setText(QCoreApplication.translate("InterceptPage", u"INTERCEPT", None))
         self.interceptTitle.setText(QCoreApplication.translate("InterceptPage", u"Intercepted Request:", None))
         self.forwardButton.setText(QCoreApplication.translate("InterceptPage", u"Forward", None))
         self.forwardInterceptButton.setText(QCoreApplication.translate("InterceptPage", u"Forward + Intercept Response", None))
