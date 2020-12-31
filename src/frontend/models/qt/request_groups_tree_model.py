@@ -2,7 +2,7 @@ from PySide2 import QtCore, QtGui
 from PySide2.QtCore import QAbstractItemModel, Qt
 from PySide2.QtGui import QIcon
 
-from models.request_groups_tree_item import RequestGroupsTreeItem
+from models.qt.request_groups_tree_item import RequestGroupsTreeItem
 
 class RequestGroupsTreeModel(QAbstractItemModel):
   def __init__(self, headers, data, parent=None):

@@ -7,7 +7,7 @@ from PySide2.QtSql import QSqlDatabase, QSqlQuery
 from ui_compiled.network.ui_network_page_widget import Ui_NetworkPageWidget
 
 from lib.app_settings import AppSettings
-from models.requests_table_model import RequestsTableModel
+from models.qt.requests_table_model import RequestsTableModel
 from models.request_data import RequestData
 
 class NetworkPageWidget(QWidget):

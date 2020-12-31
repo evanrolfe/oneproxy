@@ -11,7 +11,6 @@ from PySide2.QtGui import QIcon, QKeySequence
 from ui_compiled.ui_main_window import Ui_MainWindow
 
 from lib.app_settings import AppSettings
-from models.requests_table_model import RequestsTableModel
 from widgets.network.network_page_widget import NetworkPageWidget
 from widgets.intercept.intercept_page import InterceptPage
 from widgets.clients.clients_page import ClientsPage
