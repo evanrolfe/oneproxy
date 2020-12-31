@@ -4,7 +4,7 @@ from PySide2.QtCore import QFile, Slot, Qt, Signal, QItemSelection
 from PySide2.QtUiTools import QUiLoader
 
 from ui_compiled.crawls.ui_crawls_table import Ui_CrawlsTable
-from models.backend import Backend
+from lib.backend import Backend
 
 class CrawlsTable(QWidget):
   crawl_selected = Signal(QItemSelection, QItemSelection)

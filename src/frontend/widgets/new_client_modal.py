@@ -5,7 +5,7 @@ from PySide2.QtGui import QIcon
 
 from ui_compiled.ui_new_client_modal import Ui_NewClientModal
 
-from models.backend import Backend
+from lib.backend import Backend
 
 CHROMIUM_COMMAND = b'{"command": "createClient", "type": "chromium"}'
 CHROME_COMMAND = b'{"command": "createClient", "type": "chrome"}'

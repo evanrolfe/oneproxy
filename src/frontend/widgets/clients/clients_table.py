@@ -4,7 +4,7 @@ from PySide2.QtCore import QFile, Slot, Qt, Signal, QItemSelection
 from PySide2.QtUiTools import QUiLoader
 
 from ui_compiled.clients.ui_clients_table import Ui_ClientsTable
-from models.backend import Backend
+from lib.backend import Backend
 
 class ClientsTable(QWidget):
   client_selected = Signal(QItemSelection, QItemSelection)

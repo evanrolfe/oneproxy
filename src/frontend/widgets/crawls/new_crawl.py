@@ -6,7 +6,7 @@ from PySide2.QtGui import QIcon
 
 from ui_compiled.crawls.ui_new_crawl import Ui_NewCrawl
 
-from models.backend import Backend
+from lib.backend import Backend
 from models.client_data import ClientData
 from models.crawl_data import CrawlData
 from models.crawl import Crawl

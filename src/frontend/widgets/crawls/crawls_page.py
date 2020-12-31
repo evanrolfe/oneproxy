@@ -7,7 +7,7 @@ from PySide2.QtUiTools import QUiLoader
 from ui_compiled.crawls.ui_crawls_page import Ui_CrawlsPage
 
 from widgets.crawls.new_crawl import NewCrawl
-from models.backend import Backend
+from lib.backend import Backend
 from models.crawls_table_model import CrawlsTableModel
 from models.crawl_data import CrawlData
 

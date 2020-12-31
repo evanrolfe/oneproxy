@@ -8,7 +8,7 @@ from PySide2.QtGui import QIcon
 from ui_compiled.requests.ui_requests_page import Ui_RequestsPage
 
 from models.request_groups_tree_model import RequestGroupsTreeModel
-from models.backend import Backend
+from lib.backend import Backend
 
 DATA = """
 Admin Area

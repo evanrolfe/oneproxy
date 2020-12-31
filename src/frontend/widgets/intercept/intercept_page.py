@@ -5,7 +5,7 @@ from PySide2.QtUiTools import QUiLoader
 
 from ui_compiled.intercept.ui_intercept_page import Ui_InterceptPage
 
-from models.backend import Backend
+from lib.backend import Backend
 from models.setting_data import SettingData
 
 class InterceptPage(QWidget):

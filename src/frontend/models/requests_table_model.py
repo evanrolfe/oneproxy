@@ -2,7 +2,7 @@ from PySide2.QtCore import QAbstractTableModel, QModelIndex, Qt, QObject, Slot, 
 
 from operator import itemgetter, attrgetter
 
-from models.backend import Backend
+from lib.backend import Backend
 
 class RequestsTableModel(QAbstractTableModel):
   def __init__(self,request_data, parent = None):

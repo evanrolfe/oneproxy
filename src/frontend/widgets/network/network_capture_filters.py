@@ -6,7 +6,7 @@ from PySide2.QtGui import QIcon
 from ui_compiled.network.ui_network_capture_filters import Ui_NetworkCaptureFilters
 from models.capture_filters_data import CaptureFiltersData
 
-from models.backend import Backend
+from lib.backend import Backend
 
 class NetworkCaptureFilters(QDialog):
   def __init__(self, parent = None):

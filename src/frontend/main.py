@@ -6,9 +6,9 @@ from PySide2.QtWidgets import QApplication, QLabel, QStyleFactory
 from PySide2.QtCore import QFile, QTextStream, Qt, QCoreApplication, QSettings
 from PySide2.QtGui import QPalette, QColor
 
-from models.backend import Backend
-from models.database import Database
+from lib.backend import Backend
 from widgets.main_window import MainWindow
+from lib.database import Database
 from lib.palettes import Palettes
 
 THEME = 'dark'

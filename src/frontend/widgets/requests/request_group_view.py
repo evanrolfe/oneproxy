@@ -6,7 +6,7 @@ from PySide2.QtUiTools import QUiLoader
 
 from ui_compiled.requests.ui_request_group_view import Ui_RequestGroupView
 
-from models.backend import Backend
+from lib.backend import Backend
 
 class RequestGroupView(QWidget):
   def __init__(self, *args, **kwargs):

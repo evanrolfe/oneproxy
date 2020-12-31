@@ -6,7 +6,7 @@ from PySide2.QtUiTools import QUiLoader
 
 from ui_compiled.clients.ui_clients_page import Ui_ClientsPage
 
-from models.backend import Backend
+from lib.backend import Backend
 from models.clients_table_model import ClientsTableModel
 from models.client_data import ClientData
 from widgets.new_client_modal import NewClientModal

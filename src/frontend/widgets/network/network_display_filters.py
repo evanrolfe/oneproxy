@@ -5,7 +5,7 @@ from PySide2.QtGui import QIcon
 
 from ui_compiled.network.ui_network_display_filters import Ui_NetworkDisplayFilters
 
-from models.backend import Backend
+from lib.backend import Backend
 
 class NetworkDisplayFilters(QDialog):
   def __init__(self, parent = None):
