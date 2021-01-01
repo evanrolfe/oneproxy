@@ -18,7 +18,7 @@ from widgets.crawls.crawls_page import CrawlsPage
 from widgets.requests.requests_page import RequestsPage
 
 # pyside2-rcc assets/assets.qrc > assets_compiled/assets.py
-import assets_compiled.assets
+import assets._compiled.assets
 
 # Makes CTRL+C close the app:
 import signal
