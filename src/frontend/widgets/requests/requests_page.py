@@ -5,7 +5,7 @@ from PySide2.QtCore import QFile, Slot
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtGui import QIcon
 
-from ui_compiled.requests.ui_requests_page import Ui_RequestsPage
+from views._compiled.requests.ui_requests_page import Ui_RequestsPage
 
 from models.data.editor_item import EditorItem
 from models.qt.request_groups_tree_model import RequestGroupsTreeModel

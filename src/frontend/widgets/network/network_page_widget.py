@@ -4,7 +4,7 @@ from PySide2.QtCore import QFile, Slot, QSettings
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtSql import QSqlDatabase, QSqlQuery
 
-from ui_compiled.network.ui_network_page_widget import Ui_NetworkPageWidget
+from views._compiled.network.ui_network_page_widget import Ui_NetworkPageWidget
 
 from lib.app_settings import AppSettings
 from models.qt.requests_table_model import RequestsTableModel

@@ -4,7 +4,7 @@ from PySide2.QtWidgets import QLineEdit, QPushButton, QApplication, QVBoxLayout,
 from PySide2.QtCore import Slot, Signal
 from PySide2.QtGui import QIcon
 
-from ui_compiled.crawls.ui_new_crawl import Ui_NewCrawl
+from views._compiled.crawls.ui_new_crawl import Ui_NewCrawl
 
 from lib.backend import Backend
 from models.data.client import Client

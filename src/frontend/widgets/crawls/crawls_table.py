@@ -3,7 +3,7 @@ from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstr
 from PySide2.QtCore import QFile, Slot, Qt, Signal, QItemSelection
 from PySide2.QtUiTools import QUiLoader
 
-from ui_compiled.crawls.ui_crawls_table import Ui_CrawlsTable
+from views._compiled.crawls.ui_crawls_table import Ui_CrawlsTable
 from lib.backend import Backend
 
 class CrawlsTable(QWidget):

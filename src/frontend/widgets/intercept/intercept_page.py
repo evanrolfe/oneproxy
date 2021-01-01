@@ -3,7 +3,7 @@ from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstr
 from PySide2.QtCore import QFile, Slot
 from PySide2.QtUiTools import QUiLoader
 
-from ui_compiled.intercept.ui_intercept_page import Ui_InterceptPage
+from views._compiled.intercept.ui_intercept_page import Ui_InterceptPage
 
 from lib.backend import Backend
 from models.data.setting import Setting

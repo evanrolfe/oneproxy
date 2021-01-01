@@ -3,7 +3,7 @@ from PySide2.QtWidgets import QLineEdit, QPushButton, QApplication, QVBoxLayout,
 from PySide2.QtCore import Slot
 from PySide2.QtGui import QIcon
 
-from ui_compiled.ui_new_client_modal import Ui_NewClientModal
+from views._compiled.ui_new_client_modal import Ui_NewClientModal
 
 from lib.backend import Backend
 

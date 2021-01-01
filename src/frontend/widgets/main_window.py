@@ -8,7 +8,7 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2.QtSql import QSqlDatabase, QSqlQuery
 from PySide2.QtGui import QIcon, QKeySequence
 
-from ui_compiled.ui_main_window import Ui_MainWindow
+from views._compiled.ui_main_window import Ui_MainWindow
 
 from lib.app_settings import AppSettings
 from widgets.network.network_page_widget import NetworkPageWidget

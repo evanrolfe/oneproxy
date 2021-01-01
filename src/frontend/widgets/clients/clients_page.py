@@ -4,7 +4,7 @@ from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstr
 from PySide2.QtCore import QFile, Slot
 from PySide2.QtUiTools import QUiLoader
 
-from ui_compiled.clients.ui_clients_page import Ui_ClientsPage
+from views._compiled.clients.ui_clients_page import Ui_ClientsPage
 
 from lib.backend import Backend
 from models.qt.clients_table_model import ClientsTableModel

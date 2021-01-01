@@ -3,7 +3,7 @@ from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstr
 from PySide2.QtCore import QFile, Slot, Qt, Signal, QItemSelection
 from PySide2.QtUiTools import QUiLoader
 
-from ui_compiled.clients.ui_clients_table import Ui_ClientsTable
+from views._compiled.clients.ui_clients_table import Ui_ClientsTable
 from lib.backend import Backend
 
 class ClientsTable(QWidget):

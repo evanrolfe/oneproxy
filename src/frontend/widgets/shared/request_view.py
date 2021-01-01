@@ -6,7 +6,7 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2.QtSql import QSqlDatabase, QSqlQuery
 from PySide2.QtWebEngineWidgets import QWebEngineView
 
-from ui_compiled.shared.ui_request_view import Ui_RequestView
+from views._compiled.shared.ui_request_view import Ui_RequestView
 
 from widgets.code_editor.html_highlighter import HtmlHighlighter
 

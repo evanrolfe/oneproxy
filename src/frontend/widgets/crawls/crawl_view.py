@@ -4,7 +4,7 @@ from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstr
 from PySide2.QtCore import QFile, Slot
 from PySide2.QtUiTools import QUiLoader
 
-from ui_compiled.crawls.ui_crawl_view import Ui_CrawlView
+from views._compiled.crawls.ui_crawl_view import Ui_CrawlView
 
 class CrawlView(QWidget):
   def __init__(self, *args, **kwargs):

@@ -7,9 +7,9 @@ from PySide2.QtCore import QFile, QTextStream, Qt, QCoreApplication, QSettings
 from PySide2.QtGui import QPalette, QColor
 
 from lib.backend import Backend
-from widgets.main_window import MainWindow
 from lib.database import Database
 from lib.palettes import Palettes
+from widgets.main_window import MainWindow
 
 THEME = 'dark'
 LIGHT_STYLE = """

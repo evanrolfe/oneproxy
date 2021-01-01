@@ -4,7 +4,7 @@ from PySide2.QtCore import QFile, Qt, Slot, Signal, QItemSelection
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtSql import QSqlDatabase, QSqlQuery
 
-from ui_compiled.network.ui_network_requests_table import Ui_NetworkRequestsTable
+from views._compiled.network.ui_network_requests_table import Ui_NetworkRequestsTable
 from widgets.network.network_display_filters import NetworkDisplayFilters
 from widgets.network.network_capture_filters import NetworkCaptureFilters
 
