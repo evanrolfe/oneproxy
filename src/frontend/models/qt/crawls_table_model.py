@@ -3,14 +3,15 @@ from PySide2.QtCore import QAbstractTableModel, QModelIndex, Qt, QObject, Slot, 
 from operator import itemgetter, attrgetter
 
 class CrawlsTableModel(QAbstractTableModel):
-  def __init__(self,crawl_data, parent = None):
+  def __init__(self,crawls, parent = None):
     QAbstractTableModel.__init__(self, parent)
     self.headers = ['ID', 'Source', 'Status', 'Started', 'Finished']
-    self.crawl_data = crawl_data
+    self.crawls = crawls
 
-  def reload_data(self):
+  def set_crawls(self, crawls):
     print("CrawlsTableModel - reloading!")
-    self.crawl_data.load_crawls()
+
+    self.crawls = crawls
     self.dataChanged.emit(QModelIndex(), QModelIndex())
     self.layoutChanged.emit()
 
@@ -30,17 +31,17 @@ class CrawlsTableModel(QAbstractTableModel):
     return len(self.headers)
 
   def rowCount(self, index):
-    return len(self.crawl_data.crawls)
+    return len(self.crawls)
 
   def data(self, index, role):
     if role == Qt.DisplayRole:
       if not index.isValid():
         return None
 
-      if index.row() > len(self.crawl_data.crawls):
+      if index.row() > len(self.crawls):
         return None
 
-      crawl = self.crawl_data.crawls[index.row()]
+      crawl = self.crawls[index.row()]
 
       if (index.column() == 0):
         return crawl.id

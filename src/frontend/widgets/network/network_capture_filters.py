@@ -4,7 +4,7 @@ from PySide2.QtCore import Slot
 from PySide2.QtGui import QIcon
 
 from ui_compiled.network.ui_network_capture_filters import Ui_NetworkCaptureFilters
-from models.capture_filters_data import CaptureFiltersData
+from models.data.capture_filter import CaptureFilter
 
 from lib.backend import Backend
 
@@ -28,7 +28,7 @@ class NetworkCaptureFilters(QDialog):
 
   def load_capture_filters(self):
     print("Loading capture filters")
-    self.capture_filters = CaptureFiltersData.load()
+    self.capture_filters = CaptureFilter.find(1)
 
     host_index = self.setting_to_index(self.capture_filters.host_setting)
     self.ui.hostSettingDropdown.setCurrentIndex(host_index)
@@ -50,14 +50,13 @@ class NetworkCaptureFilters(QDialog):
     path_setting =  self.index_to_setting(path_setting_index)
     path_list = self.ui.pathsText.toPlainText().split("\n")
 
-    self.capture_filters.host_list = list(filter(None, host_list))
-    self.capture_filters.host_setting = host_setting
-
-    self.capture_filters.path_list = list(filter(None, path_list))
-    self.capture_filters.path_setting = path_setting
-
-    CaptureFiltersData.save(self.capture_filters)
-
+    self.capture_filters.set_filters({
+      'host_list': list(filter(None, host_list)),
+      'host_setting': host_setting,
+      'path_list': list(filter(None, path_list)),
+      'path_setting': path_setting
+    })
+    self.capture_filters.save()
     self.close()
 
   @Slot()

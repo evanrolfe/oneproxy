@@ -9,7 +9,7 @@ from ui_compiled.crawls.ui_crawls_page import Ui_CrawlsPage
 from widgets.crawls.new_crawl import NewCrawl
 from lib.backend import Backend
 from models.qt.crawls_table_model import CrawlsTableModel
-from models.crawl_data import CrawlData
+from models.data.crawl import Crawl
 
 class CrawlsPage(QWidget):
   def __init__(self, *args, **kwargs):
@@ -18,9 +18,8 @@ class CrawlsPage(QWidget):
     self.ui.setupUi(self)
 
     # Setup the crawl model
-    self.crawl_data = CrawlData()
-    self.crawl_data.load_crawls()
-    self.crawls_table_model = CrawlsTableModel(self.crawl_data)
+    crawls = Crawl.all()
+    self.crawls_table_model = CrawlsTableModel(crawls)
 
     self.ui.crawlsTable.setTableModel(self.crawls_table_model)
     self.ui.crawlsTable.crawl_selected.connect(self.select_crawl)
@@ -30,16 +29,16 @@ class CrawlsPage(QWidget):
 
     # New Crawler Dialog:
     self.new_crawl = NewCrawl(self)
-    self.new_crawl.crawl_saved.connect(self.reload_crawls)
+    self.new_crawl.crawl_saved.connect(self.reload_table_data)
     self.ui.newCrawlerButton.clicked.connect(lambda: self.new_crawl.show())
 
   def showEvent(self, event):
-    self.reload_crawls()
+    self.reload_table_data()
 
   @Slot()
-  def reload_crawls(self):
-    print("Reloading crawls!")
-    self.crawls_table_model.reload_data()
+  def reload_table_data(self):
+    crawls = Crawl.all()
+    self.crawls_table_model.set_crawls(crawls)
 
   @Slot()
   def select_crawl(self, selected, deselected):

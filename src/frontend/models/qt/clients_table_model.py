@@ -3,19 +3,18 @@ from PySide2.QtCore import QAbstractTableModel, QModelIndex, Qt, QObject, Slot, 
 from operator import itemgetter, attrgetter
 
 class ClientsTableModel(QAbstractTableModel):
-  def __init__(self,client_data, parent = None):
+  def __init__(self,clients, parent = None):
     QAbstractTableModel.__init__(self, parent)
     self.headers = ['ID', 'Type', 'Name', 'Status']
-    self.client_data = client_data
+    self.clients = clients
 
   # def add_request(self, request):
   #   rowIndex = 0
   #   self.beginInsertRows(QModelIndex(), rowIndex, rowIndex)
   #   self.client_data.clients.insert(0, request)
   #   self.endInsertRows()
-  def reload_data(self):
-    print("ClientsTableModel - reloading!")
-    self.client_data.load_clients()
+  def set_clients(self, clients):
+    self.clients = clients
     self.dataChanged.emit(QModelIndex(), QModelIndex())
     self.layoutChanged.emit()
 
@@ -35,17 +34,17 @@ class ClientsTableModel(QAbstractTableModel):
     return len(self.headers)
 
   def rowCount(self, index):
-    return len(self.client_data.clients)
+    return len(self.clients)
 
   def data(self, index, role):
     if role == Qt.DisplayRole:
       if not index.isValid():
         return None
 
-      if index.row() > len(self.client_data.clients):
+      if index.row() > len(self.clients):
         return None
 
-      client = self.client_data.clients[index.row()]
+      client = self.clients[index.row()]
 
       if (index.column() == 0):
         return client.id

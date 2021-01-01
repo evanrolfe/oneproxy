@@ -7,9 +7,8 @@ from PySide2.QtGui import QIcon
 from ui_compiled.crawls.ui_new_crawl import Ui_NewCrawl
 
 from lib.backend import Backend
-from models.client_data import ClientData
-from models.crawl_data import CrawlData
-from models.crawl import Crawl
+from models.data.client import Client
+from models.data.crawl import Crawl
 
 class NewCrawl(QDialog):
   crawl_saved = Signal()
@@ -32,19 +31,14 @@ class NewCrawl(QDialog):
     self.load_clients()
 
   def load_clients(self):
-    print("Loading clients")
-
-    self.client_data = ClientData()
-    self.client_data.load_browsers()
+    clients = Client.where('type', '<>', 'anything').get()
 
     self.ui.clientsDropdown.clear()
-
-    for client in self.client_data.clients:
+    for client in clients:
       self.ui.clientsDropdown.addItem(client.title, client.id)
 
   @Slot()
   def start(self):
-    print("Saving")
     client_id = self.ui.clientsDropdown.itemData(self.ui.clientsDropdown.currentIndex())
     headless = (self.ui.browserModeDropdown.currentIndex() == 0)
     base_url = self.ui.baseURLText.text()
@@ -69,13 +63,12 @@ class NewCrawl(QDialog):
         "ignoreLinksIncluding": ignore_urls
     }
 
-    crawl = Crawl({
-      "client_id": client_id,
-      "status": "created",
-      "config": json.dumps(config)
-    })
+    crawl = Crawl()
+    crawl.client_id = client_id
+    crawl.status = "created"
+    crawl.config = json.dumps(config)
+    crawl.save()
 
-    result = CrawlData.save(crawl)
     self.crawl_saved.emit()
     self.backend.start_crawler(crawl.id)
     self.close()

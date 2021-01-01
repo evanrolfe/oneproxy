@@ -1,7 +1,11 @@
 import re
 
 from PySide2.QtSql import QSqlDatabase, QSqlQuery
+from orator import DatabaseManager, Model
+from models.data.capture_filter import CaptureFilter
+from models.data.setting import Setting
 
+NUM_TABLES = 9
 SCHEMA_SQL = """CREATE TABLE IF NOT EXISTS requests(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   client_id INTEGER,
@@ -25,7 +29,6 @@ SCHEMA_SQL = """CREATE TABLE IF NOT EXISTS requests(
   modified_request_headers TEXT,
   modified_request_payload TEXT,
 
-  created_at INTEGER,
   request_type TEXT,
   response_body_rendered TEXT,
   response_remote_address TEXT,
@@ -45,7 +48,18 @@ SCHEMA_SQL = """CREATE TABLE IF NOT EXISTS requests(
   modified_response_headers TEXT,
   modified_response_body TEXT,
   modified_response_body_length INTEGER,
-  modified_response_http_version TEXT
+  modified_response_http_version TEXT,
+
+  created_at INTEGER,
+  updated_at INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS editor_items(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  path TEXT NOT NULL,
+  name TEXT NOT NULL,
+  item_type TEXT NOT NULL,
+  item_id INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS websocket_messages(
@@ -53,12 +67,15 @@ CREATE TABLE IF NOT EXISTS websocket_messages(
   request_id INTEGER,
   direction TEXT,
   body TEXT,
-  created_at INTEGER
+  created_at INTEGER,
+  updated_at INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS capture_filters(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  filters TEXT NOT NULL
+  filters TEXT NOT NULL,
+  created_at INTEGER,
+  updated_at INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS intercept_filters(
@@ -76,13 +93,16 @@ CREATE TABLE IF NOT EXISTS clients(
   browser_port INTEGER,
   open BOOLEAN DEFAULT 0,
   created_at INTEGER,
+  updated_at INTEGER,
   launched_at INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS settings(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   key TEXT NOT NULL UNIQUE,
-  value TEXT NOT NULL
+  value TEXT NOT NULL,
+  created_at INTEGER,
+  updated_at INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS crawls(
@@ -100,6 +120,16 @@ class Database:
   def __init__(self, db_path):
     self.db_path = db_path
 
+    config = {
+      'default': {
+        'driver': 'sqlite',
+        'database': db_path
+      }
+    }
+
+    orator_db = DatabaseManager(config)
+    Model.set_connection_resolver(orator_db)
+
   def load_or_create(self):
     self.db = QSqlDatabase.addDatabase('QSQLITE')
     self.db.setDatabaseName(self.db_path)
@@ -116,7 +146,7 @@ class Database:
     while query.next():
       db_tables.append(query.value(0))
 
-    if (len(db_tables) != 8):
+    if (len(db_tables) != NUM_TABLES):
       print(f'[Frontend] database not up-to-date, importing the schema...')
       self.import_schema()
 
@@ -132,5 +162,11 @@ class Database:
       result = query.exec_()
 
       if (result == False):
+        print(query_str)
         print(query.lastError())
+
+    CaptureFilter.create_defaults()
+    Setting.create_defaults()
+
+
 

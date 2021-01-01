@@ -20,6 +20,7 @@ QTabWidget::pane {
 """
 
 def excepthook(type, value, tb):
+  # TODO: Only close the backend if the exception is fatal
   backend = Backend.get_instance()
   backend.kill()
 

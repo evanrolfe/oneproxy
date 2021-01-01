@@ -7,6 +7,7 @@ from PySide2.QtGui import QIcon
 
 from ui_compiled.requests.ui_requests_page import Ui_RequestsPage
 
+from models.data.editor_item import EditorItem
 from models.qt.request_groups_tree_model import RequestGroupsTreeModel
 from lib.backend import Backend
 
@@ -36,6 +37,11 @@ class RequestsPage(QWidget):
 
     self.ui = Ui_RequestsPage()
     self.ui.setupUi(self)
+
+    # TODO: Use this data in the RequestGroupsTreeModel
+    items = EditorItem.all()
+    for item in items:
+        print(f'-------------> ID: {item.id}, {item.path}{item.name}')
 
     headers = ["Requests"]
     tree_model = RequestGroupsTreeModel(headers, DATA)

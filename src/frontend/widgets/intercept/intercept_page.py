@@ -6,7 +6,7 @@ from PySide2.QtUiTools import QUiLoader
 from ui_compiled.intercept.ui_intercept_page import Ui_InterceptPage
 
 from lib.backend import Backend
-from models.setting_data import SettingData
+from models.data.setting import Setting
 
 class InterceptPage(QWidget):
   def __init__(self, *args, **kwargs):
@@ -28,7 +28,7 @@ class InterceptPage(QWidget):
 
     # Set enabled/disabled:
     # self.ui.enabledButton.setCheckable(True)
-    intercept_enabled = SettingData.intercept_enabled()
+    intercept_enabled = Setting.intercept_enabled()
     self.set_enabled(intercept_enabled)
     # self.ui.enabledButton.setDown(intercept_enabled)
 
