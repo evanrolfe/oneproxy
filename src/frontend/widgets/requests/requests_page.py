@@ -11,26 +11,6 @@ from models.data.editor_item import EditorItem
 from models.qt.editor_tree_model import EditorTreeModel
 from lib.backend import Backend
 
-DATA = """
-Admin Area
-    Launching Designer
-    The User Interface
-
-User Area
-    Creating a Dialog
-    Composing the Dialog
-    Creating a Layout
-    Signal and Slot Connections
-
-Checkout Process
-    The Direct Approach
-    The Single Inheritance Approach
-    The Multiple Inheritance Approach
-    Automatic Connections
-        A Dialog Without Auto-Connect
-        A Dialog With Auto-Connect
-"""
-
 class RequestsPage(QWidget):
   def __init__(self, *args, **kwargs):
     super(RequestsPage, self).__init__(*args, **kwargs)
@@ -38,15 +18,9 @@ class RequestsPage(QWidget):
     self.ui = Ui_RequestsPage()
     self.ui.setupUi(self)
 
-    # TODO: Use this data in the EditorTreeModel
-    items = EditorItem.all()
-    for item in items:
-        print(f'-------------> ID: {item.id}, {item.path}{item.name}')
-
-    headers = ["Requests"]
-    tree_model = EditorTreeModel(headers, DATA)
+    editor_items = EditorItem.all()
+    tree_model = EditorTreeModel('Requests', editor_items)
     self.ui.requestGroupsTreeView.setModel(tree_model)
-    #self.ui.requestGroupsTreeView.setIndentation(20)
 
     self.ui.requestGroupsTreeView.setDragDropMode(QAbstractItemView.InternalMove)
     self.ui.requestGroupsTreeView.setSelectionMode(QAbstractItemView.SingleSelection)

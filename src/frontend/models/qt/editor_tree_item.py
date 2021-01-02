@@ -9,6 +9,11 @@ class EditorTreeItem():
     self.editor_item = editor_item
     self.childItems = []
 
+  @classmethod
+  def from_editor_item(cls, editor_item):
+    is_dir = (editor_item.item_type == 'dir')
+    return cls(editor_item.name, editor_item, is_dir)
+
   #-----------------------------------------------------------------------------
   # QT API Methods:
   #-----------------------------------------------------------------------------

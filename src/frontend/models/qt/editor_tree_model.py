@@ -5,12 +5,11 @@ from PySide2.QtGui import QIcon
 from models.qt.editor_tree_item import EditorTreeItem
 
 class EditorTreeModel(QAbstractItemModel):
-  def __init__(self, headers, data, parent=None):
+  def __init__(self, header, editor_items, parent=None):
     super(EditorTreeModel, self).__init__(parent)
 
-    rootData = [header for header in headers]
-    self.rootItem = EditorTreeItem(rootData)
-    self.setupModelData(data.split("\n"), self.rootItem)
+    self.rootItem = EditorTreeItem(header)
+    self.setup_model_data(editor_items, self.rootItem)
 
   def supportedDropActions(self):
     return Qt.MoveAction | Qt.CopyAction
@@ -108,41 +107,16 @@ class EditorTreeModel(QAbstractItemModel):
 
     return (item.childCount() > 0)
 
-  def setupModelData(self, lines, parent):
-    # Level 0
-    admin_area = EditorTreeItem('Admin Area', None, True)
-    parent.insertChild(admin_area)
+  def setup_model_data(self, editor_items, root_tree_item):
+    root_level_editor_items = [x for x in editor_items if x.parent_id == None]
 
-    user_area = EditorTreeItem('User Area', None, True)
-    parent.insertChild(user_area)
+    for editor_item in root_level_editor_items:
+      self.add_editor_item_to_tree(root_tree_item, editor_item)
 
-    public_area = EditorTreeItem('Public Area', None, True)
-    parent.insertChild(public_area)
+  def add_editor_item_to_tree(self, parent_tree_item, editor_item):
+    tree_item = EditorTreeItem.from_editor_item(editor_item)
 
-    # Level 1
-    xss = EditorTreeItem('XSS', None, True)
-    admin_area.insertChild(xss)
+    parent_tree_item.insertChild(tree_item)
 
-    sqli = EditorTreeItem('SQLi', None, True)
-    admin_area.insertChild(sqli)
-
-    biz_logic = EditorTreeItem('Business Logic Exploits', None, True)
-    user_area.insertChild(biz_logic)
-
-    account = EditorTreeItem('GET /account.json', None, False)
-    user_area.insertChild(account)
-
-    # Level 2
-    post1 = EditorTreeItem('GET /api/posts.json', None, False)
-    xss.insertChild(post1)
-
-    post2 = EditorTreeItem('POST /api/posts.json', None, False)
-    xss.insertChild(post2)
-
-    posts3 = EditorTreeItem('POST /api/posts.json', None, False)
-    sqli.insertChild(posts3)
-
-    account2 = EditorTreeItem('GET /account.json', None, False)
-    biz_logic.insertChild(account2)
-
-    return True
+    for child_editor_item in editor_item.children():
+      self.add_editor_item_to_tree(tree_item, child_editor_item)
