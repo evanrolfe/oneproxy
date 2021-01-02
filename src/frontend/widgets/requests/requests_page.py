@@ -8,7 +8,7 @@ from PySide2.QtGui import QIcon
 from views._compiled.requests.ui_requests_page import Ui_RequestsPage
 
 from models.data.editor_item import EditorItem
-from models.qt.request_groups_tree_model import RequestGroupsTreeModel
+from models.qt.editor_tree_model import EditorTreeModel
 from lib.backend import Backend
 
 DATA = """
@@ -38,14 +38,15 @@ class RequestsPage(QWidget):
     self.ui = Ui_RequestsPage()
     self.ui.setupUi(self)
 
-    # TODO: Use this data in the RequestGroupsTreeModel
+    # TODO: Use this data in the EditorTreeModel
     items = EditorItem.all()
     for item in items:
         print(f'-------------> ID: {item.id}, {item.path}{item.name}')
 
     headers = ["Requests"]
-    tree_model = RequestGroupsTreeModel(headers, DATA)
+    tree_model = EditorTreeModel(headers, DATA)
     self.ui.requestGroupsTreeView.setModel(tree_model)
+    #self.ui.requestGroupsTreeView.setIndentation(20)
 
     self.ui.requestGroupsTreeView.setDragDropMode(QAbstractItemView.InternalMove)
     self.ui.requestGroupsTreeView.setSelectionMode(QAbstractItemView.SingleSelection)

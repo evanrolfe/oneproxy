@@ -2,14 +2,14 @@ from PySide2 import QtCore, QtGui
 from PySide2.QtCore import QAbstractItemModel, Qt
 from PySide2.QtGui import QIcon
 
-from models.qt.request_groups_tree_item import RequestGroupsTreeItem
+from models.qt.editor_tree_item import EditorTreeItem
 
-class RequestGroupsTreeModel(QAbstractItemModel):
+class EditorTreeModel(QAbstractItemModel):
   def __init__(self, headers, data, parent=None):
-    super(RequestGroupsTreeModel, self).__init__(parent)
+    super(EditorTreeModel, self).__init__(parent)
 
     rootData = [header for header in headers]
-    self.rootItem = RequestGroupsTreeItem(rootData)
+    self.rootItem = EditorTreeItem(rootData)
     self.setupModelData(data.split("\n"), self.rootItem)
 
   def supportedDropActions(self):
@@ -63,13 +63,6 @@ class RequestGroupsTreeModel(QAbstractItemModel):
     else:
       return QtCore.QModelIndex()
 
-  def insertColumns(self, position, columns, parent=QtCore.QModelIndex()):
-    self.beginInsertColumns(parent, position, position + columns - 1)
-    success = self.rootItem.insertColumns(position, columns)
-    self.endInsertColumns()
-
-    return success
-
   def insertRows(self, position, rows, parent=QtCore.QModelIndex()):
     parentItem = self.getItem(parent)
     self.beginInsertRows(parent, position, position + rows - 1)
@@ -83,22 +76,12 @@ class RequestGroupsTreeModel(QAbstractItemModel):
       return QtCore.QModelIndex()
 
     childItem = self.getItem(index)
-    parentItem = childItem.parent()
+    parentItem = childItem.parent
 
     if parentItem == self.rootItem:
       return QtCore.QModelIndex()
 
     return self.createIndex(parentItem.childNumber(), 0, parentItem)
-
-  def removeColumns(self, position, columns, parent=QtCore.QModelIndex()):
-    self.beginRemoveColumns(parent, position, position + columns - 1)
-    success = self.rootItem.removeColumns(position, columns)
-    self.endRemoveColumns()
-
-    if self.rootItem.columnCount() == 0:
-      self.removeRows(0, rowCount())
-
-    return success
 
   def removeRows(self, position, rows, parent=QtCore.QModelIndex()):
     parentItem = self.getItem(parent)
@@ -114,64 +97,52 @@ class RequestGroupsTreeModel(QAbstractItemModel):
 
     return parentItem.childCount()
 
-  def setData(self, index, value, role=QtCore.Qt.EditRole):
-    if role != QtCore.Qt.EditRole:
-      return False
-
+  def hasChildren(self, index):
     item = self.getItem(index)
-    result = item.setData(index.column(), value)
 
-    if result:
-      self.dataChanged.emit(index, index)
-
-    return result
-
-  def setHeaderData(self, section, orientation, value, role=QtCore.Qt.EditRole):
-    if role != QtCore.Qt.EditRole or orientation != QtCore.Qt.Horizontal:
+    if (item == None):
       return False
 
-    result = self.rootItem.setData(section, value)
-    if result:
-      self.headerDataChanged.emit(orientation, section, section)
+    if item.is_dir:
+      return True
 
-    return result
+    return (item.childCount() > 0)
 
   def setupModelData(self, lines, parent):
-    parents = [parent]
-    indentations = [0]
+    # Level 0
+    admin_area = EditorTreeItem('Admin Area', None, True)
+    parent.insertChild(admin_area)
 
-    number = 0
+    user_area = EditorTreeItem('User Area', None, True)
+    parent.insertChild(user_area)
 
-    while number < len(lines):
-      position = 0
-      while position < len(lines[number]):
-        if lines[number][position] != " ":
-          break
-        position += 1
+    public_area = EditorTreeItem('Public Area', None, True)
+    parent.insertChild(public_area)
 
-      lineData = lines[number][position:].strip()
+    # Level 1
+    xss = EditorTreeItem('XSS', None, True)
+    admin_area.insertChild(xss)
 
-      if lineData:
-        # Read the column data from the rest of the line.
-        columnData = [s for s in lineData.split('\t') if s]
+    sqli = EditorTreeItem('SQLi', None, True)
+    admin_area.insertChild(sqli)
 
-        if position > indentations[-1]:
-          # The last child of the current parent is now the new
-          # parent unless the current parent has no children.
+    biz_logic = EditorTreeItem('Business Logic Exploits', None, True)
+    user_area.insertChild(biz_logic)
 
-          if parents[-1].childCount() > 0:
-            parents.append(parents[-1].child(parents[-1].childCount() - 1))
-            indentations.append(position)
+    account = EditorTreeItem('GET /account.json', None, False)
+    user_area.insertChild(account)
 
-        else:
-          while position < indentations[-1] and len(parents) > 0:
-            parents.pop()
-            indentations.pop()
+    # Level 2
+    post1 = EditorTreeItem('GET /api/posts.json', None, False)
+    xss.insertChild(post1)
 
-        # Append a new item to the current parent's list of children.
-        parent = parents[-1]
-        parent.insertChildren(parent.childCount(), 1, self.rootItem.columnCount())
-        for column in range(len(columnData)):
-          parent.child(parent.childCount() -1).setData(column, columnData[column])
+    post2 = EditorTreeItem('POST /api/posts.json', None, False)
+    xss.insertChild(post2)
 
-      number += 1
+    posts3 = EditorTreeItem('POST /api/posts.json', None, False)
+    sqli.insertChild(posts3)
+
+    account2 = EditorTreeItem('GET /account.json', None, False)
+    biz_logic.insertChild(account2)
+
+    return True

@@ -154,7 +154,7 @@ class MainWindow(QMainWindow):
     extensions_item.setData(Qt.UserRole, 'extensions')
     self.ui.sideBar.addItem(extensions_item)
 
-    self.ui.sideBar.setCurrentRow(0)
+    self.ui.sideBar.setCurrentRow(3)
 
   @Slot()
   def sidebar_item_clicked(self, item):
