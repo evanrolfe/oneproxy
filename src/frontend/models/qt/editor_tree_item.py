@@ -1,7 +1,7 @@
 from PySide2.QtGui import QIcon
 from PySide2.QtWidgets import QTreeWidgetItem
 
-class EditorTreeItem():
+class EditorTreeItem(object):
   def __init__(self, label, editor_item = None, is_dir = False, parent=None):
     self.parent = parent
     self.label = label
@@ -14,10 +14,7 @@ class EditorTreeItem():
     is_dir = (editor_item.item_type == 'dir')
     return cls(editor_item.name, editor_item, is_dir)
 
-  #-----------------------------------------------------------------------------
-  # QT API Methods:
-  #-----------------------------------------------------------------------------
-  def data(self, column):
+  def data(self):
     return self.label
 
   def child(self, row):
@@ -29,6 +26,7 @@ class EditorTreeItem():
   def childNumber(self):
     if self.parent != None:
       return self.parent.childItems.index(self)
+
     return 0
 
   def childIndicatorPolicy(self):
@@ -50,12 +48,17 @@ class EditorTreeItem():
 
     return True
 
-  #-----------------------------------------------------------------------------
-  # "Custom" Methods:
-  #-----------------------------------------------------------------------------
+  def setData(self, editor_item):
+    # TODO: Just set the editor_item and have these properties be derrived
+    self.label = editor_item.name
+    self.is_dir = (editor_item.item_type == 'dir')
+    self.editor_item = editor_item
+
+    return True
+
   def icon(self):
     if self.is_dir:
       return None
     else:
-      return QIcon(":/icons/dark/icons8-plus-math-50.png")
+      return QIcon(":/icons/dark/icons8-document-50.png")
 
