@@ -1,6 +1,6 @@
 import sys
 from PySide2 import QtCore
-from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstractItemView, QTabBar, QMenu, QAction, QItemDelegate
+from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstractItemView, QTabBar, QMenu, QAction, QItemDelegate, QMessageBox
 from PySide2.QtCore import QFile, Slot, Qt, QItemSelectionModel
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtGui import QIcon
@@ -115,7 +115,15 @@ class RequestsPage(QWidget):
 
     tree_item = self.tree_model.getItem(index)
 
-    self.tree_model.removeRows(index.row(), 1, index.parent())
+    message_box = QMessageBox()
+    message_box.setWindowTitle('PNTest')
+    message_box.setText('Are you sure you want to delete this request?')
+    message_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
+    message_box.setDefaultButton(QMessageBox.Yes)
+    response = message_box.exec_()
+
+    if response == QMessageBox.Yes:
+      self.tree_model.removeRows(index.row(), 1, index.parent())
 
   def insertChild(self, child_editor_item, parent_index):
     parent_tree_item = self.tree_model.getItem(parent_index)

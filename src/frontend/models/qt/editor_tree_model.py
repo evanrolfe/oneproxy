@@ -36,12 +36,11 @@ class EditorTreeModel(QAbstractItemModel):
       return False
 
     item = self.getItem(index)
-    result = item.setData(value)
+    item.setLabel(value)
 
-    if result:
-      self.dataChanged.emit(index, index, role)
+    self.dataChanged.emit(index, index, role)
 
-    return result
+    return True
 
   def flags(self, index):
     if not index.isValid():
@@ -121,18 +120,6 @@ class EditorTreeModel(QAbstractItemModel):
       return True
 
     return (item.childCount() > 0)
-
-  def setData(self, index, value, role=Qt.EditRole):
-    if role != QtCore.Qt.EditRole:
-      return False
-
-    item = self.getItem(index)
-    result = item.setData(value)
-
-    if result:
-      self.dataChanged.emit(index, index)
-
-    return result
 
   def setup_model_data(self, editor_items, root_tree_item):
     root_level_editor_items = [x for x in editor_items if x.parent_id == None]

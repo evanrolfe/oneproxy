@@ -44,15 +44,15 @@ class EditorTreeItem(object):
       return False
 
     for row in range(count):
-      self.childItems.pop(position)
+      removed_item = self.childItems.pop(position)
+      removed_item.editor_item.delete_resursive()
 
     return True
 
-  def setData(self, editor_item):
-    # TODO: Just set the editor_item and have these properties be derrived
-    self.label = editor_item.name
-    self.is_dir = (editor_item.item_type == 'dir')
-    self.editor_item = editor_item
+  def setLabel(self, label):
+    self.label = label
+    self.editor_item.name = label
+    self.editor_item.save()
 
     return True
 
