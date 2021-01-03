@@ -20,7 +20,7 @@ class RequestsPage(QWidget):
     self.ui = Ui_RequestsPage()
     self.ui.setupUi(self)
 
-    editor_items = EditorItem.all()
+    editor_items = EditorItem.order_by('item_type', 'asc').get()
     self.tree_model = EditorTreeModel('Requests', editor_items)
     self.ui.requestGroupsTreeView.setModel(self.tree_model)
 
@@ -36,22 +36,6 @@ class RequestsPage(QWidget):
     self.ui.openRequestTabs.setMovable(True)
 
     tab_bar = self.ui.openRequestTabs.tabBar()
-   # tab_bar.tabButton(0, QTabBar.RightSide).deleteLater()
-    #tab_bar.setTabButton(2, QTabBar.RightSide, QIcon(":/icons/dark/icons8-plus-math-50.png"))
-    #tab_bar.setTabIcon(2, )
-
-    #self.ui.toggleFuzzTableButton.clicked.connect(self.toggle_fuzz_table)
-
-    #self.ui.requestGroupsTreeView.selectionModel().selectionChanged.connect(self.updateActions)
-
-    #self.ui.actionsMenu.aboutToShow.connect(self.updateActions)
-    # self.insertRowAction.triggered.connect(self.insertRow)
-    # self.insertColumnAction.triggered.connect(self.insertColumn)
-    # self.removeRowAction.triggered.connect(self.removeRow)
-    # self.removeColumnAction.triggered.connect(self.removeColumn)
-    # self.insertChildAction.triggered.connect(self.insertChild)
-
-    # self.updateActions()
     self.restore_layout_state()
 
   # TODO DRY up this method and save_layout_state()
@@ -126,8 +110,6 @@ class RequestsPage(QWidget):
 
   @Slot()
   def delete_clicked(self, index):
-    print(f"Deleting! {index}")
-
     tree_item = self.tree_model.getItem(index)
 
     if tree_item.is_dir:
@@ -161,6 +143,7 @@ class RequestsPage(QWidget):
 
       self.tree_model.removeRows(rows[0], diff+1, indexes[0].parent())
 
+  # TODO: Most of this method's logic should be in EditorTreeModel, not here.
   def insertChild(self, child_editor_item, parent_index):
     parent_tree_item = self.tree_model.getItem(parent_index)
 
@@ -169,16 +152,13 @@ class RequestsPage(QWidget):
     child_editor_item.save()
 
     child_tree_item = EditorTreeItem.from_editor_item(child_editor_item)
-
-    self.tree_model.insertChild(child_tree_item, parent_index)
-
     child_index = self.tree_model.index(parent_tree_item.childCount()-1, 0, parent_index)
 
+    self.tree_model.insertChild(child_tree_item, parent_index)
     self.ui.requestGroupsTreeView.selectionModel().setCurrentIndex(
       child_index,
       QItemSelectionModel.ClearAndSelect
     )
-
     self.ui.requestGroupsTreeView.edit(child_index)
 
   def removeRow(self):
