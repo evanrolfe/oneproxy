@@ -25,11 +25,11 @@ class RequestsPage(QWidget):
     self.ui.requestGroupsTreeView.setModel(self.tree_model)
 
     self.ui.requestGroupsTreeView.setDragDropMode(QAbstractItemView.InternalMove)
-    self.ui.requestGroupsTreeView.setSelectionMode(QAbstractItemView.SingleSelection)
+    self.ui.requestGroupsTreeView.setSelectionMode(QAbstractItemView.ContiguousSelection)
     self.ui.requestGroupsTreeView.setDragEnabled(True)
     self.ui.requestGroupsTreeView.setAcceptDrops(True)
     self.ui.requestGroupsTreeView.setContextMenuPolicy(Qt.CustomContextMenu)
-    self.ui.requestGroupsTreeView.customContextMenuRequested.connect(self.open_menu)
+    self.ui.requestGroupsTreeView.customContextMenuRequested.connect(self.right_click)
 
     self.ui.openRequestTabs.setTabsClosable(True)
     self.ui.openRequestTabs.setMovable(True)
@@ -67,13 +67,30 @@ class RequestsPage(QWidget):
     self.ui.requestGroupView.save_layout_state()
 
   @Slot()
-  def open_menu(self, position):
+  def right_click(self, position):
     index = self.ui.requestGroupsTreeView.indexAt(position)
 
     if not index.isValid():
+      # TODO: create an item on the root node
       print(index)
       return
 
+    selected_indexes = self.ui.requestGroupsTreeView.selectionModel().selectedRows()
+
+    if (len(selected_indexes) > 1):
+      self.show_multi_selection_context_menu(selected_indexes, position)
+    else:
+      self.show_single_selection_context_menu(index, position)
+
+  def show_multi_selection_context_menu(self, indexes, position):
+    delete_action = QAction(f"Delete {len(indexes)} items")
+    delete_action.triggered.connect(lambda: self.multi_delete_clicked(indexes))
+
+    menu = QMenu(self)
+    menu.addAction(delete_action)
+    menu.exec_(self.ui.requestGroupsTreeView.viewport().mapToGlobal(position))
+
+  def show_single_selection_context_menu(self, index, position):
     new_request_action = QAction("New Request")
     new_request_action.triggered.connect(lambda: self.new_request_clicked(index))
 
@@ -129,6 +146,22 @@ class RequestsPage(QWidget):
 
     if response == QMessageBox.Yes:
       self.tree_model.removeRows(index.row(), 1, index.parent())
+
+  def multi_delete_clicked(self, indexes):
+    message_box = QMessageBox()
+    message_box.setWindowTitle('PNTest')
+    message_box.setText(f'Are you sure you want to delete these {len(indexes)} items?')
+    message_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
+    message_box.setDefaultButton(QMessageBox.Yes)
+    response = message_box.exec_()
+
+    if response == QMessageBox.Yes:
+      self.ui.requestGroupsTreeView.selectionModel().clearSelection()
+
+      rows = sorted([i.row() for i in indexes])
+      diff = rows[-1] - rows[0]
+
+      self.tree_model.removeRows(rows[0], diff+1, indexes[0].parent())
 
   def insertChild(self, child_editor_item, parent_index):
     parent_tree_item = self.tree_model.getItem(parent_index)

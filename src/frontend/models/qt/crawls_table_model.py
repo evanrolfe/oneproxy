@@ -9,8 +9,6 @@ class CrawlsTableModel(QAbstractTableModel):
     self.crawls = crawls
 
   def set_crawls(self, crawls):
-    print("CrawlsTableModel - reloading!")
-
     self.crawls = crawls
     self.dataChanged.emit(QModelIndex(), QModelIndex())
     self.layoutChanged.emit()
