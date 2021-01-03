@@ -7,5 +7,7 @@ class EditorItem(Model):
     return EditorItem.where('parent_id', '=', self.id).get()
 
   def delete_resursive(self):
-    # TODO:
+    for child in self.children():
+      child.delete_resursive()
+
     self.delete()

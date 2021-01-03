@@ -115,9 +115,14 @@ class RequestsPage(QWidget):
 
     tree_item = self.tree_model.getItem(index)
 
+    if tree_item.is_dir:
+      message = 'Are you sure you want to delete this folder and all of its children?'
+    else:
+      message = 'Are you sure you want to delete this request?'
+
     message_box = QMessageBox()
     message_box.setWindowTitle('PNTest')
-    message_box.setText('Are you sure you want to delete this request?')
+    message_box.setText(message)
     message_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
     message_box.setDefaultButton(QMessageBox.Yes)
     response = message_box.exec_()
