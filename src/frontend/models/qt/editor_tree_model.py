@@ -21,21 +21,34 @@ class EditorTreeModel(QAbstractItemModel):
     if not index.isValid():
       return None
 
-    if role != QtCore.Qt.DisplayRole and role != QtCore.Qt.EditRole and role != QtCore.Qt.DecorationRole:
+    if role != Qt.DisplayRole and role != Qt.EditRole and role != Qt.DecorationRole:
       return None
 
     item = self.getItem(index)
 
-    if role == QtCore.Qt.DecorationRole:
+    if role == Qt.DecorationRole:
       return item.icon()
     else:
-      return item.data(index.column())
+      return item.data()
+
+  def setData(self, index, value, role=Qt.EditRole):
+    if role != Qt.EditRole:
+      return False
+
+    item = self.getItem(index)
+    result = item.setData(value)
+
+    if result:
+      self.dataChanged.emit(index, index, role)
+
+    return result
 
   def flags(self, index):
     if not index.isValid():
-      return None
+      return Qt.NoItemFlags
 
-    return QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | Qt.ItemIsDragEnabled | Qt.ItemIsDropEnabled
+    return Qt.ItemIsEditable | Qt.ItemIsSelectable | Qt.ItemIsEnabled
+    #return Qt.ItemIsEditable | Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled | Qt.ItemIsDropEnabled
 
   def getItem(self, index):
     if index.isValid():
@@ -47,25 +60,27 @@ class EditorTreeModel(QAbstractItemModel):
 
   def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
     if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
-      return self.rootItem.data(section)
+      return self.rootItem.data()
 
     return None
 
-  def index(self, row, column, parent=QtCore.QModelIndex()):
-    if parent.isValid() and parent.column() != 0:
+  def index(self, row, column, parent_index=QtCore.QModelIndex()):
+    if parent_index.isValid() and parent_index.column() != 0:
       return QtCore.QModelIndex()
 
-    parentItem = self.getItem(parent)
+    parentItem = self.getItem(parent_index)
     childItem = parentItem.child(row)
     if childItem:
       return self.createIndex(row, column, childItem)
     else:
       return QtCore.QModelIndex()
 
-  def insertRows(self, position, rows, parent=QtCore.QModelIndex()):
+  def insertChild(self, child, parent=QtCore.QModelIndex()):
     parentItem = self.getItem(parent)
-    self.beginInsertRows(parent, position, position + rows - 1)
-    success = parentItem.insertChildren(position, rows, self.rootItem.columnCount())
+    position = parentItem.childCount()
+
+    self.beginInsertRows(parent, position, position)
+    success = parentItem.insertChild(child)
     self.endInsertRows()
 
     return success
@@ -82,10 +97,10 @@ class EditorTreeModel(QAbstractItemModel):
 
     return self.createIndex(parentItem.childNumber(), 0, parentItem)
 
-  def removeRows(self, position, rows, parent=QtCore.QModelIndex()):
-    parentItem = self.getItem(parent)
+  def removeRows(self, position, rows, parent_index=QtCore.QModelIndex()):
+    parentItem = self.getItem(parent_index)
 
-    self.beginRemoveRows(parent, position, position + rows - 1)
+    self.beginRemoveRows(parent_index, position, position + rows - 1)
     success = parentItem.removeChildren(position, rows)
     self.endRemoveRows()
 
@@ -106,6 +121,18 @@ class EditorTreeModel(QAbstractItemModel):
       return True
 
     return (item.childCount() > 0)
+
+  def setData(self, index, value, role=Qt.EditRole):
+    if role != QtCore.Qt.EditRole:
+      return False
+
+    item = self.getItem(index)
+    result = item.setData(value)
+
+    if result:
+      self.dataChanged.emit(index, index)
+
+    return result
 
   def setup_model_data(self, editor_items, root_tree_item):
     root_level_editor_items = [x for x in editor_items if x.parent_id == None]

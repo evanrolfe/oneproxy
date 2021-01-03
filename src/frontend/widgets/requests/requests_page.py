@@ -1,14 +1,16 @@
 import sys
 from PySide2 import QtCore
-from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstractItemView, QTabBar
-from PySide2.QtCore import QFile, Slot
+from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstractItemView, QTabBar, QMenu, QAction, QItemDelegate
+from PySide2.QtCore import QFile, Slot, Qt, QItemSelectionModel
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtGui import QIcon
 
 from views._compiled.requests.ui_requests_page import Ui_RequestsPage
 
+from lib.app_settings import AppSettings
 from models.data.editor_item import EditorItem
 from models.qt.editor_tree_model import EditorTreeModel
+from models.qt.editor_tree_item import EditorTreeItem
 from lib.backend import Backend
 
 class RequestsPage(QWidget):
@@ -19,13 +21,15 @@ class RequestsPage(QWidget):
     self.ui.setupUi(self)
 
     editor_items = EditorItem.all()
-    tree_model = EditorTreeModel('Requests', editor_items)
-    self.ui.requestGroupsTreeView.setModel(tree_model)
+    self.tree_model = EditorTreeModel('Requests', editor_items)
+    self.ui.requestGroupsTreeView.setModel(self.tree_model)
 
     self.ui.requestGroupsTreeView.setDragDropMode(QAbstractItemView.InternalMove)
     self.ui.requestGroupsTreeView.setSelectionMode(QAbstractItemView.SingleSelection)
     self.ui.requestGroupsTreeView.setDragEnabled(True)
     self.ui.requestGroupsTreeView.setAcceptDrops(True)
+    self.ui.requestGroupsTreeView.setContextMenuPolicy(Qt.CustomContextMenu)
+    self.ui.requestGroupsTreeView.customContextMenuRequested.connect(self.open_menu)
 
     self.ui.openRequestTabs.setTabsClosable(True)
     self.ui.openRequestTabs.setMovable(True)
@@ -47,68 +51,90 @@ class RequestsPage(QWidget):
     # self.insertChildAction.triggered.connect(self.insertChild)
 
     # self.updateActions()
+    self.restore_layout_state()
 
-  def insertChild(self):
-      index = self.ui.requestGroupsTreeView.selectionModel().currentIndex()
-      model = self.ui.requestGroupsTreeView.model()
+  # TODO DRY up this method and save_layout_state()
+  def restore_layout_state(self):
+    settings = AppSettings.get_instance()
+    splitter_state = settings.get("RequestsPage.splitter", None)
+    self.ui.splitter.restoreState(splitter_state)
 
-      if model.columnCount(index) == 0:
-          if not model.insertColumn(0, index):
-              return
+  def save_layout_state(self):
+    splitter_state = self.ui.splitter.saveState()
+    settings = AppSettings.get_instance()
+    settings.save("RequestsPage.splitter", splitter_state)
 
-      if not model.insertRow(0, index):
-          return
+    self.ui.requestGroupView.save_layout_state()
 
-      for column in range(model.columnCount(index)):
-          child = model.index(0, column, index)
-          model.setData(child, "[No data]",
-                  QtCore.Qt.EditRole)
-          if not model.headerData(column, QtCore.Qt.Horizontal).isValid():
-              model.setHeaderData(column, QtCore.Qt.Horizontal,
-                      "[No header]", QtCore.Qt.EditRole)
+  @Slot()
+  def open_menu(self, position):
+    index = self.ui.requestGroupsTreeView.indexAt(position)
 
-      self.ui.requestGroupsTreeView.selectionModel().setCurrentIndex(model.index(0, 0, index),
-              QtGui.QItemSelectionModel.ClearAndSelect)
-      self.updateActions()
+    if not index.isValid():
+      print(index)
+      return
 
-  def insertColumn(self, parent=QtCore.QModelIndex()):
-      model = self.ui.requestGroupsTreeView.model()
-      column = self.ui.requestGroupsTreeView.selectionModel().currentIndex().column()
+    new_request_action = QAction("New Request")
+    new_request_action.triggered.connect(lambda: self.new_request_clicked(index))
 
-      # Insert a column in the parent item.
-      changed = model.insertColumn(column + 1, parent)
-      if changed:
-          model.setHeaderData(column + 1, QtCore.Qt.Horizontal,
-                  "[No header]", QtCore.Qt.EditRole)
+    new_dir_action = QAction("New Folder")
+    new_dir_action.triggered.connect(lambda: self.new_dir_clicked(index))
 
-      self.updateActions()
+    rename_action = QAction("Rename")
+    rename_action.triggered.connect(lambda: self.ui.requestGroupsTreeView.edit(index))
 
-      return changed
+    delete_action = QAction("Delete")
+    delete_action.triggered.connect(lambda: self.delete_clicked(index))
 
-  def insertRow(self):
-      index = self.ui.requestGroupsTreeView.selectionModel().currentIndex()
-      model = self.ui.requestGroupsTreeView.model()
+    menu = QMenu(self)
+    menu.addAction(new_request_action)
+    menu.addAction(new_dir_action)
+    menu.addAction(rename_action)
+    menu.addAction(delete_action)
+    menu.exec_(self.ui.requestGroupsTreeView.viewport().mapToGlobal(position))
 
-      if not model.insertRow(index.row()+1, index.parent()):
-          return
+  @Slot()
+  def new_request_clicked(self, parent_index):
+    child_editor_item = EditorItem()
+    child_editor_item.name = 'new request'
+    child_editor_item.item_type = 'request'
 
-      self.updateActions()
+    self.insertChild(child_editor_item, parent_index)
 
-      for column in range(model.columnCount(index.parent())):
-          child = model.index(index.row()+1, column, index.parent())
-          model.setData(child, "[No data]", QtCore.Qt.EditRole)
+  @Slot()
+  def new_dir_clicked(self, parent_index):
+    child_editor_item = EditorItem()
+    child_editor_item.name = 'new folder'
+    child_editor_item.item_type = 'dir'
 
-  def removeColumn(self, parent=QtCore.QModelIndex()):
-      model = self.ui.requestGroupsTreeView.model()
-      column = self.ui.requestGroupsTreeView.selectionModel().currentIndex().column()
+    self.insertChild(child_editor_item, parent_index)
 
-      # Insert columns in each child of the parent item.
-      changed = model.removeColumn(column, parent)
+  @Slot()
+  def delete_clicked(self, index):
+    print(f"Deleting! {index}")
 
-      if not parent.isValid() and changed:
-          self.updateActions()
+    tree_item = self.tree_model.getItem(index)
 
-      return changed
+    self.tree_model.removeRows(index.row(), 1, index.parent())
+
+  def insertChild(self, child_editor_item, parent_index):
+    parent_tree_item = self.tree_model.getItem(parent_index)
+
+    child_editor_item.parent_id = parent_tree_item.editor_item.id
+    child_editor_item.save()
+
+    child_tree_item = EditorTreeItem.from_editor_item(child_editor_item)
+
+    self.tree_model.insertChild(child_tree_item, parent_index)
+
+    child_index = self.tree_model.index(parent_tree_item.childCount()-1, 0, parent_index)
+
+    self.ui.requestGroupsTreeView.selectionModel().setCurrentIndex(
+      child_index,
+      QItemSelectionModel.ClearAndSelect
+    )
+
+    self.ui.requestGroupsTreeView.edit(child_index)
 
   def removeRow(self):
       index = self.ui.requestGroupsTreeView.selectionModel().currentIndex()
@@ -117,21 +143,3 @@ class RequestsPage(QWidget):
       if (model.removeRow(index.row(), index.parent())):
           self.updateActions()
 
-  def updateActions(self):
-      hasSelection = not self.ui.requestGroupsTreeView.selectionModel().selection().isEmpty()
-      self.ui.removeRowAction.setEnabled(hasSelection)
-      self.ui.removeColumnAction.setEnabled(hasSelection)
-
-      hasCurrent = self.ui.requestGroupsTreeView.selectionModel().currentIndex().isValid()
-      self.ui.insertRowAction.setEnabled(hasCurrent)
-      self.ui.insertColumnAction.setEnabled(hasCurrent)
-
-      if hasCurrent:
-          self.ui.requestGroupsTreeView.closePersistentEditor(self.ui.requestGroupsTreeView.selectionModel().currentIndex())
-
-          row = self.ui.requestGroupsTreeView.selectionModel().currentIndex().row()
-          column = self.ui.requestGroupsTreeView.selectionModel().currentIndex().column()
-          if self.ui.requestGroupsTreeView.selectionModel().currentIndex().parent().isValid():
-              self.statusBar().showMessage("Position: (%d,%d)" % (row, column))
-          else:
-              self.statusBar().showMessage("Position: (%d,%d) in top level" % (row, column))

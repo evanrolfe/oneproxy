@@ -106,6 +106,7 @@ class MainWindow(QMainWindow):
   def about_to_quit(self):
     self.save_layout_state()
     self.network_page_widget.save_layout_state()
+    self.requests_page.save_layout_state()
     self.backend.kill()
 
   def exit(self):

@@ -59,7 +59,9 @@ CREATE TABLE IF NOT EXISTS editor_items(
   parent_id INTEGER,
   name TEXT NOT NULL,
   item_type TEXT NOT NULL,
-  item_id INTEGER
+  item_id INTEGER,
+  created_at INTEGER,
+  updated_at INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS websocket_messages(
