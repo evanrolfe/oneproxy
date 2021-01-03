@@ -18,7 +18,10 @@ class EditorTreeItem(object):
     return self.label
 
   def child(self, row):
-    return self.childItems[row]
+    try:
+      return self.childItems[row]
+    except IndexError:
+      return None
 
   def childCount(self):
     return len(self.childItems)
@@ -38,6 +41,17 @@ class EditorTreeItem(object):
   def insertChild(self, child_item):
     self.childItems.append(child_item)
     child_item.parent = self
+
+    if self.editor_item != None:
+      child_item.editor_item.parent_id = self.editor_item.id
+      child_item.editor_item.save()
+    else:
+      child_item.editor_item.parent_id = None
+      child_item.editor_item.save()
+
+  def insertChildren(self, child_items):
+    for item in  child_items:
+      self.insertChild(item)
 
   def removeChildren(self, position, count):
     if position < 0 or position + count > len(self.childItems):

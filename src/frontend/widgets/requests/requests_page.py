@@ -30,6 +30,7 @@ class RequestsPage(QWidget):
     self.ui.requestGroupsTreeView.setAcceptDrops(True)
     self.ui.requestGroupsTreeView.setContextMenuPolicy(Qt.CustomContextMenu)
     self.ui.requestGroupsTreeView.customContextMenuRequested.connect(self.right_click)
+    self.ui.requestGroupsTreeView.setDragDropOverwriteMode(True)
 
     self.ui.openRequestTabs.setTabsClosable(True)
     self.ui.openRequestTabs.setMovable(True)
@@ -70,11 +71,6 @@ class RequestsPage(QWidget):
   def right_click(self, position):
     index = self.ui.requestGroupsTreeView.indexAt(position)
 
-    if not index.isValid():
-      # TODO: create an item on the root node
-      print(index)
-      return
-
     selected_indexes = self.ui.requestGroupsTreeView.selectionModel().selectedRows()
 
     if (len(selected_indexes) > 1):
@@ -106,8 +102,10 @@ class RequestsPage(QWidget):
     menu = QMenu(self)
     menu.addAction(new_request_action)
     menu.addAction(new_dir_action)
-    menu.addAction(rename_action)
-    menu.addAction(delete_action)
+    if index.isValid():
+      menu.addAction(rename_action)
+      menu.addAction(delete_action)
+
     menu.exec_(self.ui.requestGroupsTreeView.viewport().mapToGlobal(position))
 
   @Slot()
@@ -166,7 +164,8 @@ class RequestsPage(QWidget):
   def insertChild(self, child_editor_item, parent_index):
     parent_tree_item = self.tree_model.getItem(parent_index)
 
-    child_editor_item.parent_id = parent_tree_item.editor_item.id
+    if parent_tree_item.editor_item != None:
+      child_editor_item.parent_id = parent_tree_item.editor_item.id
     child_editor_item.save()
 
     child_tree_item = EditorTreeItem.from_editor_item(child_editor_item)

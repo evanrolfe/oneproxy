@@ -1,6 +1,7 @@
 from PySide2 import QtCore, QtGui
-from PySide2.QtCore import QAbstractItemModel, Qt
+from PySide2.QtCore import QAbstractItemModel, Qt, QDataStream, QByteArray
 from PySide2.QtGui import QIcon
+import json
 
 from models.qt.editor_tree_item import EditorTreeItem
 
@@ -8,7 +9,7 @@ class EditorTreeModel(QAbstractItemModel):
   def __init__(self, header, editor_items, parent=None):
     super(EditorTreeModel, self).__init__(parent)
 
-    self.rootItem = EditorTreeItem(header)
+    self.rootItem = EditorTreeItem(header, None, True)
     self.setup_model_data(editor_items, self.rootItem)
 
   def supportedDropActions(self):
@@ -32,22 +33,64 @@ class EditorTreeModel(QAbstractItemModel):
       return item.data()
 
   def setData(self, index, value, role=Qt.EditRole):
-    if role != Qt.EditRole:
+    if role == Qt.EditRole:
+      item = self.getItem(index)
+      item.setLabel(value)
+
+      self.dataChanged.emit(index, index, role)
+      return True
+
+    elif role == Qt.DisplayRole:
+      self.dataChanged.emit(index, index, role)
+      return True
+
+    return False
+
+  def mimeTypes(self):
+    return ['text/index-json-array']
+
+  def mimeData(self, indexes):
+    tree_items = [self.getItem(i) for i in indexes]
+    index_data = [{ 'internalId': i.internalId(), 'row': i.row(), 'column': i.column() } for i in indexes]
+
+    encoded_json = json.dumps(index_data).encode()
+    mimeData = QtCore.QMimeData()
+    mimeData.setData('text/index-json-array', QByteArray(encoded_json))
+    return mimeData
+
+  def canDropMimeData(self, data, action, row, column, parent_index):
+    if (action != Qt.DropAction.MoveAction):
       return False
 
-    item = self.getItem(index)
-    item.setLabel(value)
+    item = self.getItem(parent_index)
+    return (item.is_dir == True)
 
-    self.dataChanged.emit(index, index, role)
+  def dropMimeData(self, data, action, row, column, parent_index):
+    if (action != Qt.DropAction.MoveAction):
+      return False
+
+    if not parent_index.isValid():
+      print('DROPPED ON ROOT!!!!!!!!!!!!!')
+
+    encoded_data = data.data('text/index-json-array')
+    index_data = json.loads(str(encoded_data, 'utf-8'))
+
+    indexes = [self.createIndex(i['row'], i['column'], i['internalId']) for i in index_data]
+    tree_items = [self.getItem(i) for i in indexes]
+
+    rows = sorted([i.row() for i in indexes])
+    diff = rows[-1] - rows[0]
+    self.removeRows(rows[0], diff+1, indexes[0].parent())
+
+    self.insertChildren(tree_items, parent_index)
 
     return True
 
   def flags(self, index):
     if not index.isValid():
-      return Qt.NoItemFlags
+      return Qt.NoItemFlags| Qt.ItemIsDropEnabled
 
-    return Qt.ItemIsEditable | Qt.ItemIsSelectable | Qt.ItemIsEnabled
-    #return Qt.ItemIsEditable | Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled | Qt.ItemIsDropEnabled
+    return Qt.ItemIsEditable | Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDragEnabled | Qt.ItemIsDropEnabled
 
   def getItem(self, index):
     if index.isValid():
@@ -69,17 +112,29 @@ class EditorTreeModel(QAbstractItemModel):
 
     parentItem = self.getItem(parent_index)
     childItem = parentItem.child(row)
+
     if childItem:
       return self.createIndex(row, column, childItem)
     else:
       return QtCore.QModelIndex()
 
+  # TODO: Make this call self.insertChildren()
   def insertChild(self, child, parent=QtCore.QModelIndex()):
     parentItem = self.getItem(parent)
     position = parentItem.childCount()
 
     self.beginInsertRows(parent, position, position)
     success = parentItem.insertChild(child)
+    self.endInsertRows()
+
+    return success
+
+  def insertChildren(self, child_items, parent_index=QtCore.QModelIndex()):
+    parentItem = self.getItem(parent_index)
+    position = parentItem.childCount()
+
+    self.beginInsertRows(parent_index, position, position + len(child_items))
+    success = parentItem.insertChildren(child_items)
     self.endInsertRows()
 
     return success
@@ -99,7 +154,7 @@ class EditorTreeModel(QAbstractItemModel):
   def removeRows(self, position, rows, parent_index=QtCore.QModelIndex()):
     parentItem = self.getItem(parent_index)
 
-    self.beginRemoveRows(parent_index, position, position + rows - 1)
+    self.beginRemoveRows(parent_index, position, position + rows)
     success = parentItem.removeChildren(position, rows)
     self.endRemoveRows()
 
