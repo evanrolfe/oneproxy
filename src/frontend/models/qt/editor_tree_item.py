@@ -38,6 +38,9 @@ class EditorTreeItem(object):
   def columnCount(self):
     return 1
 
+  def sortChildren(self):
+    self.childItems = sorted(self.childItems, key=lambda x: (not x.is_dir, x.label))
+
   def insertChild(self, child_item):
     self.childItems.append(child_item)
     child_item.parent = self
@@ -48,6 +51,8 @@ class EditorTreeItem(object):
     else:
       child_item.editor_item.parent_id = None
       child_item.editor_item.save()
+
+    self.sortChildren()
 
   def insertChildren(self, child_items):
     for item in  child_items:

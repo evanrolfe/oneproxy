@@ -1,11 +1,13 @@
 from PySide2 import QtCore, QtGui
-from PySide2.QtCore import QAbstractItemModel, Qt, QDataStream, QByteArray
+from PySide2.QtCore import QAbstractItemModel, Qt, QDataStream, QByteArray, Signal, QModelIndex
 from PySide2.QtGui import QIcon
 import json
 
 from models.qt.editor_tree_item import EditorTreeItem
 
 class EditorTreeModel(QAbstractItemModel):
+  change_selection = Signal(QModelIndex)
+
   def __init__(self, header, editor_items, parent=None):
     super(EditorTreeModel, self).__init__(parent)
 
@@ -37,9 +39,15 @@ class EditorTreeModel(QAbstractItemModel):
       item = self.getItem(index)
       item.setLabel(value)
 
-      self.dataChanged.emit(index, index, role)
-      return True
+      index1 = self.createIndex(0, 0, item.parent)
+      index2 = self.createIndex(item.parent.childCount(), 0, item.parent)
+      item.parent.sortChildren()
+      new_index = self.createIndex(item.childNumber(), 0, item)
 
+      self.dataChanged.emit(index1, index2, role)
+      self.change_selection.emit(new_index)
+
+      return True
     elif role == Qt.DisplayRole:
       self.dataChanged.emit(index, index, role)
       return True
@@ -63,28 +71,39 @@ class EditorTreeModel(QAbstractItemModel):
       return False
 
     item = self.getItem(parent_index)
-    return (item.is_dir == True)
+
+    indexes, tree_items = self.decode_mime_data(data)
+
+    if item.is_dir == False:
+      return False
+
+    item_parents = [i.parent for i in tree_items]
+    items_are_not_dirs = [not i.is_dir for i in tree_items]
+    items_share_same_parent = len(set(item_parents)) == 1
+
+    return (all(items_are_not_dirs) and items_share_same_parent)
 
   def dropMimeData(self, data, action, row, column, parent_index):
     if (action != Qt.DropAction.MoveAction):
       return False
 
-    if not parent_index.isValid():
-      print('DROPPED ON ROOT!!!!!!!!!!!!!')
+    indexes, tree_items = self.decode_mime_data(data)
+    rows = sorted([i.row() for i in indexes])
+    diff = rows[-1] - rows[0]
 
-    encoded_data = data.data('text/index-json-array')
+    self.removeRows(rows[0], diff+1, indexes[0].parent())
+    self.insertChildren(tree_items, parent_index)
+
+    return True
+
+  def decode_mime_data(self, mime_data):
+    encoded_data = mime_data.data('text/index-json-array')
     index_data = json.loads(str(encoded_data, 'utf-8'))
 
     indexes = [self.createIndex(i['row'], i['column'], i['internalId']) for i in index_data]
     tree_items = [self.getItem(i) for i in indexes]
 
-    rows = sorted([i.row() for i in indexes])
-    diff = rows[-1] - rows[0]
-    self.removeRows(rows[0], diff+1, indexes[0].parent())
-
-    self.insertChildren(tree_items, parent_index)
-
-    return True
+    return (indexes, tree_items)
 
   def flags(self, index):
     if not index.isValid():
@@ -146,7 +165,7 @@ class EditorTreeModel(QAbstractItemModel):
     childItem = self.getItem(index)
     parentItem = childItem.parent
 
-    if parentItem == self.rootItem:
+    if parentItem == self.rootItem or childItem == self.rootItem:
       return QtCore.QModelIndex()
 
     return self.createIndex(parentItem.childNumber(), 0, parentItem)

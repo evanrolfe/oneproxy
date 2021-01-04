@@ -22,8 +22,9 @@ class RequestsPage(QWidget):
 
     editor_items = EditorItem.order_by('item_type', 'asc').get()
     self.tree_model = EditorTreeModel('Requests', editor_items)
-    self.ui.requestGroupsTreeView.setModel(self.tree_model)
+    self.tree_model.change_selection.connect(self.change_selection)
 
+    self.ui.requestGroupsTreeView.setModel(self.tree_model)
     self.ui.requestGroupsTreeView.setDragDropMode(QAbstractItemView.InternalMove)
     self.ui.requestGroupsTreeView.setSelectionMode(QAbstractItemView.ContiguousSelection)
     self.ui.requestGroupsTreeView.setDragEnabled(True)
@@ -52,6 +53,14 @@ class RequestsPage(QWidget):
     self.ui.requestGroupView.save_layout_state()
 
   @Slot()
+  def change_selection(self, index):
+    print(f'---------> Changing selection to {index}')
+    self.ui.requestGroupsTreeView.selectionModel().setCurrentIndex(
+      index,
+      QItemSelectionModel.ClearAndSelect
+    )
+
+  @Slot()
   def right_click(self, position):
     index = self.ui.requestGroupsTreeView.indexAt(position)
 
@@ -71,6 +80,8 @@ class RequestsPage(QWidget):
     menu.exec_(self.ui.requestGroupsTreeView.viewport().mapToGlobal(position))
 
   def show_single_selection_context_menu(self, index, position):
+    tree_item = self.tree_model.getItem(index)
+
     new_request_action = QAction("New Request")
     new_request_action.triggered.connect(lambda: self.new_request_clicked(index))
 
@@ -84,8 +95,10 @@ class RequestsPage(QWidget):
     delete_action.triggered.connect(lambda: self.delete_clicked(index))
 
     menu = QMenu(self)
-    menu.addAction(new_request_action)
-    menu.addAction(new_dir_action)
+    if tree_item.is_dir:
+      menu.addAction(new_request_action)
+      menu.addAction(new_dir_action)
+
     if index.isValid():
       menu.addAction(rename_action)
       menu.addAction(delete_action)
@@ -149,12 +162,15 @@ class RequestsPage(QWidget):
 
     if parent_tree_item.editor_item != None:
       child_editor_item.parent_id = parent_tree_item.editor_item.id
+
     child_editor_item.save()
 
     child_tree_item = EditorTreeItem.from_editor_item(child_editor_item)
-    child_index = self.tree_model.index(parent_tree_item.childCount()-1, 0, parent_index)
-
     self.tree_model.insertChild(child_tree_item, parent_index)
+
+
+    child_index = self.tree_model.index(child_tree_item.childNumber(), 0, parent_index)
+
     self.ui.requestGroupsTreeView.selectionModel().setCurrentIndex(
       child_index,
       QItemSelectionModel.ClearAndSelect
