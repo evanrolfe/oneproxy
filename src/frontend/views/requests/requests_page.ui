@@ -37,7 +37,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QTreeView" name="requestGroupsTreeView">
+     <widget class="ItemExplorer" name="requestGroupsTreeView">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -74,6 +74,12 @@
    <class>RequestGroupView</class>
    <extends>QWidget</extends>
    <header>widgets.requests.request_group_view.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ItemExplorer</class>
+   <extends>QTreeView</extends>
+   <header>widgets.requests.item_explorer.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -16,6 +16,7 @@ from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
 from PySide2.QtWidgets import *
 
 from widgets.requests.request_group_view import RequestGroupView
+from widgets.requests.item_explorer import ItemExplorer
 
 
 class Ui_RequestsPage(object):
@@ -37,7 +38,7 @@ class Ui_RequestsPage(object):
         self.splitter = QSplitter(RequestsPage)
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Horizontal)
-        self.requestGroupsTreeView = QTreeView(self.splitter)
+        self.requestGroupsTreeView = ItemExplorer(self.splitter)
         self.requestGroupsTreeView.setObjectName(u"requestGroupsTreeView")
         sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
