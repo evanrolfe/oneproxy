@@ -38,18 +38,16 @@ class EditorTreeModel(QAbstractItemModel):
     if role == Qt.EditRole:
       item = self.getItem(index)
       item.setLabel(value)
-
-      index1 = self.createIndex(0, 0, item.parent)
-      index2 = self.createIndex(item.parent.childCount(), 0, item.parent)
       item.parent.sortChildren()
-      new_index = self.createIndex(item.childNumber(), 0, item)
+      new_selected_index = self.createIndex(item.childNumber(), 0, item)
 
-      self.dataChanged.emit(index1, index2, role)
-      self.change_selection.emit(new_index)
-
+      self.layoutChanged.emit()
+      self.change_selection.emit(new_selected_index)
+      print('setData EditRole')
       return True
     elif role == Qt.DisplayRole:
-      self.dataChanged.emit(index, index, role)
+      print('setData DisplayRole')
+      self.layoutChanged.emit()
       return True
 
     return False

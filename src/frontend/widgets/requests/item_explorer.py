@@ -24,6 +24,7 @@ class ItemExplorer(QTreeView):
 
   @Slot()
   def change_selection(self, index):
+    print('------------> change_selection called!')
     self.selectionModel().setCurrentIndex(
       index,
       QItemSelectionModel.ClearAndSelect
@@ -138,7 +139,6 @@ class ItemExplorer(QTreeView):
     self.tree_model.insertChild(child_tree_item, parent_index)
 
     child_index = self.tree_model.index(child_tree_item.childNumber(), 0, parent_index)
-
     self.selectionModel().setCurrentIndex(
       child_index,
       QItemSelectionModel.ClearAndSelect
