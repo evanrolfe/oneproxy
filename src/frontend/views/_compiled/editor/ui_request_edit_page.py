@@ -56,15 +56,10 @@ class Ui_RequestEditPage(object):
 
         self.requestActionsLayout.addWidget(self.toggleFuzzTableButton)
 
-        self.comboBox = QComboBox(self.layoutWidget)
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.setObjectName(u"comboBox")
+        self.methodInput = QComboBox(self.layoutWidget)
+        self.methodInput.setObjectName(u"methodInput")
 
-        self.requestActionsLayout.addWidget(self.comboBox)
+        self.requestActionsLayout.addWidget(self.methodInput)
 
         self.urlInput = QLineEdit(self.layoutWidget)
         self.urlInput.setObjectName(u"urlInput")
@@ -77,10 +72,10 @@ class Ui_RequestEditPage(object):
 
         self.requestActionsLayout.addWidget(self.sendRequestButton)
 
-        self.saveRequestButton = QPushButton(self.layoutWidget)
-        self.saveRequestButton.setObjectName(u"saveRequestButton")
+        self.saveButton = QPushButton(self.layoutWidget)
+        self.saveButton.setObjectName(u"saveButton")
 
-        self.requestActionsLayout.addWidget(self.saveRequestButton)
+        self.requestActionsLayout.addWidget(self.saveButton)
 
 
         self.verticalLayout.addLayout(self.requestActionsLayout)
@@ -147,14 +142,8 @@ class Ui_RequestEditPage(object):
     def retranslateUi(self, RequestEditPage):
         RequestEditPage.setWindowTitle(QCoreApplication.translate("RequestEditPage", u"Form", None))
         self.toggleFuzzTableButton.setText(QCoreApplication.translate("RequestEditPage", u"<<", None))
-        self.comboBox.setItemText(0, QCoreApplication.translate("RequestEditPage", u"GET", None))
-        self.comboBox.setItemText(1, QCoreApplication.translate("RequestEditPage", u"POST", None))
-        self.comboBox.setItemText(2, QCoreApplication.translate("RequestEditPage", u"PATCH", None))
-        self.comboBox.setItemText(3, QCoreApplication.translate("RequestEditPage", u"PUT", None))
-        self.comboBox.setItemText(4, QCoreApplication.translate("RequestEditPage", u"DELETE", None))
-
         self.sendRequestButton.setText(QCoreApplication.translate("RequestEditPage", u"Send", None))
-        self.saveRequestButton.setText(QCoreApplication.translate("RequestEditPage", u"Save", None))
+        self.saveButton.setText(QCoreApplication.translate("RequestEditPage", u"Save", None))
         self.requestTabs.setTabText(self.requestTabs.indexOf(self.requestTab), QCoreApplication.translate("RequestEditPage", u"Request", None))
         self.responseTabs.setTabText(self.responseTabs.indexOf(self.responseTab), QCoreApplication.translate("RequestEditPage", u"Response", None))
         self.responseTabs.setTabText(self.responseTabs.indexOf(self.responseBodyTab), QCoreApplication.translate("RequestEditPage", u"Body", None))

@@ -11,3 +11,5 @@ class EditorRequest(Model):
       child.delete_resursive()
 
     self.delete()
+
+

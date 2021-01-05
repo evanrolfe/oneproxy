@@ -3,9 +3,11 @@ from PySide2.QtCore import QAbstractItemModel, Qt, QDataStream, QByteArray, Sign
 from PySide2.QtGui import QIcon
 import json
 
+from models.data.editor_item import EditorItem
 from models.qt.editor_tree_item import EditorTreeItem
 
 class EditorTreeModel(QAbstractItemModel):
+  item_renamed = Signal(EditorItem)
   change_selection = Signal(QModelIndex)
 
   def __init__(self, header, editor_items, parent=None):
@@ -43,6 +45,9 @@ class EditorTreeModel(QAbstractItemModel):
 
       self.layoutChanged.emit()
       self.change_selection.emit(new_selected_index)
+      if not item.is_dir:
+        self.item_renamed.emit(item.editor_item)
+
       print('setData EditRole')
       return True
     elif role == Qt.DisplayRole:

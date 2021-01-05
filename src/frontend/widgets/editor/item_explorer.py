@@ -6,6 +6,9 @@ from models.qt.editor_tree_model import EditorTreeModel
 from models.qt.editor_tree_item import EditorTreeItem
 
 class ItemExplorer(QTreeView):
+  item_created = Signal(EditorItem)
+  item_deleted = Signal(EditorItem)
+  item_renamed = Signal(EditorItem)
   item_clicked = Signal(EditorItem)
   item_double_clicked = Signal(EditorItem)
 
@@ -15,6 +18,7 @@ class ItemExplorer(QTreeView):
     editor_items = EditorItem.order_by('item_type', 'asc').get()
     self.tree_model = EditorTreeModel('Requests', editor_items)
     self.tree_model.change_selection.connect(self.change_selection)
+    self.tree_model.item_renamed.connect(self.item_renamed)
 
     self.setModel(self.tree_model)
     self.setDragDropMode(QAbstractItemView.InternalMove)
@@ -23,10 +27,10 @@ class ItemExplorer(QTreeView):
     self.setDragEnabled(True)
     self.setAcceptDrops(True)
     self.setContextMenuPolicy(Qt.CustomContextMenu)
+    self.setDragDropOverwriteMode(True)
     self.customContextMenuRequested.connect(self.right_click)
     self.doubleClicked.connect(self.double_click)
     self.clicked.connect(self.click)
-    self.setDragDropOverwriteMode(True)
 
   @Slot()
   def change_selection(self, index):
@@ -99,6 +103,7 @@ class ItemExplorer(QTreeView):
     child_editor_item.item_type = 'request'
 
     self.insertChild(child_editor_item, parent_index)
+    self.item_created.emit(child_editor_item)
 
   @Slot()
   def new_dir_clicked(self, parent_index):
@@ -126,8 +131,10 @@ class ItemExplorer(QTreeView):
 
     if response == QMessageBox.Yes:
       self.tree_model.removeRows(index.row(), 1, index.parent())
+      self.item_deleted.emit(tree_item)
 
   def multi_delete_clicked(self, indexes):
+    tree_items = [self.tree_model.getItem(i) for i in indexes]
     message_box = QMessageBox()
     message_box.setWindowTitle('PNTest')
     message_box.setText(f'Are you sure you want to delete these {len(indexes)} items?')
@@ -142,6 +149,8 @@ class ItemExplorer(QTreeView):
       diff = rows[-1] - rows[0]
 
       self.tree_model.removeRows(rows[0], diff+1, indexes[0].parent())
+      for item in tree_items:
+        self.item_deleted.emit(item)
 
   # TODO: Most of this method's logic should be in EditorTreeModel, not here.
   def insertChild(self, child_editor_item, parent_index):

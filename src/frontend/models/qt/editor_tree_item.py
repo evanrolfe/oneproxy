@@ -64,7 +64,7 @@ class EditorTreeItem(object):
 
     for row in range(count):
       removed_item = self.childItems.pop(position)
-      removed_item.editor_item.delete_resursive()
+      removed_item.editor_item.delete_everything()
 
     return True
 

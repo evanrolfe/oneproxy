@@ -64,32 +64,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="comboBox">
-            <item>
-              <property name="text">
-              <string>GET</string>
-              </property>
-            </item>
-            <item>
-              <property name="text">
-              <string>POST</string>
-              </property>
-            </item>
-            <item>
-              <property name="text">
-              <string>PATCH</string>
-              </property>
-            </item>
-            <item>
-              <property name="text">
-              <string>PUT</string>
-              </property>
-            </item>
-            <item>
-              <property name="text">
-              <string>DELETE</string>
-              </property>
-            </item>
+           <widget class="QComboBox" name="methodInput">
            </widget>
           </item>
           <item>
@@ -110,7 +85,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="saveRequestButton">
+           <widget class="QPushButton" name="saveButton">
             <property name="text">
              <string>Save</string>
             </property>

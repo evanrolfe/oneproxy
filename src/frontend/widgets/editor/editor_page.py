@@ -20,6 +20,9 @@ class EditorPage(QWidget):
     self.restore_layout_state()
 
     self.ui.itemExplorer.item_double_clicked.connect(self.ui.tabs.open_item)
+    self.ui.itemExplorer.item_created.connect(self.ui.tabs.open_item)
+    self.ui.itemExplorer.item_deleted.connect(self.ui.tabs.close_item)
+    self.ui.itemExplorer.item_renamed.connect(self.ui.tabs.change_item)
 
   def restore_layout_state(self):
     settings = AppSettings.get_instance()
