@@ -1,5 +1,6 @@
 import json
 
+# TODO: Move this to an Orator model in models/data/network_request.py
 class Request:
   def __init__(self, attributes):
     self.id = attributes.get('id')

@@ -5,7 +5,7 @@ from orator import DatabaseManager, Model
 from models.data.capture_filter import CaptureFilter
 from models.data.setting import Setting
 
-NUM_TABLES = 9
+NUM_TABLES = 10
 SCHEMA_SQL = """CREATE TABLE IF NOT EXISTS requests(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   client_id INTEGER,
@@ -60,6 +60,26 @@ CREATE TABLE IF NOT EXISTS editor_items(
   name TEXT NOT NULL,
   item_type TEXT NOT NULL,
   item_id INTEGER,
+  created_at INTEGER,
+  updated_at INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS editor_requests(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  parent_id INTEGER,
+  method TEXT,
+  url TEXT,
+  request_headers TEXT,
+  request_payload TEXT,
+
+  response_remote_address TEXT,
+  response_http_version TEXT,
+  response_status INTEGER,
+  response_status_message TEXT,
+  response_headers TEXT,
+  response_body TEXT,
+  response_body_length INTEGER,
+
   created_at INTEGER,
   updated_at INTEGER
 );
