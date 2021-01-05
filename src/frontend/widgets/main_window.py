@@ -15,7 +15,7 @@ from widgets.network.network_page_widget import NetworkPageWidget
 from widgets.intercept.intercept_page import InterceptPage
 from widgets.clients.clients_page import ClientsPage
 from widgets.crawls.crawls_page import CrawlsPage
-from widgets.requests.requests_page import RequestsPage
+from widgets.editor.editor_page import EditorPage
 
 # pyside2-rcc assets/assets.qrc > assets_compiled/assets.py
 import assets._compiled.assets
@@ -58,14 +58,14 @@ class MainWindow(QMainWindow):
     self.intercept_page = InterceptPage()
     self.clients_page = ClientsPage()
     self.crawls_page = CrawlsPage()
-    self.requests_page = RequestsPage()
+    self.editor_page = EditorPage()
 
     # Setup stacked widget:
     self.ui.stackedWidget.addWidget(self.network_page_widget)
     self.ui.stackedWidget.addWidget(self.intercept_page)
     self.ui.stackedWidget.addWidget(self.clients_page)
     self.ui.stackedWidget.addWidget(self.crawls_page)
-    self.ui.stackedWidget.addWidget(self.requests_page)
+    self.ui.stackedWidget.addWidget(self.editor_page)
     self.ui.stackedWidget.setCurrentWidget(self.network_page_widget)
 
     # Set padding on widgets:
@@ -76,7 +76,7 @@ class MainWindow(QMainWindow):
     self.clients_page.layout().setContentsMargins(*margins)
     self.crawls_page.layout().setContentsMargins(*margins)
     self.intercept_page.layout().setContentsMargins(*margins)
-    self.requests_page.layout().setContentsMargins(*margins)
+    self.editor_page.layout().setContentsMargins(*margins)
 
     # Add actions to sidebar:
     self.setup_sidebar()
@@ -106,7 +106,7 @@ class MainWindow(QMainWindow):
   def about_to_quit(self):
     self.save_layout_state()
     self.network_page_widget.save_layout_state()
-    self.requests_page.save_layout_state()
+    self.editor_page.save_layout_state()
     self.backend.kill()
 
   def exit(self):
@@ -170,4 +170,4 @@ class MainWindow(QMainWindow):
     elif item_value == 'crawler':
       self.ui.stackedWidget.setCurrentWidget(self.crawls_page)
     elif item_value == 'requests':
-      self.ui.stackedWidget.setCurrentWidget(self.requests_page)
+      self.ui.stackedWidget.setCurrentWidget(self.editor_page)

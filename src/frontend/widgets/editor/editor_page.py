@@ -3,7 +3,7 @@ from PySide2 import QtCore
 from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstractItemView, QTabBar, QMenu, QAction, QItemDelegate, QMessageBox
 from PySide2.QtCore import QFile, Slot, Qt, QItemSelectionModel
 
-from views._compiled.editor.ui_requests_page import Ui_RequestsPage
+from views._compiled.editor.ui_editor_page import Ui_EditorPage
 
 from lib.app_settings import AppSettings
 from models.data.editor_item import EditorItem
@@ -11,11 +11,11 @@ from models.qt.editor_tree_model import EditorTreeModel
 from models.qt.editor_tree_item import EditorTreeItem
 from lib.backend import Backend
 
-class RequestsPage(QWidget):
+class EditorPage(QWidget):
   def __init__(self, *args, **kwargs):
-    super(RequestsPage, self).__init__(*args, **kwargs)
+    super(EditorPage, self).__init__(*args, **kwargs)
 
-    self.ui = Ui_RequestsPage()
+    self.ui = Ui_EditorPage()
     self.ui.setupUi(self)
     self.restore_layout_state()
 
@@ -26,13 +26,13 @@ class RequestsPage(QWidget):
 
   def restore_layout_state(self):
     settings = AppSettings.get_instance()
-    splitter_state = settings.get("RequestsPage.splitter", None)
+    splitter_state = settings.get("EditorPage.splitter", None)
     self.ui.splitter.restoreState(splitter_state)
 
   def save_layout_state(self):
     splitter_state = self.ui.splitter.saveState()
     settings = AppSettings.get_instance()
-    settings.save("RequestsPage.splitter", splitter_state)
+    settings.save("EditorPage.splitter", splitter_state)
 
     self.ui.requestGroupView.save_layout_state()
 

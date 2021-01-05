@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'requests_page.ui'
+## Form generated from reading UI file 'editor_page.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.14.2
 ##
@@ -19,14 +19,14 @@ from widgets.editor.request_group_view import RequestGroupView
 from widgets.editor.item_explorer import ItemExplorer
 
 
-class Ui_RequestsPage(object):
-    def setupUi(self, RequestsPage):
-        if not RequestsPage.objectName():
-            RequestsPage.setObjectName(u"RequestsPage")
-        RequestsPage.resize(897, 581)
-        self.verticalLayout = QVBoxLayout(RequestsPage)
+class Ui_EditorPage(object):
+    def setupUi(self, EditorPage):
+        if not EditorPage.objectName():
+            EditorPage.setObjectName(u"EditorPage")
+        EditorPage.resize(897, 581)
+        self.verticalLayout = QVBoxLayout(EditorPage)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.label = QLabel(RequestsPage)
+        self.label = QLabel(EditorPage)
         self.label.setObjectName(u"label")
         self.label.setMaximumSize(QSize(16777215, 20))
         font = QFont()
@@ -35,7 +35,7 @@ class Ui_RequestsPage(object):
 
         self.verticalLayout.addWidget(self.label)
 
-        self.splitter = QSplitter(RequestsPage)
+        self.splitter = QSplitter(EditorPage)
         self.splitter.setObjectName(u"splitter")
         self.splitter.setOrientation(Qt.Horizontal)
         self.itemExplorer = ItemExplorer(self.splitter)
@@ -62,19 +62,19 @@ class Ui_RequestsPage(object):
         self.verticalLayout.addWidget(self.splitter)
 
 
-        self.retranslateUi(RequestsPage)
+        self.retranslateUi(EditorPage)
 
         self.openRequestTabs.setCurrentIndex(0)
 
 
-        QMetaObject.connectSlotsByName(RequestsPage)
+        QMetaObject.connectSlotsByName(EditorPage)
     # setupUi
 
-    def retranslateUi(self, RequestsPage):
-        RequestsPage.setWindowTitle(QCoreApplication.translate("RequestsPage", u"Form", None))
-        self.label.setText(QCoreApplication.translate("RequestsPage", u"EDITOR", None))
-        self.openRequestTabs.setTabText(self.openRequestTabs.indexOf(self.requestGroupView), QCoreApplication.translate("RequestsPage", u"GET /api/posts.json", None))
-        self.openRequestTabs.setTabText(self.openRequestTabs.indexOf(self.tab_2), QCoreApplication.translate("RequestsPage", u"POST /login", None))
+    def retranslateUi(self, EditorPage):
+        EditorPage.setWindowTitle(QCoreApplication.translate("EditorPage", u"Form", None))
+        self.label.setText(QCoreApplication.translate("EditorPage", u"EDITOR", None))
+        self.openRequestTabs.setTabText(self.openRequestTabs.indexOf(self.requestGroupView), QCoreApplication.translate("EditorPage", u"GET /api/posts.json", None))
+        self.openRequestTabs.setTabText(self.openRequestTabs.indexOf(self.tab_2), QCoreApplication.translate("EditorPage", u"POST /login", None))
         self.openRequestTabs.setTabText(self.openRequestTabs.indexOf(self.tab_3), "")
     # retranslateUi
 

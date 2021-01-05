@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RequestsPage</class>
- <widget class="QWidget" name="RequestsPage">
+ <class>EditorPage</class>
+ <widget class="QWidget" name="EditorPage">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -73,13 +73,13 @@
   <customwidget>
    <class>RequestGroupView</class>
    <extends>QWidget</extends>
-   <header>widgets.requests.request_group_view.h</header>
+   <header>widgets.editor.request_group_view.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>ItemExplorer</class>
    <extends>QTreeView</extends>
-   <header>widgets.requests.item_explorer.h</header>
+   <header>widgets.editor.item_explorer.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
