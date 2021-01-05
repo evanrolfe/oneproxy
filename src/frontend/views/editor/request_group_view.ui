@@ -93,7 +93,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="urlInput">
             <property name="minimumSize">
              <size>
               <width>300</width>

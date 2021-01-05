@@ -10,12 +10,14 @@ from lib.app_settings import AppSettings
 from lib.backend import Backend
 
 class RequestGroupView(QWidget):
-  def __init__(self, *args, **kwargs):
-    super(RequestGroupView, self).__init__(*args, **kwargs)
+  def __init__(self, editor_item):
+    super(RequestGroupView, self).__init__()
 
+    self.editor_item = editor_item
     self.ui = Ui_RequestGroupView()
     self.ui.setupUi(self)
 
+    self.ui.urlInput.setText(self.editor_item.name)
     self.layout().setContentsMargins(0, 0, 0, 0)
 
     self.ui.toggleFuzzTableButton.clicked.connect(self.toggle_fuzz_table)

@@ -30,7 +30,6 @@ class ItemExplorer(QTreeView):
 
   @Slot()
   def change_selection(self, index):
-    print('------------> change_selection called!')
     self.selectionModel().setCurrentIndex(
       index,
       QItemSelectionModel.ClearAndSelect
@@ -56,10 +55,8 @@ class ItemExplorer(QTreeView):
   @Slot()
   def click(self, index):
     item = self.tree_model.getItem(index)
-    print(f'{item.data()}: You clicked me!')
     if not item.is_dir:
       self.item_clicked.emit(item.editor_item)
-
 
   def show_multi_selection_context_menu(self, indexes, position):
     delete_action = QAction(f"Delete {len(indexes)} items")

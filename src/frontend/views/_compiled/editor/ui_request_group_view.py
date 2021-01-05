@@ -66,11 +66,11 @@ class Ui_RequestGroupView(object):
 
         self.requestActionsLayout.addWidget(self.comboBox)
 
-        self.lineEdit = QLineEdit(self.layoutWidget)
-        self.lineEdit.setObjectName(u"lineEdit")
-        self.lineEdit.setMinimumSize(QSize(300, 0))
+        self.urlInput = QLineEdit(self.layoutWidget)
+        self.urlInput.setObjectName(u"urlInput")
+        self.urlInput.setMinimumSize(QSize(300, 0))
 
-        self.requestActionsLayout.addWidget(self.lineEdit)
+        self.requestActionsLayout.addWidget(self.urlInput)
 
         self.sendRequestButton = QPushButton(self.layoutWidget)
         self.sendRequestButton.setObjectName(u"sendRequestButton")

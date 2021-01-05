@@ -45,25 +45,7 @@
        </sizepolicy>
       </property>
      </widget>
-     <widget class="QTabWidget" name="openRequestTabs">
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="RequestGroupView" name="requestGroupView">
-       <attribute name="title">
-        <string>GET /api/posts.json</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="tab_2">
-       <attribute name="title">
-        <string>POST /login</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="tab_3">
-       <attribute name="title">
-        <string></string>
-       </attribute>
-      </widget>
+     <widget class="Tabs" name="tabs">
      </widget>
     </widget>
    </item>
@@ -71,9 +53,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>RequestGroupView</class>
-   <extends>QWidget</extends>
-   <header>widgets.editor.request_group_view.h</header>
+   <class>Tabs</class>
+   <extends>QTabWidget</extends>
+   <header>widgets.editor.tabs.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
