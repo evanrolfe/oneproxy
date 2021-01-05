@@ -4,7 +4,7 @@ from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstr
 from PySide2.QtCore import QFile, Slot
 from PySide2.QtUiTools import QUiLoader
 
-from views._compiled.requests.ui_request_group_view import Ui_RequestGroupView
+from views._compiled.editor.ui_request_group_view import Ui_RequestGroupView
 
 from lib.app_settings import AppSettings
 from lib.backend import Backend

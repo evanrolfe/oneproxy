@@ -3,7 +3,7 @@ from PySide2 import QtCore
 from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstractItemView, QTabBar, QMenu, QAction, QItemDelegate, QMessageBox
 from PySide2.QtCore import QFile, Slot, Qt, QItemSelectionModel
 
-from views._compiled.requests.ui_requests_page import Ui_RequestsPage
+from views._compiled.editor.ui_requests_page import Ui_RequestsPage
 
 from lib.app_settings import AppSettings
 from models.data.editor_item import EditorItem
@@ -17,11 +17,12 @@ class RequestsPage(QWidget):
 
     self.ui = Ui_RequestsPage()
     self.ui.setupUi(self)
+    self.restore_layout_state()
 
     self.ui.openRequestTabs.setTabsClosable(True)
     self.ui.openRequestTabs.setMovable(True)
 
-    self.restore_layout_state()
+    self.ui.itemExplorer.item_double_clicked.connect(self.open_item)
 
   def restore_layout_state(self):
     settings = AppSettings.get_instance()
@@ -34,3 +35,6 @@ class RequestsPage(QWidget):
     settings.save("RequestsPage.splitter", splitter_state)
 
     self.ui.requestGroupView.save_layout_state()
+
+  def open_item(self, editor_item):
+    print(f'Opening editor item {editor_item.id}')

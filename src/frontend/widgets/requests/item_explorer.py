@@ -1,11 +1,14 @@
 from PySide2.QtWidgets import QTreeView, QAbstractItemView, QMenu, QMessageBox, QAction
-from PySide2.QtCore import QFile, Slot, Qt, QItemSelectionModel
+from PySide2.QtCore import QFile, Signal, Slot, Qt, QItemSelectionModel
 
 from models.data.editor_item import EditorItem
 from models.qt.editor_tree_model import EditorTreeModel
 from models.qt.editor_tree_item import EditorTreeItem
 
 class ItemExplorer(QTreeView):
+  item_clicked = Signal(EditorItem)
+  item_double_clicked = Signal(EditorItem)
+
   def __init__(self, *args, **kwargs):
     super(ItemExplorer, self).__init__(*args, **kwargs)
 
@@ -16,10 +19,13 @@ class ItemExplorer(QTreeView):
     self.setModel(self.tree_model)
     self.setDragDropMode(QAbstractItemView.InternalMove)
     self.setSelectionMode(QAbstractItemView.ContiguousSelection)
+    self.setEditTriggers(QAbstractItemView.NoEditTriggers)
     self.setDragEnabled(True)
     self.setAcceptDrops(True)
     self.setContextMenuPolicy(Qt.CustomContextMenu)
     self.customContextMenuRequested.connect(self.right_click)
+    self.doubleClicked.connect(self.double_click)
+    self.clicked.connect(self.click)
     self.setDragDropOverwriteMode(True)
 
   @Slot()
@@ -40,6 +46,20 @@ class ItemExplorer(QTreeView):
       self.show_multi_selection_context_menu(selected_indexes, position)
     else:
       self.show_single_selection_context_menu(index, position)
+
+  @Slot()
+  def double_click(self, index):
+    item = self.tree_model.getItem(index)
+    if not item.is_dir:
+      self.item_double_clicked.emit(item.editor_item)
+
+  @Slot()
+  def click(self, index):
+    item = self.tree_model.getItem(index)
+    print(f'{item.data()}: You clicked me!')
+    if not item.is_dir:
+      self.item_clicked.emit(item.editor_item)
+
 
   def show_multi_selection_context_menu(self, indexes, position):
     delete_action = QAction(f"Delete {len(indexes)} items")

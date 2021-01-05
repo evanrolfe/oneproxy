@@ -37,7 +37,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="ItemExplorer" name="requestGroupsTreeView">
+     <widget class="ItemExplorer" name="itemExplorer">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
         <horstretch>0</horstretch>
