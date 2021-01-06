@@ -15,6 +15,9 @@ from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
     QPixmap, QRadialGradient)
 from PySide2.QtWidgets import *
 
+from widgets.editor.request_body_form import RequestBodyForm
+from widgets.editor.request_headers_form import RequestHeadersForm
+
 
 class Ui_RequestEditPage(object):
     def setupUi(self, RequestEditPage):
@@ -67,10 +70,10 @@ class Ui_RequestEditPage(object):
 
         self.requestActionsLayout.addWidget(self.urlInput)
 
-        self.sendRequestButton = QPushButton(self.layoutWidget)
-        self.sendRequestButton.setObjectName(u"sendRequestButton")
+        self.sendButton = QPushButton(self.layoutWidget)
+        self.sendButton.setObjectName(u"sendButton")
 
-        self.requestActionsLayout.addWidget(self.sendRequestButton)
+        self.requestActionsLayout.addWidget(self.sendButton)
 
         self.saveButton = QPushButton(self.layoutWidget)
         self.saveButton.setObjectName(u"saveButton")
@@ -87,17 +90,6 @@ class Ui_RequestEditPage(object):
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.requestTabs.sizePolicy().hasHeightForWidth())
         self.requestTabs.setSizePolicy(sizePolicy2)
-        self.requestTab = QWidget()
-        self.requestTab.setObjectName(u"requestTab")
-        self.verticalLayout_4 = QVBoxLayout(self.requestTab)
-        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.requestText = QPlainTextEdit(self.requestTab)
-        self.requestText.setObjectName(u"requestText")
-
-        self.verticalLayout_4.addWidget(self.requestText)
-
-        self.requestTabs.addTab(self.requestTab, "")
 
         self.verticalLayout.addWidget(self.requestTabs)
 
@@ -106,24 +98,28 @@ class Ui_RequestEditPage(object):
         self.responseTabs.setObjectName(u"responseTabs")
         sizePolicy2.setHeightForWidth(self.responseTabs.sizePolicy().hasHeightForWidth())
         self.responseTabs.setSizePolicy(sizePolicy2)
-        self.responseTab = QWidget()
-        self.responseTab.setObjectName(u"responseTab")
-        self.verticalLayout_4_body = QVBoxLayout(self.responseTab)
-        self.verticalLayout_4_body.setObjectName(u"verticalLayout_4_body")
-        self.verticalLayout_4_body.setContentsMargins(0, 0, 0, 0)
-        self.responseText = QPlainTextEdit(self.responseTab)
-        self.responseText.setObjectName(u"responseText")
-
-        self.verticalLayout_4_body.addWidget(self.responseText)
-
-        self.responseTabs.addTab(self.responseTab, "")
         self.responseBodyTab = QWidget()
         self.responseBodyTab.setObjectName(u"responseBodyTab")
-        self.responseBodyTab.setEnabled(True)
+        self.verticalLayout_4_body = QVBoxLayout(self.responseBodyTab)
+        self.verticalLayout_4_body.setObjectName(u"verticalLayout_4_body")
+        self.verticalLayout_4_body.setContentsMargins(0, 0, 0, 0)
         self.responseBodyText = QPlainTextEdit(self.responseBodyTab)
         self.responseBodyText.setObjectName(u"responseBodyText")
-        self.responseBodyText.setGeometry(QRect(0, 0, 256, 192))
+
+        self.verticalLayout_4_body.addWidget(self.responseBodyText)
+
         self.responseTabs.addTab(self.responseBodyTab, "")
+        self.responseHeadersTab = QWidget()
+        self.responseHeadersTab.setObjectName(u"responseHeadersTab")
+        self.verticalLayout_4_body2 = QVBoxLayout(self.responseHeadersTab)
+        self.verticalLayout_4_body2.setObjectName(u"verticalLayout_4_body2")
+        self.verticalLayout_4_body2.setContentsMargins(0, 0, 0, 0)
+        self.responseHeadersText = QPlainTextEdit(self.responseHeadersTab)
+        self.responseHeadersText.setObjectName(u"responseHeadersText")
+
+        self.verticalLayout_4_body2.addWidget(self.responseHeadersText)
+
+        self.responseTabs.addTab(self.responseHeadersTab, "")
         self.splitter2.addWidget(self.responseTabs)
         self.splitter.addWidget(self.splitter2)
 
@@ -142,10 +138,9 @@ class Ui_RequestEditPage(object):
     def retranslateUi(self, RequestEditPage):
         RequestEditPage.setWindowTitle(QCoreApplication.translate("RequestEditPage", u"Form", None))
         self.toggleFuzzTableButton.setText(QCoreApplication.translate("RequestEditPage", u"<<", None))
-        self.sendRequestButton.setText(QCoreApplication.translate("RequestEditPage", u"Send", None))
+        self.sendButton.setText(QCoreApplication.translate("RequestEditPage", u"Send", None))
         self.saveButton.setText(QCoreApplication.translate("RequestEditPage", u"Save", None))
-        self.requestTabs.setTabText(self.requestTabs.indexOf(self.requestTab), QCoreApplication.translate("RequestEditPage", u"Request", None))
-        self.responseTabs.setTabText(self.responseTabs.indexOf(self.responseTab), QCoreApplication.translate("RequestEditPage", u"Response", None))
-        self.responseTabs.setTabText(self.responseTabs.indexOf(self.responseBodyTab), QCoreApplication.translate("RequestEditPage", u"Body", None))
+        self.responseTabs.setTabText(self.responseTabs.indexOf(self.responseBodyTab), QCoreApplication.translate("RequestEditPage", u"Response", None))
+        self.responseTabs.setTabText(self.responseTabs.indexOf(self.responseHeadersTab), QCoreApplication.translate("RequestEditPage", u"Headers", None))
     # retranslateUi
 

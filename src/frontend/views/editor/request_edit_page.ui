@@ -78,7 +78,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="sendRequestButton">
+           <widget class="QPushButton" name="sendButton">
             <property name="text">
              <string>Send</string>
             </property>
@@ -104,28 +104,6 @@
           <property name="currentIndex">
            <number>0</number>
           </property>
-          <widget class="QWidget" name="requestTab">
-           <attribute name="title">
-            <string>Request</string>
-           </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QPlainTextEdit" name="requestText"/>
-            </item>
-           </layout>
-          </widget>
          </widget>
         </item>
        </layout>
@@ -140,7 +118,7 @@
        <property name="currentIndex">
         <number>0</number>
        </property>
-       <widget class="QWidget" name="responseTab">
+       <widget class="QWidget" name="responseBodyTab">
         <attribute name="title">
          <string>Response</string>
         </attribute>
@@ -158,27 +136,31 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QPlainTextEdit" name="responseText"/>
+          <widget class="QPlainTextEdit" name="responseBodyText"/>
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="responseBodyTab">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QWidget" name="responseHeadersTab">
         <attribute name="title">
-         <string>Body</string>
+         <string>Headers</string>
         </attribute>
-        <widget class="QPlainTextEdit" name="responseBodyText">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>256</width>
-           <height>192</height>
-          </rect>
+        <layout class="QVBoxLayout" name="verticalLayout_4_body2">
+         <property name="leftMargin">
+          <number>0</number>
          </property>
-        </widget>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QPlainTextEdit" name="responseHeadersText"/>
+         </item>
+        </layout>
        </widget>
       </widget>
      </widget>
@@ -186,6 +168,20 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+   <customwidget>
+    <class>RequestBodyForm</class>
+    <extends>QWidget</extends>
+    <header>widgets.editor.request_body_form.h</header>
+    <container>1</container>
+   </customwidget>
+   <customwidget>
+    <class>RequestHeadersForm</class>
+    <extends>QWidget</extends>
+    <header>widgets.editor.request_headers_form.h</header>
+    <container>1</container>
+   </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -1,13 +1,16 @@
 import sys
 
-from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstractItemView
+from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstractItemView, QPushButton
 from PySide2.QtCore import QFile, Slot
 from PySide2.QtUiTools import QUiLoader
 
 from views._compiled.editor.ui_request_edit_page import Ui_RequestEditPage
+from widgets.editor.request_headers_form import RequestHeadersForm
+from widgets.editor.request_body_form import RequestBodyForm
 
 from lib.app_settings import AppSettings
 from lib.backend import Backend
+from lib.http_request import HttpRequest
 
 class RequestEditPage(QWidget):
   METHODS = ['GET','POST','PATCH','PUT','DELETE']
@@ -28,18 +31,35 @@ class RequestEditPage(QWidget):
     self.restore_layout_state()
 
     self.ui.toggleFuzzTableButton.clicked.connect(self.toggle_fuzz_table)
+    self.ui.sendButton.clicked.connect(self.send_request)
     self.ui.saveButton.clicked.connect(self.save_request)
     self.ui.methodInput.insertItems(0, self.METHODS)
     self.show_request()
     self.modified = False
 
+    save_response_button = QPushButton('Save Response')
+    save_response_button.setContentsMargins(10, 10, 10, 10)
+    self.ui.responseTabs.setCornerWidget(save_response_button)
+
     # Form inputs:
     self.ui.urlInput.textChanged.connect(lambda text: self.form_field_changed('url', text))
     self.ui.methodInput.currentIndexChanged.connect(lambda index: self.form_field_changed('method', self.METHODS[index]))
 
+    self.ui.requestTabs.insertTab(0, RequestHeadersForm(), 'Headers')
+    self.ui.requestTabs.insertTab(0, RequestBodyForm(), 'Body')
+
   def show_request(self):
     self.ui.urlInput.setText(self.request.url)
     self.set_method_on_form(self.request.method)
+
+  @Slot()
+  def send_request(self):
+    print('Sending the request!')
+    method = self.ui.methodInput.currentText()
+    url = self.ui.urlInput.text()
+
+    http_request = HttpRequest(method, url)
+    http_request.send()
 
   @Slot()
   def save_request(self):

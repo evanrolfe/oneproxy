@@ -22,6 +22,8 @@ pyside2-uic src/frontend/views/intercept/intercept_page.ui > src/frontend/views/
 # Editor Page:
 pyside2-uic src/frontend/views/editor/request_edit_page.ui > src/frontend/views/_compiled/editor/ui_request_edit_page.py
 pyside2-uic src/frontend/views/editor/editor_page.ui > src/frontend/views/_compiled/editor/ui_editor_page.py
+pyside2-uic src/frontend/views/editor/request_body_form.ui > src/frontend/views/_compiled/editor/ui_request_body_form.py
+pyside2-uic src/frontend/views/editor/request_headers_form.ui > src/frontend/views/_compiled/editor/ui_request_headers_form.py
 
 # Shared:
 pyside2-uic src/frontend/views/shared/request_view.ui > src/frontend/views/_compiled/shared/ui_request_view.py

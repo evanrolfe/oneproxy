@@ -11,7 +11,7 @@ from lib.database import Database
 from lib.palettes import Palettes
 from widgets.main_window import MainWindow
 
-THEME = 'dark'
+THEME = 'light'
 LIGHT_STYLE = """
 QTabWidget::pane {
   margin: 1px 1px 1px 1px;
