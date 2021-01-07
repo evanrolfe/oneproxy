@@ -38,6 +38,9 @@ class Request:
     self.modified_response_body = attributes.get('modified_response_body')
     self.modified_response_body_length = attributes.get('modified_response_body_length')
 
+  def is_editable(self):
+    return (self.method != None and self.method != '')
+
   def url(self):
     if self.encrypted:
       return f'https://{self.host}{self.path}'
