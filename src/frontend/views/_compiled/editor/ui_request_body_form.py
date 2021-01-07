@@ -27,21 +27,26 @@ class Ui_RequestBodyForm(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.radioButton = QRadioButton(form)
         self.radioButton.setObjectName(u"radioButton")
+        self.radioButton.setCheckable(False)
 
         self.horizontalLayout.addWidget(self.radioButton)
 
         self.radioButton_2 = QRadioButton(form)
         self.radioButton_2.setObjectName(u"radioButton_2")
+        self.radioButton_2.setCheckable(False)
 
         self.horizontalLayout.addWidget(self.radioButton_2)
 
         self.radioButton_3 = QRadioButton(form)
         self.radioButton_3.setObjectName(u"radioButton_3")
+        self.radioButton_3.setCheckable(True)
+        self.radioButton_3.setChecked(True)
 
         self.horizontalLayout.addWidget(self.radioButton_3)
 
         self.radioButton_4 = QRadioButton(form)
         self.radioButton_4.setObjectName(u"radioButton_4")
+        self.radioButton_4.setCheckable(False)
 
         self.horizontalLayout.addWidget(self.radioButton_4)
 
