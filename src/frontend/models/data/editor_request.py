@@ -18,3 +18,6 @@ class EditorRequest(Model):
       return None
 
     return json.loads(self.request_headers)
+
+  def set_request_headers(self, headers_dict):
+    self.request_headers = json.dumps(headers_dict)

@@ -45,6 +45,10 @@ class RequestEditPage(QWidget):
     self.ui.urlInput.textChanged.connect(lambda text: self.form_field_changed('url', text))
     self.ui.methodInput.currentIndexChanged.connect(lambda index: self.form_field_changed('method', self.METHODS[index]))
 
+  def show_request(self):
+    self.ui.urlInput.setText(self.request.url)
+    self.set_method_on_form(self.request.method)
+
     # Request Headers and body
     self.request_headers_form = RequestHeadersForm(self.editor_item)
     self.request_body_form = RequestBodyForm(self.editor_item)
@@ -52,9 +56,19 @@ class RequestEditPage(QWidget):
     self.ui.requestTabs.insertTab(0, self.request_headers_form, 'Headers')
     self.ui.requestTabs.insertTab(0, self.request_body_form, 'Body')
 
-  def show_request(self):
-    self.ui.urlInput.setText(self.request.url)
-    self.set_method_on_form(self.request.method)
+  @Slot()
+  def save_request(self):
+    method = self.ui.methodInput.currentText()
+    url = self.ui.urlInput.text()
+    headers = self.request_headers_form.get_headers()
+
+    self.request.url = url
+    self.request.method = method
+    self.request.request_payload = self.request_body_form.get_body()
+    self.request.set_request_headers(headers)
+    self.request.save()
+
+    print(f'saving {method} {url} to request {self.request.id}')
 
   @Slot()
   def send_request(self):
@@ -73,18 +87,6 @@ class RequestEditPage(QWidget):
     for key, value in response.headers.items():
       headers_text += f"{key}: {value}\n"
     self.ui.responseHeadersText.setPlainText(headers_text)
-
-
-  @Slot()
-  def save_request(self):
-    method = self.ui.methodInput.currentText()
-    url = self.ui.urlInput.text()
-
-    self.request.url = url
-    self.request.method = method
-    self.request.save()
-
-    print(f'saving {method} {url} to request {self.request.id}')
 
   def form_field_changed(self, field, value):
     original_value = getattr(self.request, field)
