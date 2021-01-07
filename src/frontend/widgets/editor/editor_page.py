@@ -36,3 +36,8 @@ class EditorPage(QWidget):
 
     #self.ui.requestGroupView.save_layout_state()
 
+  @Slot()
+  def send_request_to_editor(self, request):
+    editor_item = EditorItem.create_from_network_request(request)
+    print(f'Created EditorItem {editor_item.id} and editor request: {editor_item.item_id}')
+    self.ui.itemExplorer.new_editor_item_created(editor_item)

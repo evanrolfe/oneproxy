@@ -84,6 +84,9 @@ class MainWindow(QMainWindow):
     # Shortcut for closing app:
     self.connect(QShortcut(QKeySequence(Qt.CTRL + Qt.Key_C), self), SIGNAL('activated()'), self.exit)
 
+    self.network_page_widget.send_request_to_editor.connect(self.editor_page.send_request_to_editor)
+    self.network_page_widget.send_request_to_editor.connect(self.show_editor_page)
+
     self.restore_layout_state()
 
   def set_backend(self, backend):
@@ -101,6 +104,10 @@ class MainWindow(QMainWindow):
 
     settings = AppSettings.get_instance()
     settings.save('geometry', geometry)
+
+  @Slot()
+  def show_editor_page(self):
+    self.ui.stackedWidget.setCurrentWidget(self.editor_page)
 
   @Slot()
   def about_to_quit(self):

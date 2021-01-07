@@ -1,5 +1,5 @@
 from PySide2.QtWidgets import QTreeView, QAbstractItemView, QMenu, QMessageBox, QAction
-from PySide2.QtCore import QFile, Signal, Slot, Qt, QItemSelectionModel
+from PySide2.QtCore import QFile, Signal, Slot, Qt, QItemSelectionModel, QModelIndex
 
 from models.data.editor_item import EditorItem
 from models.qt.editor_tree_model import EditorTreeModel
@@ -95,6 +95,10 @@ class ItemExplorer(QTreeView):
       menu.addAction(delete_action)
 
     menu.exec_(self.viewport().mapToGlobal(position))
+
+  def new_editor_item_created(self, editor_item):
+    self.insertChild(editor_item, QModelIndex())
+    self.item_created.emit(editor_item)
 
   @Slot()
   def new_request_clicked(self, parent_index):

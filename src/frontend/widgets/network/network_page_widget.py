@@ -1,6 +1,6 @@
 import sys
 from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstractItemView
-from PySide2.QtCore import QFile, Slot, QSettings
+from PySide2.QtCore import QFile, Slot, QSettings, Signal
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtSql import QSqlDatabase, QSqlQuery
 
@@ -11,6 +11,8 @@ from models.qt.requests_table_model import RequestsTableModel
 from models.request_data import RequestData
 
 class NetworkPageWidget(QWidget):
+  send_request_to_editor = Signal(object)
+
   def __init__(self, *args, **kwargs):
     super(NetworkPageWidget, self).__init__(*args, **kwargs)
     self.ui = Ui_NetworkPageWidget()
@@ -25,6 +27,7 @@ class NetworkPageWidget(QWidget):
     self.ui.requestsTableWidget.request_selected.connect(self.select_request)
     self.ui.requestsTableWidget.delete_requests.connect(self.delete_requests)
     self.ui.requestsTableWidget.search_text_changed.connect(self.search_requests)
+    self.ui.requestsTableWidget.send_request_to_editor.connect(self.send_request_to_editor)
 
     #self.ui.requestsTableAndViewSplitter.layout().setContentsMargins(0, 0, 0, 0)
     #self.ui.layout().setContentsMargins(0, 0, 0, 0)

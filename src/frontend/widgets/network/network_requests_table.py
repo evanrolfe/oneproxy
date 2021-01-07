@@ -12,6 +12,7 @@ class NetworkRequestsTable(QWidget):
   request_selected = Signal(QItemSelection, QItemSelection)
   delete_requests = Signal(list)
   search_text_changed = Signal(str)
+  send_request_to_editor = Signal(object)
 
   def __init__(self, *args, **kwargs):
     super(NetworkRequestsTable, self).__init__(*args, **kwargs)
@@ -84,8 +85,11 @@ class NetworkRequestsTable(QWidget):
       menu.addAction(action)
       action.triggered.connect(lambda: self.delete_requests.emit([request.id]))
 
-    global_position = self.sender().mapToGlobal(position)
-    menu.exec_(global_position)
+    send_action = QAction("Send to editor")
+    menu.addAction(send_action)
+    send_action.triggered.connect(lambda: self.send_request_to_editor.emit(request))
+
+    menu.exec_(self.sender().mapToGlobal(position))
 
   @Slot()
   def display_filters_clicked(self):

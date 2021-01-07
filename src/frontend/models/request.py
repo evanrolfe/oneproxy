@@ -8,7 +8,7 @@ class Request:
     self.method = attributes.get('method')
     self.host = attributes.get('host')
     self.path = attributes.get('path')
-    self.encrypted = attributes.get('encrypted')
+    self.encrypted = (attributes.get('encrypted') == 1)
     self.http_version = attributes.get('http_version')
     self.request_headers = attributes.get('request_headers')
     self.request_payload = attributes.get('request_payload')
@@ -37,6 +37,12 @@ class Request:
     self.modified_response_headers = attributes.get('modified_response_headers')
     self.modified_response_body = attributes.get('modified_response_body')
     self.modified_response_body_length = attributes.get('modified_response_body_length')
+
+  def url(self):
+    if self.encrypted:
+      return f'https://{self.host}{self.path}'
+    else:
+      return f'http://{self.host}{self.path}'
 
   def modified(self):
     if (self.request_modified == True or self.response_modified == True):
