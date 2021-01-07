@@ -58,13 +58,14 @@ class EditorTreeItem(object):
     for item in  child_items:
       self.insertChild(item)
 
-  def removeChildren(self, position, count):
+  def removeChildren(self, position, count, delete=False):
     if position < 0 or position + count > len(self.childItems):
       return False
 
     for row in range(count):
       removed_item = self.childItems.pop(position)
-      removed_item.editor_item.delete_everything()
+      if delete:
+        removed_item.editor_item.delete_everything()
 
     return True
 

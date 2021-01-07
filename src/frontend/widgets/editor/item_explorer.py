@@ -134,7 +134,7 @@ class ItemExplorer(QTreeView):
     response = message_box.exec_()
 
     if response == QMessageBox.Yes:
-      self.tree_model.removeRows(index.row(), 1, index.parent())
+      self.tree_model.removeRows(index.row(), 1, index.parent(), True)
       self.item_deleted.emit(tree_item)
 
   def multi_delete_clicked(self, indexes):
@@ -152,7 +152,7 @@ class ItemExplorer(QTreeView):
       rows = sorted([i.row() for i in indexes])
       diff = rows[-1] - rows[0]
 
-      self.tree_model.removeRows(rows[0], diff+1, indexes[0].parent())
+      self.tree_model.removeRows(rows[0], diff+1, indexes[0].parent(), True)
       for item in tree_items:
         self.item_deleted.emit(item)
 

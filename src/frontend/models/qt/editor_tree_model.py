@@ -173,11 +173,11 @@ class EditorTreeModel(QAbstractItemModel):
 
     return self.createIndex(parentItem.childNumber(), 0, parentItem)
 
-  def removeRows(self, position, rows, parent_index=QtCore.QModelIndex()):
+  def removeRows(self, position, rows, parent_index=QtCore.QModelIndex(), delete=False):
     parentItem = self.getItem(parent_index)
 
     self.beginRemoveRows(parent_index, position, position + rows)
-    success = parentItem.removeChildren(position, rows)
+    success = parentItem.removeChildren(position, rows, delete)
     self.endRemoveRows()
 
     return success
