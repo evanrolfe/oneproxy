@@ -46,8 +46,8 @@ class RequestEditPage(QWidget):
     self.ui.methodInput.currentIndexChanged.connect(lambda index: self.form_field_changed('method', self.METHODS[index]))
 
     # Request Headers and body
-    self.request_headers_form = RequestHeadersForm()
-    self.request_body_form = RequestBodyForm()
+    self.request_headers_form = RequestHeadersForm(self.editor_item)
+    self.request_body_form = RequestBodyForm(self.editor_item)
 
     self.ui.requestTabs.insertTab(0, self.request_headers_form, 'Headers')
     self.ui.requestTabs.insertTab(0, self.request_body_form, 'Body')

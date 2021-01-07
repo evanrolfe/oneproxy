@@ -1,3 +1,4 @@
+import json
 from orator import Model
 
 class EditorRequest(Model):
@@ -12,4 +13,8 @@ class EditorRequest(Model):
 
     self.delete()
 
+  def get_request_headers(self):
+    if self.request_headers == None:
+      return None
 
+    return json.loads(self.request_headers)

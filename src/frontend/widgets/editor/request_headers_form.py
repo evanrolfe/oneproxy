@@ -8,20 +8,22 @@ from models.qt.editor_request_headers_table_model import EditorRequestHeadersTab
 class RequestHeadersForm(QWidget):
   CALCULATED_TEXT = '<calculated when request is sent>'
   DEFAULT_HEADERS = [
-    [True, 'Content-Length', '<calculated when request is sent>'],
-    [True, 'Host', '<calculated when request is sent>'],
+    [True, 'Content-Length', CALCULATED_TEXT],
+    [True, 'Host', CALCULATED_TEXT],
     [True, 'Accept', '*/*'],
     [True, 'Accept-Encoding', 'gzip, deflate'],
     [True, 'Connection', 'keep-alive'],
     [True, 'User-Agent', 'pntest/0.1'],
   ]
 
-  def __init__(self, *args, **kwargs):
+  def __init__(self, editor_item, *args, **kwargs):
     super(RequestHeadersForm, self).__init__(*args, **kwargs)
+    self.editor_item = editor_item
+
     self.ui = Ui_RequestHeadersForm()
     self.ui.setupUi(self)
+    self.load_headers()
 
-    self.headers = self.DEFAULT_HEADERS[:]
     self.table_model = EditorRequestHeadersTableModel(self.headers)
     self.ui.headersTable.setModel(self.table_model)
 
@@ -39,6 +41,14 @@ class RequestHeadersForm(QWidget):
 
     self.ui.showGeneratedHeaders.setTristate(False)
     self.ui.showGeneratedHeaders.stateChanged.connect(self.show_generated_headers)
+
+  def load_headers(self):
+    headers = self.editor_item.item().get_request_headers()
+
+    if headers == None:
+      self.headers = self.DEFAULT_HEADERS[:]
+    else:
+      self.headers = [[True, key, value] for key, value in headers.items()]
 
   @Slot()
   def show_generated_headers(self, state):
