@@ -107,6 +107,7 @@ class MainWindow(QMainWindow):
 
   @Slot()
   def show_editor_page(self):
+    self.ui.sideBar.setCurrentRow(3)
     self.ui.stackedWidget.setCurrentWidget(self.editor_page)
 
   @Slot()

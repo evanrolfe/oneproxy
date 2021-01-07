@@ -49,7 +49,7 @@ class ClientsTable(QWidget):
   @Slot()
   def right_clicked(self, position):
     index = self.ui.clientsTable.indexAt(position)
-    client = self.table_model.client_data.clients[index.row()]
+    client = self.table_model.clients[index.row()]
 
     menu = QMenu()
 

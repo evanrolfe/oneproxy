@@ -9,7 +9,8 @@ class EditorItem(Model):
 
   def delete_everything(self):
     self.delete_resursive()
-    self.item().delete()
+    if self.item() != None:
+      self.item().delete()
 
   def delete_resursive(self):
     for child in self.children():
