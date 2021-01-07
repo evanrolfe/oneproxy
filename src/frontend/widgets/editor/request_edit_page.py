@@ -1,7 +1,7 @@
 import sys
 
 from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstractItemView, QPushButton
-from PySide2.QtCore import QFile, Slot
+from PySide2.QtCore import QFile, Slot, Signal
 from PySide2.QtUiTools import QUiLoader
 
 from views._compiled.editor.ui_request_edit_page import Ui_RequestEditPage
@@ -13,6 +13,8 @@ from lib.backend import Backend
 from lib.http_request import HttpRequest
 
 class RequestEditPage(QWidget):
+  form_input_changed = Signal(bool)
+
   METHODS = ['GET','POST','PATCH','PUT','DELETE']
 
   def __init__(self, editor_item):
@@ -35,15 +37,15 @@ class RequestEditPage(QWidget):
     self.ui.saveButton.clicked.connect(self.save_request)
     self.ui.methodInput.insertItems(0, self.METHODS)
     self.show_request()
-    self.modified = False
+    self.request_is_modified = False
 
     save_response_button = QPushButton('Save Response')
     save_response_button.setContentsMargins(10, 10, 10, 10)
     self.ui.responseTabs.setCornerWidget(save_response_button)
 
     # Form inputs:
-    self.ui.urlInput.textChanged.connect(lambda text: self.form_field_changed('url', text))
-    self.ui.methodInput.currentIndexChanged.connect(lambda index: self.form_field_changed('method', self.METHODS[index]))
+    self.ui.urlInput.textChanged.connect(self.form_field_changed)
+    self.ui.methodInput.currentIndexChanged.connect(self.form_field_changed)
 
   def show_request(self):
     self.ui.urlInput.setText(self.request.url)
@@ -88,9 +90,19 @@ class RequestEditPage(QWidget):
       headers_text += f"{key}: {value}\n"
     self.ui.responseHeadersText.setPlainText(headers_text)
 
-  def form_field_changed(self, field, value):
-    original_value = getattr(self.request, field)
-    # TODO: Check if the item is modified and update self.modified
+  @Slot()
+  def form_field_changed(self):
+    request_on_form = {
+      'method': self.ui.methodInput.currentText(),
+      'url': self.ui.urlInput.text()
+    }
+    original_request = {
+      'method': self.request.method or self.METHODS[0],
+      'url': self.request.url or ''
+    }
+
+    self.request_is_modified = (request_on_form != original_request)
+    self.form_input_changed.emit(self.request_is_modified)
 
   def hide_fuzz_table(self):
     self.ui.fuzzRequestsTable.setVisible(False)

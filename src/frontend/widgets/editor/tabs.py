@@ -21,7 +21,9 @@ class Tabs(QTabWidget):
     existing_tab_index = self.get_index_for_editor_item(editor_item)
 
     if existing_tab_index == None:
-      self.insertTab(self.count(), RequestEditPage(editor_item), editor_item.name)
+      request_edit_page = RequestEditPage(editor_item)
+      request_edit_page.form_input_changed.connect(lambda modified: self.editor_item_form_changed(editor_item, modified))
+      self.insertTab(self.count(), request_edit_page, editor_item.name)
       self.setCurrentIndex(self.count()-1)
     else:
       self.setCurrentIndex(existing_tab_index)
@@ -39,8 +41,34 @@ class Tabs(QTabWidget):
   @Slot()
   def change_item(self, editor_item):
     index = self.get_index_for_editor_item(editor_item)
-    self.setTabText(index, editor_item.name)
+    new_tab_text = editor_item.name
+
+    # Preserve the *
+    # TODO: Find a better way of doing this, probably have to a hash of tab indexes and modified booleans
+    tab_text = self.tabText(index)
+    last_char = tab_text[-1]
+    if last_char == '*':
+      new_tab_text += '*'
+
+    self.setTabText(index, new_tab_text)
+
     print(f'Changing {editor_item.id} {editor_item.name} in index {index}')
+
+  @Slot()
+  def editor_item_form_changed(self, editor_item, modified):
+    print(f'Editor Item {editor_item.id} is modified? {modified}')
+
+    index = self.get_index_for_editor_item(editor_item)
+    tab_text = self.tabText(index)
+    last_char = tab_text[-1]
+
+    # if its modified but has no *
+    if modified and last_char != '*':
+      self.setTabText(index, tab_text + '*')
+
+    # if its no longer modified has a *
+    elif not modified and last_char == '*':
+      self.setTabText(index, tab_text[0:-1])
 
   def get_index_for_editor_item(self, editor_item):
     editor_items = [self.widget(i).editor_item for i in range(0,self.count())]

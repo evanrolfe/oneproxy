@@ -1,3 +1,5 @@
+import re
+
 from PySide2.QtGui import QIcon
 from PySide2.QtWidgets import QTreeWidgetItem
 
@@ -70,6 +72,7 @@ class EditorTreeItem(object):
     return True
 
   def setLabel(self, label):
+    # TODO: Remove *'s becuase they will mess with the modified indicator
     self.label = label
     self.editor_item.name = label
     self.editor_item.save()
