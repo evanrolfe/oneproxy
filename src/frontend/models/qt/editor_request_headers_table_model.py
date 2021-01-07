@@ -18,7 +18,11 @@ class EditorRequestHeadersTableModel(QAbstractTableModel):
     self.endInsertRows()
 
   def get_headers(self):
-    return [h[1:3] for h in self.headers if h[0] == True]
+    header_arrays = [h[1:3] for h in self.headers if h[0] == True]
+    headers = {}
+    for header_arr in header_arrays:
+      headers[header_arr[0]] = header_arr[1]
+    return headers
 
   def flags(self, index):
     if index.column() == 0:

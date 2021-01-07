@@ -52,10 +52,10 @@ class Ui_RequestBodyForm(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
-        self.plainTextEdit = QPlainTextEdit(form)
-        self.plainTextEdit.setObjectName(u"plainTextEdit")
+        self.requestBodyInput = QPlainTextEdit(form)
+        self.requestBodyInput.setObjectName(u"requestBodyInput")
 
-        self.verticalLayout.addWidget(self.plainTextEdit)
+        self.verticalLayout.addWidget(self.requestBodyInput)
 
 
         self.retranslateUi(form)

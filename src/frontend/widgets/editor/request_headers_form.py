@@ -6,10 +6,14 @@ from views._compiled.editor.ui_request_headers_form import Ui_RequestHeadersForm
 from models.qt.editor_request_headers_table_model import EditorRequestHeadersTableModel
 
 class RequestHeadersForm(QWidget):
+  CALCULATED_TEXT = '<calculated when request is sent>'
   DEFAULT_HEADERS = [
-    [True, 'Host', '<calculated when request is sent>'],
     [True, 'Content-Length', '<calculated when request is sent>'],
-    [True, 'Accept', '*/*']
+    [True, 'Host', '<calculated when request is sent>'],
+    [True, 'Accept', '*/*'],
+    [True, 'Accept-Encoding', 'gzip, deflate'],
+    [True, 'Connection', 'keep-alive'],
+    [True, 'User-Agent', 'pntest/0.1'],
   ]
 
   def __init__(self, *args, **kwargs):
@@ -25,6 +29,11 @@ class RequestHeadersForm(QWidget):
     horizontalHeader.setStretchLastSection(True)
     horizontalHeader.setSectionResizeMode(QHeaderView.Interactive)
 
+    verticalHeader = self.ui.headersTable.verticalHeader()
+    verticalHeader.setSectionResizeMode(QHeaderView.Fixed)
+    verticalHeader.setDefaultSectionSize(20)
+    verticalHeader.setVisible(False)
+
     self.ui.headersTable.setColumnWidth(0, 20)
     self.ui.headersTable.setColumnWidth(1, 250)
 
@@ -33,8 +42,6 @@ class RequestHeadersForm(QWidget):
 
   @Slot()
   def show_generated_headers(self, state):
-    print(self.table_model.get_headers())
-
     if state == Qt.Checked:
       self.ui.headersTable.showRow(0)
       self.ui.headersTable.showRow(1)
@@ -42,3 +49,5 @@ class RequestHeadersForm(QWidget):
       self.ui.headersTable.hideRow(0)
       self.ui.headersTable.hideRow(1)
 
+  def get_headers(self):
+    return self.table_model.get_headers()

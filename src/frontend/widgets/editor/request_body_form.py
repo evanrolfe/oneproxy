@@ -9,3 +9,6 @@ class RequestBodyForm(QWidget):
     super(RequestBodyForm, self).__init__(*args, **kwargs)
     self.ui = Ui_RequestBodyForm()
     self.ui.setupUi(self)
+
+  def get_body(self):
+    return self.ui.requestBodyInput.toPlainText()
