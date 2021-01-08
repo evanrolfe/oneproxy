@@ -22,7 +22,7 @@ const clearDatabase = async () => {
 
   // Create default capture filters:
   const filters = Object.assign({}, DEFAULT_FILTERS);
-  filters.hostList = ['localhost:3000'];
+  filters.hostList = ['localhost:3000', 'localhost:3001'];
   filters.hostSetting = 'include';
 
   await global

@@ -26,7 +26,7 @@ const dbPath = path.join(__dirname, './test.db');
 const spawnBackend = async () => {
   console.log('[TEST] Spawning backend process...');
 
-  const backendProc = spawn('npm', ['run', 'backend-test'], {
+  const backendProc = spawn('npm', ['run', 'backend-test', '--', `--dbPath=${dbPath}`], {
       shell: true,
       env: process.env,
       detached: true

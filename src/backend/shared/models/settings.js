@@ -13,7 +13,11 @@ class Settings {
     let result = await global.knex('settings').where({ key: key });
 
     if (result.length === 0) {
-      await this.createDefault(key);
+      try {
+        await this.createDefault(key);
+      } catch(err) {
+        console.log(`Could not create default setting for ${key}: ${err.message}`)
+      }
 
       result = await global
         .knex('settings')
