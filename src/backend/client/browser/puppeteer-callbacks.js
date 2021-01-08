@@ -122,13 +122,15 @@ const handleFramenavigated = async (page, frame, origURL) => {
   // request will not be record for the last change
   // if (frame.url() === origURL) return;
 
+  // console.log(`[BrowserUtils] --------------------------------------------`)
   // console.log(`[BrowserUtils] FrameNavigation:`);
   // console.log(`[BrowserUtils] page.url() ${page.url()}`);
   // console.log(`[BrowserUtils] frame.url() ${frame.url()}`);
   // console.log(`[BrowserUtils] origURL ${origURL}`);
+  // console.log(`[BrowserUtils] --------------------------------------------`)
 
   clearInterval(page.domWatcherId);
-  console.log(`[BrowserUtils] killed DomListener #${page.domWatcherId}`);
+  console.log(`[BrowserUtils] killed DomListener #${page.domWatcherId} and navigation request #${page.navRequestId}`);
 
   // Create a navigation request (not a real HTTP request - just a change in URL)
   const parsedUrl = new URL(page.url());
@@ -158,12 +160,13 @@ const handleFramenavigated = async (page, frame, origURL) => {
 
   console.log(`[BrowserUtils] frameNavigated to ${frame.url()}, origURL: ${origURL}, created navigation request ${requestId}`);
   page.domWatcherId = await startDOMWatcher(page, requestId);
+  page.navRequestId = requestId
 };
 
 const startDOMWatcher = async (page, requestId) => {
   const domWatcherId = await setInterval(async () => {
     //console.log(`[BrowserUtils] DOMWatcher ${domWatcherId} running...`);
-    console.log(`[BrowserUtils] DOMWatcher for requestId: ${requestId} on page: ${page.url()}`);
+    console.log(`[BrowserUtils] Starting DOMWatcher for requestId: ${requestId} on page: ${page.url()}`);
 
     // UGLY WORKAROUND: Prevent the race condition described at the top of page:
     // Check that the page url has not changed while this callback has been running

@@ -11,6 +11,7 @@ const { ClientGetter } = require('./support/clientGetter')
 
 global.expect = expect;
 
+const DEBUG_BROWSER_UTILS = true;
 const DATABASE_TABLES = [
   'capture_filters',
   'clients',
@@ -34,9 +35,15 @@ const spawnBackend = async () => {
     .on('close', code => process.exit(code))
     .on('error', spawnError => console.error(spawnError));
 
-  backendProc.stdout.pipe(process.stdout);
-  backendProc.stderr.pipe(process.stderr);
-
+  //backendProc.stdout.pipe(process.stdout);
+  if (DEBUG_BROWSER_UTILS) {
+    backendProc.stdout.on('data', (data) => {
+      if (data.includes('BrowserUtils'))
+        console.log(data);
+    })
+  } else {
+    backendProc.stderr.pipe(process.stderr);
+  }
   backendProc.stdout.setEncoding('utf-8');
   backendProc.stdin.setEncoding('utf-8');
 
@@ -57,14 +64,14 @@ before(async () => {
 
   global.knex = await setupDatabaseStore(dbPath);
   console.log(`[TEST] Connected to database.`);
-});
-
-after(async () => {
+  console.log(`[TEST] Clearing existing tables in database...`);
   for(let i =0; i< DATABASE_TABLES.length; i++) {
     const tableName = DATABASE_TABLES[i];
     await clearDatabaseTable(tableName);
   }
+});
 
+after(async () => {
   // See this: https://azimi.me/2014/12/31/kill-child_process-node-js.html
   process.kill(-global.backendProc.pid);
   global.knex.destroy();

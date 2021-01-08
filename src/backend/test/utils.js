@@ -24,6 +24,8 @@ const clearDatabase = async () => {
   const filters = Object.assign({}, DEFAULT_FILTERS);
   filters.hostList = ['localhost:3000', 'localhost:3001'];
   filters.hostSetting = 'include';
+  filters.pathList = ['/assets', '/favicon.ico'];
+  filters.pathSetting = 'exclude';
 
   await global
     .knex('capture_filters')

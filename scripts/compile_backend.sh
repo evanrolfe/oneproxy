@@ -5,7 +5,7 @@ CHANGED="var binding = require(\'.\/node_sqlite3.node\')"
 
 sed -i "4s/.*/$CHANGED/g" src/backend/node_modules/sqlite3/lib/sqlite3.js
 
-pkg ./src/backend/index.js --output=./build/oneproxy-backend -t node12-linux-x64
+pkg ./src/backend/index.js --output=./build/oneproxy-backend -t node12-linux-x64 --public
 
 # Revert it back to original state:
 sed -i "4s/.*/$ORIGINAL/g" src/backend/node_modules/sqlite3/lib/sqlite3.js
