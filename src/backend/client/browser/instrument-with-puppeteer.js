@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer-core');
 const { handleNewPage } = require('./puppeteer-callbacks');
 
-const instrumentBrowserWithPuppeteer = async (browserId, debugPort) => {
+const instrumentBrowserWithPuppeteer = async (browserId, debugPort, options) => {
   console.log(`[BrowserUtils-${browserId}] Connecting to the browser on port ${debugPort}...`)
   const browser = await remoteBrowserConnection(debugPort);
   console.log(`[BrowserUtils-${browserId}] Got a browser connection.`)
@@ -16,7 +16,7 @@ const instrumentBrowserWithPuppeteer = async (browserId, debugPort) => {
 
     if (newPage !== null) {
       console.log(`[BrowserUtils-${browserId}] target page: ${newPage.url()}`);
-      handleNewPage(newPage);
+      handleNewPage(newPage, options);
     }
   });
 
@@ -39,7 +39,7 @@ const instrumentBrowserWithPuppeteer = async (browserId, debugPort) => {
   pageUrls = JSON.parse(browserDb.pages);
   // Load saved pages if there are any:
   if (pageUrls !== null && pageUrls.length > 0) {
-    await loadPagesForBrowser(browser, pageUrls);
+    await loadPagesForBrowser(browser, pageUrls, options);
   } else {
     // Close and re-open the page so its instrumented:
     const pages = await browser.pages();
@@ -71,7 +71,7 @@ const remoteBrowserConnection = (debugPort) => {
 };
 
 // {"command": "openClient", "id": 1}
-const loadPagesForBrowser = async (browser, pageUrls) => {
+const loadPagesForBrowser = async (browser, pageUrls, options) => {
   for (let i = 0; i < pageUrls.length; i++) {
     const pageUrl = pageUrls[i];
     console.log(`[BrowserUtils] opening page at ${pageUrl}`)
@@ -89,7 +89,7 @@ const loadPagesForBrowser = async (browser, pageUrls) => {
 
     // NOTE: the targetcreated event does not seem to be triggered for these
     // pages so we have to instrument the page manually:
-    handleNewPage(page);
+    handleNewPage(page, options);
   }
 };
 

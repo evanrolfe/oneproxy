@@ -70,12 +70,20 @@ const handleLine = async (cmd) => {
 
     switch (parsedCmd.command) {
       case 'createClient':
-        client = await clientStore.createClient(parsedCmd.type, paths);
+        client = await clientStore.createClient(
+          parsedCmd.type,
+          paths,
+          { headless: false, captureNavRequests: true }
+        );
         await client.start();
         break;
 
       case 'openClient':
-        client = await clientStore.loadClient(parsedCmd.id, paths);
+        client = await clientStore.loadClient(
+          parsedCmd.id,
+          paths,
+          { headless: false, captureNavRequests: true }
+        );
         await client.start();
         break;
 
@@ -117,7 +125,7 @@ const handleLine = async (cmd) => {
         client = await clientStore.loadClient(
           crawlData.clientId,
           paths,
-          { headless: crawlConfig.headless }
+          { headless: crawlConfig.headless, captureNavRequests: false }
         );
         await client.start();
 

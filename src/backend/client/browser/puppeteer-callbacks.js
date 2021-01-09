@@ -24,14 +24,14 @@ const url = require('url');
  * BrowserUtils: saved content for page: http://localhost/posts to request 9, (DOMListener 64)
  */
 
-const handleNewPage = async (page) => {
+const handleNewPage = async (page, options) => {
   if (page === null) return;
   console.log(`[BrowserUtils] handleNewPage`);
 
   // TODO: Make this a configurable option:
   page.setCacheEnabled(false);
 
-  page.on('response', async response => handleResponse(page, response));
+  page.on('response', async response => handleResponse(page, response, options));
 
   // Capture websocket HTTP requests
   const cdp = await page.target().createCDPSession();
@@ -57,7 +57,7 @@ const handleNewPage = async (page) => {
   // });
 };
 
-const handleResponse = async (page, response) => {
+const handleResponse = async (page, response, options) => {
   const headers = response.headers();
   const requestId = headers['x-oneproxy-id'];
   //console.log(`[BrowserUtils] response received from ${response.url()} (x-oneproxy-id: ${requestId})`)
@@ -104,13 +104,13 @@ const handleResponse = async (page, response) => {
       console.log(`[BrowserUtils] starting framenavigated for request ${requestId}`);
 
       page.on('framenavigated', frame =>
-        handleFramenavigated(page, frame, origURL)
+        handleFramenavigated(page, frame, origURL, options)
       );
     }
   }
 };
 
-const handleFramenavigated = async (page, frame, origURL) => {
+const handleFramenavigated = async (page, frame, origURL, options) => {
   // See: https://stackoverflow.com/questions/49237774/using-devtools-protocol-event-page-framenavigated-to-get-client-side-navigation
   // See: https://github.com/GoogleChrome/puppeteer/issues/1489
   if (frame !== page.mainFrame()) return; //  || origURL === 'about:blank'
@@ -129,11 +129,11 @@ const handleFramenavigated = async (page, frame, origURL) => {
   // console.log(`[BrowserUtils] origURL ${origURL}`);
   // console.log(`[BrowserUtils] --------------------------------------------`)
 
-  //clearInterval(page.domWatcherId);
-  //console.log(`[BrowserUtils] killed DomListener #${page.domWatcherId}`);
-
   // Disable navigation requests:
-  return
+  if (!options.captureNavRequests) return;
+
+  clearInterval(page.domWatcherId);
+  console.log(`[BrowserUtils] killed DomListener #${page.domWatcherId}`);
 
   // Create a navigation request (not a real HTTP request - just a change in URL)
   const parsedUrl = new URL(page.url());

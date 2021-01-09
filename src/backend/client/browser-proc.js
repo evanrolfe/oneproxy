@@ -116,7 +116,7 @@ class BrowserProc {
       }
     });
 
-    this.puppeteerBrowser = await instrumentBrowserWithPuppeteer(this.clientData.id, this.clientData.browserPort);
+    this.puppeteerBrowser = await instrumentBrowserWithPuppeteer(this.clientData.id, this.clientData.browserPort, this.options);
     this.pid = browserInstance.pid;
   }
 
