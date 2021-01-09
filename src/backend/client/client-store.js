@@ -17,8 +17,8 @@ class ClientStore {
     return client;
   }
 
-  async loadClient(id, paths) {
-    const client = await Client.load(id, paths);
+  async loadClient(id, paths, options) {
+    const client = await Client.load(id, paths, options);
 
     client.onBrowserClosed(() => {
       this.closeClient(client.clientData.id);

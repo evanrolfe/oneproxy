@@ -26,7 +26,7 @@ const { BaseConfig } = require('./crawler/config/base-config');
 // {"command": "closeClient", "id": 1}
 // {"command": "bringToFrontClient", "id": 1}
 // {"command": "listAvailableClientTypes"}
-// {"command": "createCrawl", "crawlId": 8}
+// {"command": "createCrawl", "crawlId": 3}
 
 // Environment:
 if (process.env.NODE_ENV == undefined) {
@@ -114,13 +114,19 @@ const handleLine = async (cmd) => {
         const crawlData = await CrawlData.load(parsedCmd.crawlId);
         const crawlConfig = crawlData.configObj()
 
-        client = await clientStore.loadClient(crawlData.clientId, paths);
+        client = await clientStore.loadClient(
+          crawlData.clientId,
+          paths,
+          { headless: crawlConfig.headless }
+        );
         await client.start();
 
         crawlConfig.browserWSEndpoint = client.browser.puppeteerBrowser.wsEndpoint();
 
+        const closeClient = () => clientStore.closeClient(crawlData.clientId)
+
         const config = new BaseConfig(crawlConfig);
-        const crawler = await Crawler.init({config: config});
+        const crawler = await Crawler.init({config: config, closeClient: closeClient});
         await crawler.startCrawling();
         frontend.notifyCrawlStarted();
       break;

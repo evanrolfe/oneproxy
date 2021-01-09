@@ -22,6 +22,7 @@ class Crawler {
     this.currentUser = 'Public';
 
     this.config = options.config;
+    this.closeClient = options.closeClient;
     this.processEvents = (options.processEvents === undefined) ? true : options.processEvents;
 
     if(this.processEvents === true) {
@@ -156,8 +157,13 @@ class Crawler {
 
       // Check if the crawler is complete
       if(this.complete()) {
+        this._log(`------------> its complete!`)
+        this.closeClient()
         frontend.notifyCrawlFinished();
         this._resolveIdle();
+      } else {
+        this._log(`------------> linkQueue: ${this.linkQueue.length}, pendingRequests: ${this.browser.pendingRequests}`)
+        this._log(this.linkQueue)
       }
     }
   }

@@ -5,9 +5,10 @@ const { getSPKIFingerprint } = require('../shared/cert-utils');
 const frontend = require('../shared/notify_frontend');
 
 class BrowserProc {
-  constructor(clientData, paths,) {
+  constructor(clientData, paths, options) {
     this.clientData = clientData;
     this.paths = paths;
+    this.options = options;
   }
 
   async start() {
@@ -80,6 +81,8 @@ class BrowserProc {
       // https://discuss.circleci.com/t/navigation-failed-because-browser-has-disconnected/29087
       // https://github.com/puppeteer/puppeteer/issues/4911
       launchOptions.options.push('--single-process');
+    } else if(this.options.headless === true) {
+      launchOptions.options.push('--headless');
     }
 
     const browserInstance = await new Promise((resolve, reject) => {

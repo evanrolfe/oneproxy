@@ -9,9 +9,10 @@ const { ProxyProc } = require('../proxy/proxy-proc');
 const { PORTS_AVAILABLE } = require('../shared/constants');
 
 class Client {
-  constructor(clientData, paths) {
+  constructor(clientData, paths, options) {
     this.clientData = clientData;
     this.paths = paths;
+    this.options = options;
   }
 
   static async create(type, paths) {
@@ -21,10 +22,10 @@ class Client {
     return new Client(clientData, paths)
   }
 
-  static async load(id, paths) {
+  static async load(id, paths, options) {
     const clientData = await ClientData.load(id);
 
-    return new Client(clientData, paths)
+    return new Client(clientData, paths, options)
   }
 
   static async listTypesAvailable() {
@@ -96,7 +97,7 @@ class Client {
   }
 
   async _startBrowser() {
-    this.browser = new BrowserProc(this.clientData, this.paths);
+    this.browser = new BrowserProc(this.clientData, this.paths, this.options);
 
     if(this.onBrowserClosed) this.browser.onClosed(this.onBrowserClosed);
 
