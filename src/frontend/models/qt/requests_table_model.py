@@ -7,7 +7,7 @@ from lib.backend import Backend
 class RequestsTableModel(QAbstractTableModel):
   def __init__(self,request_data, parent = None):
     QAbstractTableModel.__init__(self, parent)
-    self.headers = ['ID', 'Source', 'Method', 'Host', 'Path', 'Status', 'Modified']
+    self.headers = ['ID', 'Source', 'Type', 'Method', 'Host', 'Path', 'Status', 'Modified']
     self.request_data = request_data
 
     # Register callback with the backend:
@@ -68,6 +68,7 @@ class RequestsTableModel(QAbstractTableModel):
       row_values = [
         request.id,
         request.client_id,
+        request.request_type,
         request.method,
         request.host,
         request.path,
@@ -96,14 +97,16 @@ class RequestsTableModel(QAbstractTableModel):
     if (column == 0):
       self.request_data.requests = sorted(self.request_data.requests, key=lambda r: r.id, reverse=reverse)
     elif (column == 1):
-      self.request_data.requests = sorted(self.request_data.requests, key=lambda r: r.client_id, reverse=reverse)
+      self.request_data.requests = sorted(self.request_data.requests, key=lambda r: int(r.client_id or 0), reverse=reverse)
     elif (column == 2):
-      self.request_data.requests = sorted(self.request_data.requests, key=lambda r: [r.method, r.id], reverse=reverse)
+      self.request_data.requests = sorted(self.request_data.requests, key=lambda r: r.request_type, reverse=reverse)
     elif (column == 3):
-      self.request_data.requests = sorted(self.request_data.requests, key=lambda r: [r.host, r.id], reverse=reverse)
+      self.request_data.requests = sorted(self.request_data.requests, key=lambda r: [r.method, r.id], reverse=reverse)
     elif (column == 4):
-      self.request_data.requests = sorted(self.request_data.requests, key=lambda r: [r.path, r.id], reverse=reverse)
+      self.request_data.requests = sorted(self.request_data.requests, key=lambda r: [r.host, r.id], reverse=reverse)
     elif (column == 5):
+      self.request_data.requests = sorted(self.request_data.requests, key=lambda r: [r.path, r.id], reverse=reverse)
+    elif (column == 6):
       self.request_data.requests = sorted(self.request_data.requests, key=self.response_status_sort_key, reverse=reverse)
 
     self.dataChanged.emit(QModelIndex(), QModelIndex())

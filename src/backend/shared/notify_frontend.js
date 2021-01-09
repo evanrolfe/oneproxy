@@ -8,6 +8,7 @@ const notifyNewRequest = (reqResPair) => {
       host: reqResPair.request.host,
       path: reqResPair.request.path,
       encrypted: reqResPair.request.encrypted,
+      request_type: reqResPair.request.requestType,
     }
   }
   console.log(`[JSON] ${JSON.stringify(message)}`)
@@ -19,7 +20,9 @@ const notifyUpdatedRequest = (reqResPair) => {
     client_id: reqResPair.clientId,
     method: reqResPair.request.method,
     host: reqResPair.request.host,
-    path: reqResPair.request.path
+    path: reqResPair.request.path,
+    encrypted: reqResPair.request.encrypted,
+    request_type: reqResPair.request.requestType,
   };
 
   if (reqResPair.response !== undefined) {

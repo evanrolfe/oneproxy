@@ -12,6 +12,7 @@ class Request:
     self.http_version = attributes.get('http_version')
     self.request_headers = attributes.get('request_headers')
     self.request_payload = attributes.get('request_payload')
+    self.request_type = attributes.get('request_type')
 
     self.request_modified = (attributes.get('request_modified') == 1)
     self.modified_method = attributes.get('modified_method')

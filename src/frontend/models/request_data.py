@@ -80,6 +80,7 @@ class RequestData:
       'http_version': query.value('http_version'),
       'request_headers': query.value('request_headers'),
       'request_payload': query.value('request_payload'),
+      'request_type': query.value('request_type'),
 
       'request_modified': query.value('request_modified'),
       'modified_method': query.value('modified_method'),

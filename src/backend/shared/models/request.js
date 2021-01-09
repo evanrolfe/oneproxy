@@ -32,6 +32,7 @@ class Request {
     this.ext = ext;
     this.headers = headers;
     this.requestPayload = requestPayload;
+    this.requestType = 'http';
   }
 
   static createFromIncomingMessage(incomingMessage, requestPayload) {
@@ -116,6 +117,7 @@ class Request {
       ext: this.ext,
       request_headers: JSON.stringify(this.headers),
       request_payload: this._payloadForDatabase(),
+      request_type: this.requestType
     };
   }
 

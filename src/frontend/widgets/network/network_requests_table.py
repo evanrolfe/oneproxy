@@ -57,11 +57,12 @@ class NetworkRequestsTable(QWidget):
 
     self.ui.requestsTable.setColumnWidth(0, 50)
     self.ui.requestsTable.setColumnWidth(1, 60)
-    self.ui.requestsTable.setColumnWidth(2, 60)
-    self.ui.requestsTable.setColumnWidth(3, 150)
-    self.ui.requestsTable.setColumnWidth(4, 300)
-    self.ui.requestsTable.setColumnWidth(5, 50)
-    self.ui.requestsTable.setColumnWidth(6, 70)
+    self.ui.requestsTable.setColumnWidth(2, 80)
+    self.ui.requestsTable.setColumnWidth(3, 60)
+    self.ui.requestsTable.setColumnWidth(4, 150)
+    self.ui.requestsTable.setColumnWidth(5, 300)
+    self.ui.requestsTable.setColumnWidth(6, 50)
+    self.ui.requestsTable.setColumnWidth(7, 70)
 
   @Slot()
   def set_selected_requests(self, selected, deselected):

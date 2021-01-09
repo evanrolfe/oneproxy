@@ -156,7 +156,8 @@ const handleFramenavigated = async (page, frame, origURL, options) => {
         method: '',
         host: requestParams.host,
         path: requestParams.path,
-        client_id: requestParams.client_id
+        client_id: requestParams.client_id,
+        request_type: 'navigation',
       }
   }
   console.log(`[JSON] ${JSON.stringify(message)}`)
