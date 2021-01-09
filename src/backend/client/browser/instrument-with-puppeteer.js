@@ -38,7 +38,7 @@ const instrumentBrowserWithPuppeteer = async (browserId, debugPort, options) => 
 
   pageUrls = JSON.parse(browserDb.pages);
   // Load saved pages if there are any:
-  if (pageUrls !== null && pageUrls.length > 0) {
+  if (pageUrls !== null && pageUrls.length > 0 && options.loadOpenTabs) {
     await loadPagesForBrowser(browser, pageUrls, options);
   } else {
     // Close and re-open the page so its instrumented:

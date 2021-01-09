@@ -73,7 +73,11 @@ const handleLine = async (cmd) => {
         client = await clientStore.createClient(
           parsedCmd.type,
           paths,
-          { headless: false, captureNavRequests: true }
+          {
+            headless: false,
+            captureNavRequests: true,
+            loadOpenTabs: true
+          }
         );
         await client.start();
         break;
@@ -82,7 +86,11 @@ const handleLine = async (cmd) => {
         client = await clientStore.loadClient(
           parsedCmd.id,
           paths,
-          { headless: false, captureNavRequests: true }
+          {
+            headless: false,
+            captureNavRequests: true,
+            loadOpenTabs: true
+          }
         );
         await client.start();
         break;
@@ -125,7 +133,11 @@ const handleLine = async (cmd) => {
         client = await clientStore.loadClient(
           crawlData.clientId,
           paths,
-          { headless: crawlConfig.headless, captureNavRequests: false }
+          {
+            headless: crawlConfig.headless,
+            captureNavRequests: false,
+            loadOpenTabs: false
+          }
         );
         await client.start();
 
