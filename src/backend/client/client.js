@@ -9,7 +9,7 @@ const { ProxyProc } = require('../proxy/proxy-proc');
 const { PORTS_AVAILABLE } = require('../shared/constants');
 
 class Client {
-  constructor(clientData, paths, options) {
+  constructor(clientData, paths, options = {}) {
     this.clientData = clientData;
     this.paths = paths;
     this.options = options;
