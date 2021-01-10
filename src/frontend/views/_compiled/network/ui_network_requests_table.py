@@ -15,6 +15,8 @@ from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
     QPixmap, QRadialGradient)
 from PySide2.QtWidgets import *
 
+from widgets.qt.hoverable_q_table_view import HoverableQTableView
+
 
 class Ui_NetworkRequestsTable(object):
     def setupUi(self, NetworkRequestsTable):
@@ -32,7 +34,7 @@ class Ui_NetworkRequestsTable(object):
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setSpacing(6)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.horizontalLayout_2.setContentsMargins(-1, 0, -1, -1)
+        self.horizontalLayout_2.setContentsMargins(10, 10, 10, 10)
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.searchBox = QLineEdit(NetworkRequestsTable)
@@ -66,7 +68,7 @@ class Ui_NetworkRequestsTable(object):
 
         self.verticalLayout_3.addLayout(self.horizontalLayout_2)
 
-        self.requestsTable = QTableView(NetworkRequestsTable)
+        self.requestsTable = HoverableQTableView(NetworkRequestsTable)
         self.requestsTable.setObjectName(u"requestsTable")
 
         self.verticalLayout_3.addWidget(self.requestsTable)

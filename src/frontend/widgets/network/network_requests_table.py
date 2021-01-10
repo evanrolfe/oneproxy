@@ -1,12 +1,34 @@
 import sys
-from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstractItemView, QMenu, QAction
+from PySide2.QtWidgets import QApplication, QWidget, QLabel, QHeaderView, QAbstractItemView, QMenu, QAction, QStyledItemDelegate, QStyle, QTableView
 from PySide2.QtCore import QFile, Qt, Slot, Signal, QItemSelection
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtSql import QSqlDatabase, QSqlQuery
+from PySide2.QtGui import QBrush, QColor
 
 from views._compiled.network.ui_network_requests_table import Ui_NetworkRequestsTable
 from widgets.network.network_display_filters import NetworkDisplayFilters
 from widgets.network.network_capture_filters import NetworkCaptureFilters
+
+class RowStyleDelegate(QStyledItemDelegate):
+  def __init__(self, parent=None):
+    self.hovered_row = None
+    self.parent = parent
+    super(RowStyleDelegate, self).__init__(parent=None)
+
+  @Slot()
+  def highlight_index(self, index):
+    if index == None:
+      self.hovered_row = None
+    else:
+      self.hovered_row = index.row()
+
+    self.parent.viewport().repaint()
+
+  def paint(self, painter, options, index):
+    # if index.row() == 3:
+    #   options.state = QStyle.State_MouseOver
+    options.backgroundBrush = QBrush(QColor('#000000'))
+    QStyledItemDelegate.paint(self, painter, options, index)
 
 class NetworkRequestsTable(QWidget):
   request_selected = Signal(QItemSelection, QItemSelection)
@@ -23,12 +45,24 @@ class NetworkRequestsTable(QWidget):
     horizontalHeader.setStretchLastSection(True)
     horizontalHeader.setSectionResizeMode(QHeaderView.Interactive)
     horizontalHeader.setSortIndicator(0, Qt.DescendingOrder)
-    self.ui.requestsTable.setSortingEnabled(True)
+    horizontalHeader.setHighlightSections(False)
+    #horizontalHeader.setCursor(Qt.PointingHandCursor)
 
     verticalHeader = self.ui.requestsTable.verticalHeader()
     verticalHeader.setSectionResizeMode(QHeaderView.Fixed)
     verticalHeader.setDefaultSectionSize(20)
     verticalHeader.setVisible(False)
+
+    self.ui.requestsTable.setSortingEnabled(True)
+    self.ui.requestsTable.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
+    self.ui.requestsTable.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
+
+    # Enable row hover styling:
+    delegate = RowStyleDelegate(self.ui.requestsTable)
+    self.ui.requestsTable.setMouseTracking(True)
+    self.ui.requestsTable.setItemDelegate(delegate)
+    #self.ui.requestsTable.viewport().update()
+    self.ui.requestsTable.hover_index_changed.connect(delegate.highlight_index)
 
     # Search box:
     self.ui.searchBox.textEdited.connect(self.search_text_edited)
@@ -56,9 +90,9 @@ class NetworkRequestsTable(QWidget):
     self.ui.requestsTable.selectionModel().selectionChanged.connect(self.set_selected_requests)
 
     self.ui.requestsTable.setColumnWidth(0, 50)
-    self.ui.requestsTable.setColumnWidth(1, 60)
+    self.ui.requestsTable.setColumnWidth(1, 80)
     self.ui.requestsTable.setColumnWidth(2, 80)
-    self.ui.requestsTable.setColumnWidth(3, 60)
+    self.ui.requestsTable.setColumnWidth(3, 80)
     self.ui.requestsTable.setColumnWidth(4, 150)
     self.ui.requestsTable.setColumnWidth(5, 300)
     self.ui.requestsTable.setColumnWidth(6, 50)

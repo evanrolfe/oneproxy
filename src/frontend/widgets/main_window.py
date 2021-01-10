@@ -3,7 +3,7 @@ import pathlib
 import asyncio
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QLabel, QHeaderView, QAbstractItemView, QStackedWidget, QToolButton, QAction, QMenu, QShortcut, QListWidgetItem, QListView
-from PySide2.QtCore import QFile, Qt, QTextStream, QResource, SIGNAL, Slot, QPoint, QSize, QSettings
+from PySide2.QtCore import QFile, Qt, QTextStream, QResource, SIGNAL, Slot, QPoint, QSize, QSettings, Signal
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtSql import QSqlDatabase, QSqlQuery
 from PySide2.QtGui import QIcon, QKeySequence
@@ -44,6 +44,8 @@ QListWidget::item::selected#sideBar {
 """
 
 class MainWindow(QMainWindow):
+  reload_style = Signal()
+
   def __init__(self, *args, **kwargs):
     super(MainWindow, self).__init__(*args, **kwargs)
 
@@ -70,8 +72,9 @@ class MainWindow(QMainWindow):
 
     # Set padding on widgets:
     self.ui.centralWidget.layout().setContentsMargins(0, 0, 0, 0)
+    self.ui.stackedWidget.setContentsMargins(0, 0, 0, 0)
 
-    margins = [0, 4, 0, 0]
+    margins = [0, 0, 0, 0]
     self.network_page_widget.layout().setContentsMargins(*margins)
     self.clients_page.layout().setContentsMargins(*margins)
     self.crawls_page.layout().setContentsMargins(*margins)
@@ -83,9 +86,14 @@ class MainWindow(QMainWindow):
 
     # Shortcut for closing app:
     self.connect(QShortcut(QKeySequence(Qt.CTRL + Qt.Key_C), self), SIGNAL('activated()'), self.exit)
+    self.connect(QShortcut(QKeySequence(Qt.CTRL + Qt.Key_R), self), SIGNAL('activated()'), self.reload_style)
 
     self.network_page_widget.send_request_to_editor.connect(self.editor_page.send_request_to_editor)
     self.network_page_widget.send_request_to_editor.connect(self.show_editor_page)
+
+    # Menubar:
+    menu_bar = self.menuBar()
+    menu_bar.setNativeMenuBar(True)
 
     self.restore_layout_state()
 
@@ -106,6 +114,15 @@ class MainWindow(QMainWindow):
     settings.save('geometry', geometry)
 
   @Slot()
+  def reload_style(self):
+    file = QFile('/home/evan/Code/oneproxy/src/frontend/assets/style/dark2.qss')
+    file.open(QFile.ReadOnly | QFile.Text)
+    stream = QTextStream(file)
+    self.setStyleSheet(stream.readAll())
+
+    print('reloaded the stylesheet!')
+
+  @Slot()
   def show_editor_page(self):
     self.ui.sideBar.setCurrentRow(3)
     self.ui.stackedWidget.setCurrentWidget(self.editor_page)
@@ -124,7 +141,6 @@ class MainWindow(QMainWindow):
     self.ui.sideBar.currentItemChanged.connect(self.sidebar_item_clicked)
 
     self.ui.sideBar.setObjectName('sideBar')
-    self.ui.sideBar.setStyleSheet(sidebar_style)
 
     self.ui.sideBar.setViewMode(QListView.IconMode)
     self.ui.sideBar.setFlow(QListView.TopToBottom)
@@ -163,7 +179,7 @@ class MainWindow(QMainWindow):
     extensions_item.setData(Qt.UserRole, 'extensions')
     self.ui.sideBar.addItem(extensions_item)
 
-    self.ui.sideBar.setCurrentRow(3)
+    self.ui.sideBar.setCurrentRow(0)
 
   @Slot()
   def sidebar_item_clicked(self, item):

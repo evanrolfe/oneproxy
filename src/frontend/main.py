@@ -11,7 +11,31 @@ from lib.database import Database
 from lib.palettes import Palettes
 from widgets.main_window import MainWindow
 
-THEME = 'light'
+THEME = 'dark2'
+
+DARK2_STYLE = """
+QListWidget#sideBar {
+  background: #3F3F3F;
+}
+
+QListWidget::item#sideBar {
+  padding: 5px;
+}
+
+QListWidget::item::!selected#sideBar {
+  border-left: 2px solid #3F3F3F;
+}
+
+QListWidget::item::selected#sideBar {
+  border-left: 2px solid #2A82DA;
+}
+
+QTabWidget::pane {
+  margin: 1px 1px 1px 1px;
+  padding: -1px;
+}
+"""
+
 LIGHT_STYLE = """
 QTabWidget::pane {
   margin: 1px 1px 1px 1px;
@@ -33,12 +57,6 @@ sys.excepthook = excepthook
 if __name__ == "__main__":
 
   app = QApplication(sys.argv)
-
-  # Setup stylesheet:
-  #file = QFile('/home/evan/Code/oneproxypy/assets/style.qss')
-  #file.open(QFile.ReadOnly | QFile.Text)
-  #stream = QTextStream(file)
-  #app.setStyleSheet(stream.readAll())
 
   app_path = pathlib.Path(__file__).parent.parent.parent.parent.absolute()
   db_path = '/home/evan/Desktop/oneproxy.db'
@@ -71,5 +89,11 @@ if __name__ == "__main__":
     app.setStyleSheet(LIGHT_STYLE)
   elif (THEME == 'dark'):
     app.setPalette(Palettes.dark())
+  elif (THEME == 'dark2'):
+    # Setup stylesheet:
+    file = QFile('/home/evan/Code/oneproxy/src/frontend/assets/style/dark2.qss')
+    file.open(QFile.ReadOnly | QFile.Text)
+    stream = QTextStream(file)
+    app.setStyleSheet(stream.readAll())
 
   sys.exit(app.exec_())
