@@ -125,11 +125,11 @@ class RequestEditPage(QWidget):
     splitter_state = self.settings.get("RequestEditPage.splitter", None)
     splitter_state2 = self.settings.get("RequestEditPage.splitter2", None)
 
-    self.ui.splitter.restoreState(splitter_state)
+    self.ui.requestEditSplitter.restoreState(splitter_state)
     self.ui.splitter2.restoreState(splitter_state2)
 
   def save_layout_state(self):
-    splitter_state = self.ui.splitter.saveState()
+    splitter_state = self.ui.requestEditSplitter.saveState()
     splitter_state2 = self.ui.splitter2.saveState()
 
     self.settings.save("RequestEditPage.splitter", splitter_state)

@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QSplitter" name="splitter">
+    <widget class="QSplitter" name="requestEditSplitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -40,15 +40,15 @@
       <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <layout class="QHBoxLayout" name="requestActionsLayout">
+         <layout class="QHBoxLayout" name="layout1">
           <property name="leftMargin">
-           <number>0</number>
+           <number>10</number>
           </property>
           <property name="topMargin">
-           <number>5</number>
+           <number>10</number>
           </property>
           <property name="rightMargin">
-           <number>5</number>
+           <number>10</number>
           </property>
           <item>
            <widget class="QPushButton" name="toggleFuzzTableButton">
@@ -64,8 +64,36 @@
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="methodInput">
-           </widget>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>388</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="requestActionsLayout">
+          <property name="leftMargin">
+           <number>10</number>
+          </property>
+          <property name="topMargin">
+           <number>10</number>
+          </property>
+          <property name="rightMargin">
+           <number>10</number>
+          </property>
+          <property name="bottomMargin">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QComboBox" name="methodInput"/>
           </item>
           <item>
            <widget class="QLineEdit" name="urlInput">
@@ -102,7 +130,10 @@
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>-1</number>
+          </property>
+          <property name="documentMode">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -168,20 +199,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-   <customwidget>
-    <class>RequestBodyForm</class>
-    <extends>QWidget</extends>
-    <header>widgets.editor.request_body_form.h</header>
-    <container>1</container>
-   </customwidget>
-   <customwidget>
-    <class>RequestHeadersForm</class>
-    <extends>QWidget</extends>
-    <header>widgets.editor.request_headers_form.h</header>
-    <container>1</container>
-   </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

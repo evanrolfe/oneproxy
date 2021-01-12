@@ -15,9 +15,6 @@ from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
     QPixmap, QRadialGradient)
 from PySide2.QtWidgets import *
 
-from widgets.editor.request_body_form import RequestBodyForm
-from widgets.editor.request_headers_form import RequestHeadersForm
-
 
 class Ui_RequestEditPage(object):
     def setupUi(self, RequestEditPage):
@@ -26,18 +23,18 @@ class Ui_RequestEditPage(object):
         RequestEditPage.resize(897, 581)
         self.verticalLayout_2 = QVBoxLayout(RequestEditPage)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.splitter = QSplitter(RequestEditPage)
-        self.splitter.setObjectName(u"splitter")
-        self.splitter.setOrientation(Qt.Horizontal)
-        self.fuzzRequestsTable = QTableView(self.splitter)
+        self.requestEditSplitter = QSplitter(RequestEditPage)
+        self.requestEditSplitter.setObjectName(u"requestEditSplitter")
+        self.requestEditSplitter.setOrientation(Qt.Horizontal)
+        self.fuzzRequestsTable = QTableView(self.requestEditSplitter)
         self.fuzzRequestsTable.setObjectName(u"fuzzRequestsTable")
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.fuzzRequestsTable.sizePolicy().hasHeightForWidth())
         self.fuzzRequestsTable.setSizePolicy(sizePolicy)
-        self.splitter.addWidget(self.fuzzRequestsTable)
-        self.splitter2 = QSplitter(self.splitter)
+        self.requestEditSplitter.addWidget(self.fuzzRequestsTable)
+        self.splitter2 = QSplitter(self.requestEditSplitter)
         self.splitter2.setObjectName(u"splitter2")
         sizePolicy1 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy1.setHorizontalStretch(2)
@@ -50,15 +47,25 @@ class Ui_RequestEditPage(object):
         self.verticalLayout = QVBoxLayout(self.layoutWidget)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.requestActionsLayout = QHBoxLayout()
-        self.requestActionsLayout.setObjectName(u"requestActionsLayout")
-        self.requestActionsLayout.setContentsMargins(0, 5, 5, -1)
+        self.layout1 = QHBoxLayout()
+        self.layout1.setObjectName(u"layout1")
+        self.layout1.setContentsMargins(10, 10, 10, -1)
         self.toggleFuzzTableButton = QPushButton(self.layoutWidget)
         self.toggleFuzzTableButton.setObjectName(u"toggleFuzzTableButton")
         self.toggleFuzzTableButton.setMaximumSize(QSize(35, 16777215))
 
-        self.requestActionsLayout.addWidget(self.toggleFuzzTableButton)
+        self.layout1.addWidget(self.toggleFuzzTableButton)
 
+        self.horizontalSpacer = QSpacerItem(388, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.layout1.addItem(self.horizontalSpacer)
+
+
+        self.verticalLayout.addLayout(self.layout1)
+
+        self.requestActionsLayout = QHBoxLayout()
+        self.requestActionsLayout.setObjectName(u"requestActionsLayout")
+        self.requestActionsLayout.setContentsMargins(10, 10, 10, 10)
         self.methodInput = QComboBox(self.layoutWidget)
         self.methodInput.setObjectName(u"methodInput")
 
@@ -90,6 +97,7 @@ class Ui_RequestEditPage(object):
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.requestTabs.sizePolicy().hasHeightForWidth())
         self.requestTabs.setSizePolicy(sizePolicy2)
+        self.requestTabs.setDocumentMode(False)
 
         self.verticalLayout.addWidget(self.requestTabs)
 
@@ -121,14 +129,14 @@ class Ui_RequestEditPage(object):
 
         self.responseTabs.addTab(self.responseHeadersTab, "")
         self.splitter2.addWidget(self.responseTabs)
-        self.splitter.addWidget(self.splitter2)
+        self.requestEditSplitter.addWidget(self.splitter2)
 
-        self.verticalLayout_2.addWidget(self.splitter)
+        self.verticalLayout_2.addWidget(self.requestEditSplitter)
 
 
         self.retranslateUi(RequestEditPage)
 
-        self.requestTabs.setCurrentIndex(0)
+        self.requestTabs.setCurrentIndex(-1)
         self.responseTabs.setCurrentIndex(0)
 
 

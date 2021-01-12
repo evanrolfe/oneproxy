@@ -17,58 +17,60 @@ from PySide2.QtWidgets import *
 
 
 class Ui_RequestBodyForm(object):
-    def setupUi(self, form):
-        if not form.objectName():
-            form.setObjectName(u"form")
-        form.resize(880, 521)
-        self.verticalLayout = QVBoxLayout(form)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.radioButton = QRadioButton(form)
+    def setupUi(self, RequestBodyForm):
+        if not RequestBodyForm.objectName():
+            RequestBodyForm.setObjectName(u"RequestBodyForm")
+        RequestBodyForm.resize(880, 521)
+        self.requestBodyFormLayout = QVBoxLayout(RequestBodyForm)
+        self.requestBodyFormLayout.setObjectName(u"requestBodyFormLayout")
+        self.requestBodyFormLayout.setContentsMargins(0, 0, 0, 0)
+        self.requestBodyFormHLayout = QHBoxLayout()
+        self.requestBodyFormHLayout.setObjectName(u"requestBodyFormHLayout")
+        self.requestBodyFormHLayout.setContentsMargins(10, 5, 10, 5)
+        self.radioButton = QRadioButton(RequestBodyForm)
         self.radioButton.setObjectName(u"radioButton")
         self.radioButton.setCheckable(False)
 
-        self.horizontalLayout.addWidget(self.radioButton)
+        self.requestBodyFormHLayout.addWidget(self.radioButton)
 
-        self.radioButton_2 = QRadioButton(form)
+        self.radioButton_2 = QRadioButton(RequestBodyForm)
         self.radioButton_2.setObjectName(u"radioButton_2")
         self.radioButton_2.setCheckable(False)
 
-        self.horizontalLayout.addWidget(self.radioButton_2)
+        self.requestBodyFormHLayout.addWidget(self.radioButton_2)
 
-        self.radioButton_3 = QRadioButton(form)
+        self.radioButton_3 = QRadioButton(RequestBodyForm)
         self.radioButton_3.setObjectName(u"radioButton_3")
         self.radioButton_3.setCheckable(True)
         self.radioButton_3.setChecked(True)
 
-        self.horizontalLayout.addWidget(self.radioButton_3)
+        self.requestBodyFormHLayout.addWidget(self.radioButton_3)
 
-        self.radioButton_4 = QRadioButton(form)
+        self.radioButton_4 = QRadioButton(RequestBodyForm)
         self.radioButton_4.setObjectName(u"radioButton_4")
         self.radioButton_4.setCheckable(False)
 
-        self.horizontalLayout.addWidget(self.radioButton_4)
+        self.requestBodyFormHLayout.addWidget(self.radioButton_4)
 
         self.horizontalSpacer = QSpacerItem(148, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.horizontalLayout.addItem(self.horizontalSpacer)
+        self.requestBodyFormHLayout.addItem(self.horizontalSpacer)
 
 
-        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.requestBodyFormLayout.addLayout(self.requestBodyFormHLayout)
 
-        self.requestBodyInput = QPlainTextEdit(form)
+        self.requestBodyInput = QPlainTextEdit(RequestBodyForm)
         self.requestBodyInput.setObjectName(u"requestBodyInput")
 
-        self.verticalLayout.addWidget(self.requestBodyInput)
+        self.requestBodyFormLayout.addWidget(self.requestBodyInput)
 
 
-        self.retranslateUi(form)
+        self.retranslateUi(RequestBodyForm)
 
-        QMetaObject.connectSlotsByName(form)
+        QMetaObject.connectSlotsByName(RequestBodyForm)
     # setupUi
 
-    def retranslateUi(self, form):
+    def retranslateUi(self, RequestBodyForm):
         self.radioButton.setText(QCoreApplication.translate("RequestBodyForm", u"form-data", None))
         self.radioButton_2.setText(QCoreApplication.translate("RequestBodyForm", u"x-www-form-urlencoded", None))
         self.radioButton_3.setText(QCoreApplication.translate("RequestBodyForm", u"raw", None))

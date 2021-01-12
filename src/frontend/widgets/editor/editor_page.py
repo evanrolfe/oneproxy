@@ -27,10 +27,10 @@ class EditorPage(QWidget):
   def restore_layout_state(self):
     settings = AppSettings.get_instance()
     splitter_state = settings.get("EditorPage.splitter", None)
-    self.ui.splitter.restoreState(splitter_state)
+    self.ui.editorSplitter.restoreState(splitter_state)
 
   def save_layout_state(self):
-    splitter_state = self.ui.splitter.saveState()
+    splitter_state = self.ui.editorSplitter.saveState()
     settings = AppSettings.get_instance()
     settings.save("EditorPage.splitter", splitter_state)
 

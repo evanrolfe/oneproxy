@@ -37,29 +37,19 @@ QTabBar::tab:disabled {
   background-color: #2D2D2D;
 }
 
-QTabBar::pane {
-  border: 1px solid white;
-}
-
-QTabWidget::tab-bar::pane {
-  border: 1px solid white;
-}
-
-QSplitter#requestsTableAndViewSplitter {
-  border-top: 1px solid #474747;
-}
-
 /*------------------------------------------------------------------------------*
  * Table
  *------------------------------------------------------------------------------*/
 QTableView {
   selection-background-color: #094771;
+  background-color: #1E1E1E;
 }
 
 QHeaderView::section {
   background-color: #333333;
   color: #D4D4D4;
   border-radius: 0;
+  border-right: 1px solid #1E1E1E;
   text-align: left;
   font-weight: normal;
 }
@@ -191,12 +181,42 @@ QSplitter::handle:vertical {
 }
 
 /*------------------------------------------------------------------------------*
+ * Borders
+ *------------------------------------------------------------------------------*/
+QVBoxLayout#requestBodyFormLayout {
+  border-top: 1px solid #474747;
+}
+
+QSplitter#requestsTableAndViewSplitter {
+  border-top: 1px solid #474747;
+}
+
+QSplitter#editorSplitter {
+  border-top: 1px solid #474747;
+}
+
+QSplitter#requestEditSplitter {
+  border-top: 1px solid #1E1E1E;
+}
+
+QWidget#requestHeadersForm {
+  border: 1px solid white;
+  margin: 5px;
+}
+
+/*------------------------------------------------------------------------------*
+ * QMenuBar
+ *------------------------------------------------------------------------------*/
+QMenuBar {
+  border-bottom: 1px solid #474747;
+}
+
+/*------------------------------------------------------------------------------*
  * QPushButton
  *------------------------------------------------------------------------------*/
 QPushButton
 {
   padding: 4px;
-  min-width: 100px;
   outline: none;
   color: #D4D4D4;
   border: 1 solid #76797c;
@@ -207,9 +227,18 @@ QPushButton:hover {
   border: 1 solid #2A82DA;
 }
 
+QPushButton#toggleFuzzTableButton {
+  height: 10px;
+}
+
 /*------------------------------------------------------------------------------*
- * QMenuBar
+ * QComboBox
  *------------------------------------------------------------------------------*/
-QMenuBar {
-  border-bottom: 1px solid #474747;
+ QComboBox {
+  padding: 4px;
+  outline: none;
+  height: 18px;
+  color: #D4D4D4;
+  border: 1 solid #76797c;
+  background-color: #1E1E1E;
 }
