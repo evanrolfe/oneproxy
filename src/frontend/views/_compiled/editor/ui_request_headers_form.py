@@ -17,47 +17,26 @@ from PySide2.QtWidgets import *
 
 
 class Ui_RequestHeadersForm(object):
-    def setupUi(self, requestHeadersForm):
-        if not requestHeadersForm.objectName():
-            requestHeadersForm.setObjectName(u"requestHeadersForm")
-        requestHeadersForm.resize(880, 521)
-        self.verticalLayout_2 = QVBoxLayout(requestHeadersForm)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.headersLayout = QVBoxLayout()
-        self.headersLayout.setObjectName(u"headersLayout")
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalLayout.setContentsMargins(10, 5, 10, 5)
-        self.showGeneratedHeaders = QCheckBox(requestHeadersForm)
-        self.showGeneratedHeaders.setObjectName(u"showGeneratedHeaders")
-        self.showGeneratedHeaders.setChecked(True)
-
-        self.horizontalLayout.addWidget(self.showGeneratedHeaders)
-
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer)
-
-
-        self.headersLayout.addLayout(self.horizontalLayout)
-
-        self.headersTable = QTableView(requestHeadersForm)
+    def setupUi(self, RequestHeadersForm):
+        if not RequestHeadersForm.objectName():
+            RequestHeadersForm.setObjectName(u"RequestHeadersForm")
+        RequestHeadersForm.resize(880, 521)
+        self.verticalLayout = QVBoxLayout(RequestHeadersForm)
+        self.verticalLayout.setSpacing(0)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.headersTable = QTableView(RequestHeadersForm)
         self.headersTable.setObjectName(u"headersTable")
 
-        self.headersLayout.addWidget(self.headersTable)
+        self.verticalLayout.addWidget(self.headersTable)
 
 
-        self.verticalLayout_2.addLayout(self.headersLayout)
+        self.retranslateUi(RequestHeadersForm)
 
-
-        self.retranslateUi(requestHeadersForm)
-
-        QMetaObject.connectSlotsByName(requestHeadersForm)
+        QMetaObject.connectSlotsByName(RequestHeadersForm)
     # setupUi
 
-    def retranslateUi(self, requestHeadersForm):
-        self.showGeneratedHeaders.setText(QCoreApplication.translate("RequestHeadersForm", u"Include auto-generated headers", None))
+    def retranslateUi(self, RequestHeadersForm):
         pass
     # retranslateUi
 

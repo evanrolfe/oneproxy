@@ -204,6 +204,14 @@ QWidget#requestHeadersForm {
   margin: 5px;
 }
 
+QTableView#headersTable {
+  border-top: 1px solid #1E1E1E;
+}
+
+QSplitter::handle:vertical#requestBodySplitter {
+  width: 0;
+}
+
 /*------------------------------------------------------------------------------*
  * QMenuBar
  *------------------------------------------------------------------------------*/

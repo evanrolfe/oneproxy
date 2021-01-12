@@ -26,6 +26,7 @@ class RequestHeadersForm(QWidget):
 
     self.table_model = EditorRequestHeadersTableModel(self.headers)
     self.ui.headersTable.setModel(self.table_model)
+    self.ui.headersTable.setEditTriggers(QAbstractItemView.AllEditTriggers)
 
     horizontalHeader = self.ui.headersTable.horizontalHeader()
     horizontalHeader.setStretchLastSection(True)
@@ -39,8 +40,8 @@ class RequestHeadersForm(QWidget):
     self.ui.headersTable.setColumnWidth(0, 20)
     self.ui.headersTable.setColumnWidth(1, 250)
 
-    self.ui.showGeneratedHeaders.setTristate(False)
-    self.ui.showGeneratedHeaders.stateChanged.connect(self.show_generated_headers)
+    #self.ui.showGeneratedHeaders.setTristate(False)
+    #self.ui.showGeneratedHeaders.stateChanged.connect(self.show_generated_headers)
 
   def load_headers(self):
     headers = self.editor_item.item().get_request_headers()

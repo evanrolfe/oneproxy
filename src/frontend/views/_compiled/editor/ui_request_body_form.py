@@ -21,48 +21,13 @@ class Ui_RequestBodyForm(object):
         if not RequestBodyForm.objectName():
             RequestBodyForm.setObjectName(u"RequestBodyForm")
         RequestBodyForm.resize(880, 521)
-        self.requestBodyFormLayout = QVBoxLayout(RequestBodyForm)
-        self.requestBodyFormLayout.setObjectName(u"requestBodyFormLayout")
-        self.requestBodyFormLayout.setContentsMargins(0, 0, 0, 0)
-        self.requestBodyFormHLayout = QHBoxLayout()
-        self.requestBodyFormHLayout.setObjectName(u"requestBodyFormHLayout")
-        self.requestBodyFormHLayout.setContentsMargins(10, 5, 10, 5)
-        self.radioButton = QRadioButton(RequestBodyForm)
-        self.radioButton.setObjectName(u"radioButton")
-        self.radioButton.setCheckable(False)
-
-        self.requestBodyFormHLayout.addWidget(self.radioButton)
-
-        self.radioButton_2 = QRadioButton(RequestBodyForm)
-        self.radioButton_2.setObjectName(u"radioButton_2")
-        self.radioButton_2.setCheckable(False)
-
-        self.requestBodyFormHLayout.addWidget(self.radioButton_2)
-
-        self.radioButton_3 = QRadioButton(RequestBodyForm)
-        self.radioButton_3.setObjectName(u"radioButton_3")
-        self.radioButton_3.setCheckable(True)
-        self.radioButton_3.setChecked(True)
-
-        self.requestBodyFormHLayout.addWidget(self.radioButton_3)
-
-        self.radioButton_4 = QRadioButton(RequestBodyForm)
-        self.radioButton_4.setObjectName(u"radioButton_4")
-        self.radioButton_4.setCheckable(False)
-
-        self.requestBodyFormHLayout.addWidget(self.radioButton_4)
-
-        self.horizontalSpacer = QSpacerItem(148, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.requestBodyFormHLayout.addItem(self.horizontalSpacer)
-
-
-        self.requestBodyFormLayout.addLayout(self.requestBodyFormHLayout)
-
+        self.verticalLayout = QVBoxLayout(RequestBodyForm)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.requestBodyInput = QPlainTextEdit(RequestBodyForm)
         self.requestBodyInput.setObjectName(u"requestBodyInput")
 
-        self.requestBodyFormLayout.addWidget(self.requestBodyInput)
+        self.verticalLayout.addWidget(self.requestBodyInput)
 
 
         self.retranslateUi(RequestBodyForm)
@@ -71,10 +36,6 @@ class Ui_RequestBodyForm(object):
     # setupUi
 
     def retranslateUi(self, RequestBodyForm):
-        self.radioButton.setText(QCoreApplication.translate("RequestBodyForm", u"form-data", None))
-        self.radioButton_2.setText(QCoreApplication.translate("RequestBodyForm", u"x-www-form-urlencoded", None))
-        self.radioButton_3.setText(QCoreApplication.translate("RequestBodyForm", u"raw", None))
-        self.radioButton_4.setText(QCoreApplication.translate("RequestBodyForm", u"binary", None))
         pass
     # retranslateUi
 

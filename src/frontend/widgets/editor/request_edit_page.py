@@ -56,7 +56,7 @@ class RequestEditPage(QWidget):
     self.request_body_form = RequestBodyForm(self.editor_item)
 
     self.ui.requestTabs.insertTab(0, self.request_headers_form, 'Headers')
-    self.ui.requestTabs.insertTab(0, self.request_body_form, 'Body')
+    self.ui.requestTabs.insertTab(1, self.request_body_form, 'Body')
 
   @Slot()
   def save_request(self):

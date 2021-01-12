@@ -96,6 +96,7 @@ class MainWindow(QMainWindow):
     menu_bar.setNativeMenuBar(True)
 
     self.restore_layout_state()
+    self.show_editor_page()
 
   def set_backend(self, backend):
     self.backend = backend
