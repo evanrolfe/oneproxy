@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@httptoolkit/browser-launcher": "^1.6.1",
+    "@httptoolkit/browser-launcher": "^2.0.2",
     "events": "^3.2.0",
     "headless-chrome-crawler": "^1.8.0",
     "httpolyglot": "^0.1.2",
